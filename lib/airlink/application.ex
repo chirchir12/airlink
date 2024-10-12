@@ -10,6 +10,7 @@ defmodule Airlink.Application do
     children = [
       AirlinkWeb.Telemetry,
       Airlink.Repo,
+      Airlink.Companies.CompanyServer,
       {DNSCluster, query: Application.get_env(:airlink, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Airlink.PubSub},
       # Start the Finch HTTP client for sending emails
