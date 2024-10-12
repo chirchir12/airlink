@@ -34,6 +34,10 @@ defmodule Airlink.Hotspots.Hotspot do
     field :latitude, :float
     field :longitude, :float
     timestamps(type: :utc_datetime)
+
+    # relationship
+    has_many :plans, Airlink.Plans.Plan
+
   end
 
   @doc false
