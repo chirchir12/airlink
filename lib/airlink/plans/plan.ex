@@ -6,41 +6,31 @@ defmodule Airlink.Plans.Plan do
   @valid_time_unit ["minute", "hour", "day", "week", "month"]
   @valid_bundle_unit ["MB", "GB"]
 
-
   @permitted_field [
     :name,
     :description,
-
     :duration,
     :time_unit,
-
     :upload_speed,
     :download_speed,
     :speed_unit,
-
     :bundle_size,
     :bundle_unit,
-
     :price,
     :currency,
     :company_id,
     :hotspot_id
-
   ]
 
   @required_field [
     :name,
     :description,
-
     :duration,
     :time_unit,
-
     :upload_speed,
     :download_speed,
-
     :bundle_size,
     :bundle_unit,
-
     :price,
     :currency,
     :company_id,
@@ -83,8 +73,9 @@ defmodule Airlink.Plans.Plan do
     |> validate_name()
   end
 
-
-  defp validate_time_unit(%Ecto.Changeset{valid?: true, changes: %{time_unit: time_unit}} = changeset) do
+  defp validate_time_unit(
+         %Ecto.Changeset{valid?: true, changes: %{time_unit: time_unit}} = changeset
+       ) do
     if time_unit in @valid_time_unit do
       changeset
     else
@@ -94,8 +85,9 @@ defmodule Airlink.Plans.Plan do
 
   defp validate_time_unit(changeset), do: changeset
 
-
-  defp validate_bundle_unit(%Ecto.Changeset{valid?: true, changes: %{bundle_unit: bundle_unit}} = changeset) do
+  defp validate_bundle_unit(
+         %Ecto.Changeset{valid?: true, changes: %{bundle_unit: bundle_unit}} = changeset
+       ) do
     if bundle_unit in @valid_bundle_unit do
       changeset
     else
@@ -107,6 +99,7 @@ defmodule Airlink.Plans.Plan do
 
   defp validate_name(%Ecto.Changeset{valid?: true, changes: %{name: name}} = changeset) do
     downcased_name = String.downcase(name)
+
     if String.match?(downcased_name, ~r/^\S*$/) do
       put_change(changeset, :name, downcased_name)
     else

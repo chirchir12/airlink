@@ -7,7 +7,7 @@ defmodule AirlinkWeb.PlanController do
   action_fallback AirlinkWeb.FallbackController
 
   def index(conn, _params) do
-    with {:ok, plans}  <- Plans.list_plans() do
+    with {:ok, plans} <- Plans.list_plans() do
       conn
       |> render(:index, plans: plans)
     end
@@ -30,7 +30,7 @@ defmodule AirlinkWeb.PlanController do
 
   def update(conn, %{"id" => id, "params" => plan_params}) do
     with {:ok, plan} <- Plans.get_plan_id(id),
-    {:ok, %Plan{} = plan} <- Plans.update_plan(plan, plan_params) do
+         {:ok, %Plan{} = plan} <- Plans.update_plan(plan, plan_params) do
       conn
       |> render(:show, plan: plan)
     end
@@ -38,7 +38,7 @@ defmodule AirlinkWeb.PlanController do
 
   def delete(conn, %{"id" => id}) do
     with {:ok, plan} <- Plans.get_plan_id(id),
-    {:ok, %Plan{}} <- Plans.delete_plan(plan) do
+         {:ok, %Plan{}} <- Plans.delete_plan(plan) do
       send_resp(conn, :no_content, "")
     end
   end

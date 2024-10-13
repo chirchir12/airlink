@@ -12,8 +12,7 @@ defmodule Airlink.Customers.Customer do
     :first_name,
     :last_name,
     :email,
-    :phone_number,
-    :password
+    :phone_number
   ]
 
   @required_fields [
@@ -44,7 +43,9 @@ defmodule Airlink.Customers.Customer do
     |> unique_constraint([:company_id, :username])
     |> maybe_put_uuid(:customer_id)
     |> validate_status()
+    |> maybe_generate_password_hash()
   end
+
   defp validate_status(%Ecto.Changeset{valid?: true, changes: %{status: status}} = changeset) do
     if status in @allowed_status do
       changeset
@@ -54,4 +55,23 @@ defmodule Airlink.Customers.Customer do
   end
 
   defp validate_status(changeset), do: changeset
+
+  defp maybe_generate_password_hash(%Ecto.Changeset{valid?: true} = changeset) do
+    case get_change(changeset, :password) do
+      nil ->
+        random_password = generate_random_password(8)
+        put_change(changeset, :password_hash, random_password)
+
+      _ ->
+        changeset
+    end
+  end
+
+  defp maybe_generate_password_hash(changeset), do: changeset
+
+  defp generate_random_password(length) do
+    :crypto.strong_rand_bytes(length)
+    |> Base.url_encode64()
+    |> binary_part(0, length)
+  end
 end

@@ -21,16 +21,15 @@ defmodule Airlink.Hotspots do
     {:ok, Repo.all(Hotspot)}
   end
 
-
   def get_hotspot_by_id(id) do
-    case  Repo.get(Hotspot, id) do
+    case Repo.get(Hotspot, id) do
       nil -> {:error, :hotspot_not_found}
       hotspot -> {:ok, hotspot}
     end
   end
 
   def get_hotspot_by_uuid(uuid) do
-    case  Repo.get(Hotspot, uuid: uuid) do
+    case Repo.get(Hotspot, uuid: uuid) do
       nil -> {:error, :hotspot_not_found}
       hotspot -> {:ok, hotspot}
     end

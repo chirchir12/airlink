@@ -53,10 +53,12 @@ defmodule Airlink.Routers.RouterServer do
 
   @impl true
   def handle_call({:get_router, uuid}, _from, state) do
-    result = case :ets.lookup(@table_name, uuid) do
-      [{^uuid, router_info}] -> {:ok, router_info}
-      [] -> {:error, :not_found}
-    end
+    result =
+      case :ets.lookup(@table_name, uuid) do
+        [{^uuid, router_info}] -> {:ok, router_info}
+        [] -> {:error, :not_found}
+      end
+
     {:reply, result, state}
   end
 end

@@ -7,9 +7,9 @@ defmodule AirlinkWeb.HotspotController do
   action_fallback AirlinkWeb.FallbackController
 
   def index(conn, _params) do
-    with {:ok, hotspots}  <- Hotspots.list_hotspots() do
+    with {:ok, hotspots} <- Hotspots.list_hotspots() do
       conn
-      |> render(:index, hotspots: hotspots )
+      |> render(:index, hotspots: hotspots)
     end
   end
 
@@ -30,7 +30,7 @@ defmodule AirlinkWeb.HotspotController do
 
   def update(conn, %{"id" => id, "params" => hotspot_params}) do
     with {:ok, hotspot} <- Hotspots.get_hotspot_by_id(id),
-    {:ok, %Hotspot{} = hotspot} <- Hotspots.update_hotspot(hotspot, hotspot_params) do
+         {:ok, %Hotspot{} = hotspot} <- Hotspots.update_hotspot(hotspot, hotspot_params) do
       conn
       |> render(:show, hotspot: hotspot)
     end
@@ -38,7 +38,7 @@ defmodule AirlinkWeb.HotspotController do
 
   def delete(conn, %{"id" => id}) do
     with {:ok, hotspot} <- Hotspots.get_hotspot_by_id(id),
-    {:ok, %Hotspot{}} <- Hotspots.delete_hotspot(hotspot) do
+         {:ok, %Hotspot{}} <- Hotspots.delete_hotspot(hotspot) do
       send_resp(conn, :no_content, "")
     end
   end

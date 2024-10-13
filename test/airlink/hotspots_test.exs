@@ -22,7 +22,14 @@ defmodule Airlink.HotspotsTest do
     latitude: 41.8781,
     longitude: -87.6298
   }
-  @invalid_attrs %{name: nil, description: nil, bridge_name: nil, landmark: nil, company_id: nil, router_id: nil}
+  @invalid_attrs %{
+    name: nil,
+    description: nil,
+    bridge_name: nil,
+    landmark: nil,
+    company_id: nil,
+    router_id: nil
+  }
 
   def hotspot_fixture(attrs \\ %{}) do
     {:ok, hotspot} =

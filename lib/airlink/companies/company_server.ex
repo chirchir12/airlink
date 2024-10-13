@@ -53,10 +53,12 @@ defmodule Airlink.Companies.CompanyServer do
 
   @impl true
   def handle_call({:get_company, uuid}, _from, table) do
-    result = case :ets.lookup(table, uuid) do
-      [{^uuid, company_info}] -> {:ok, company_info}
-      [] -> {:error, :not_found}
-    end
+    result =
+      case :ets.lookup(table, uuid) do
+        [{^uuid, company_info}] -> {:ok, company_info}
+        [] -> {:error, :not_found}
+      end
+
     {:reply, result, table}
   end
 end

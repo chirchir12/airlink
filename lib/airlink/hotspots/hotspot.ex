@@ -37,7 +37,6 @@ defmodule Airlink.Hotspots.Hotspot do
 
     # relationship
     has_many :plans, Airlink.Plans.Plan
-
   end
 
   @doc false

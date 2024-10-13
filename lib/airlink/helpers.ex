@@ -1,8 +1,6 @@
 defmodule Airlink.Helpers do
   import Ecto.Changeset
 
-
-
   # changeset functions
   def maybe_put_uuid(%Ecto.Changeset{valid?: true} = changeset, field) do
     if changeset.data.id do

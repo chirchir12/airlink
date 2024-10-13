@@ -52,6 +52,16 @@ defmodule Airlink.Customers do
     end
   end
 
+  def get_or_create_customer(username, company_id) do
+    case Repo.get_by(Customer, username: username, company_id: company_id) do
+      nil ->
+        create_customer(%{username: username, company_id: company_id, status: "inactive"})
+
+      customer ->
+        {:ok, customer}
+    end
+  end
+
   @doc """
   Creates a customer.
 
