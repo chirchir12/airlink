@@ -49,10 +49,11 @@ defmodule Airlink.Subscriptions do
   end
 
   def get_subscription(company_id, customer_id) do
-    query = from s in Subscription,
-      where: s.company_id == ^company_id and s.customer_id == ^customer_id,
-      order_by: [desc: s.id],
-      limit: 1
+    query =
+      from s in Subscription,
+        where: s.company_id == ^company_id and s.customer_id == ^customer_id,
+        order_by: [desc: s.id],
+        limit: 1
 
     case Repo.one(query) do
       nil -> {:error, :subscription_not_found}
