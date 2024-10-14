@@ -1,10 +1,14 @@
 defmodule Airlink.Payments do
   alias __MODULE__.Payment
   alias Airlink.Plans.Plan
+  alias Airlink.Plans
   alias Airlink.Subscriptions
   alias Airlink.Subscriptions.Subscription
   alias Airlink.HttpClient
   import Airlink.Helpers
+  alias Airlink.Customers
+  alias Airlink.Customers.Customer
+  alias Airlink.RmqPulbisher
   require Logger
 
   def create(%Plan{} = plan, params) do
@@ -26,6 +30,64 @@ defmodule Airlink.Payments do
     |> case do
       %{valid?: true, changes: changes} -> {:ok, changes}
       changeset -> {:error, changeset}
+    end
+  end
+
+  def update_payments(txn_params) do
+    with {:ok, sub} <- update_subscription_status(txn_params),
+      {:ok, customer} <- update_customer_status(txn_params) do
+        maybe_publish_to_radius(sub, customer, txn_params)
+    end
+
+  end
+
+  defp maybe_publish_to_radius(%Subscription{status: "complete"}, %Customer{} = cust, txn_params ) do
+    with {:ok, plan} <- Plans.get_plan_uuid(txn_params.plan_id) do
+      data = %{
+        username: cust.username,
+        password: cust.password_hash,
+        customer: cust.uuid,
+        service: "hotspot",
+        duration_mins: Plans.calculate_duration_mins(plan),
+        plan: txn_params.plan_id,
+      }
+      config = get_config(:radius)
+      queue_name = config.renew_subscription_queue
+      Logger.info("Punlishing to radius: Queue name -  #{inspect(queue_name)}")
+      {:ok,:ok } = RmqPulbisher.publish(data, queue_name)
+      :ok
+    end
+  end
+
+  defp maybe_publish_to_radius(_sub, _cust, _txn) do
+    :ok
+  end
+
+  defp update_customer_status(%{status: "completed"} = txn_params) do
+    with {:ok, customer} <- Customers.get_customer_by_uuid(txn_params.customer_id) do
+      params = %{status: "active"}
+      Customers.update_customer(customer, params)
+    end
+  end
+
+  defp update_customer_status(%{status: status} = txn_params) when status in ["stale", "failed"] do
+    with {:ok, customer} <- Customers.get_customer_by_uuid(txn_params.customer_id) do
+      params = %{status: "inactive"}
+      Customers.update_customer(customer, params)
+    end
+  end
+
+  defp update_subscription_status(%{status: "completed"} = txn_params) do
+    with {:ok, sub} <- Subscriptions.get_subscription_by_uuid(txn_params.ref_id) do
+      params = %{status: "completed"}
+      Subscriptions.update_subscription(sub, params)
+    end
+  end
+
+  defp update_subscription_status(%{status: status} = txn_params) when status in ["failed", "stale"] do
+    with {:ok, sub} <- Subscriptions.get_subscription_by_uuid(txn_params.ref_id) do
+      params = %{status: "completed"}
+      Subscriptions.update_subscription(sub, params)
     end
   end
 
@@ -72,12 +134,13 @@ defmodule Airlink.Payments do
     %{
       phone_number: params.phone_number,
       amount: price,
-      package_id: uuid,
+      plan_id: uuid,
       company_id: params.company_id,
       customer_id: params.customer_id,
       transaction_type: "c2b",
       description: "Hotspot Payment",
-      ref_id: sub_uuid
+      ref_id: sub_uuid,
+      service: "hotspot"
     }
   end
 

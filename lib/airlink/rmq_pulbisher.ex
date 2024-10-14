@@ -9,7 +9,6 @@ defmodule Airlink.RmqPulbisher do
   @impl true
   def init() do
     config = get_options()
-
     [
       exchange: config[:exchange],
       uri: config[:url],
@@ -24,7 +23,15 @@ defmodule Airlink.RmqPulbisher do
     }
   end
 
-  def publish(encoded_data, queue) when is_binary(encoded_data) and byte_size(encoded_data) > 0 do
+  def publish(data, queue) do
+    data
+    |> encode_message()
+    |> publish_data(queue)
+  end
+
+
+
+  defp publish_data(encoded_data, queue) when is_binary(encoded_data) and byte_size(encoded_data) > 0 do
     case GenRMQ.Publisher.publish(__MODULE__, encoded_data, queue) do
       :ok ->
         {:ok, :ok}
@@ -37,8 +44,12 @@ defmodule Airlink.RmqPulbisher do
     end
   end
 
-  def publish(_message, _queue) do
+  defp publish_data(_message, _queue) do
     {:error, "Invalid data"}
+  end
+
+  defp encode_message(data) do
+    Jason.encode!(data)
   end
 
   defp get_options() do

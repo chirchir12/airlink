@@ -2,6 +2,7 @@ defmodule Airlink.Payments.PaymentConsumer do
   @behaviour GenRMQ.Consumer
   alias GenRMQ.Message
   require Logger
+  alias Airlink.Payments
 
   def start_link() do
     GenRMQ.Consumer.start_link(__MODULE__, name: __MODULE__)
@@ -24,8 +25,10 @@ defmodule Airlink.Payments.PaymentConsumer do
   end
 
   @impl GenRMQ.Consumer
-  def handle_message(%Message{} = message) do
+  def handle_message(%Message{payload: payload} = message) do
     Logger.info("Received message: #{inspect(message)}")
+    payload = Jason.decode!(payload)
+    :ok = Payments.update_payments(payload)
     ack(message)
   end
 
@@ -34,7 +37,6 @@ defmodule Airlink.Payments.PaymentConsumer do
     Logger.error(
       "Rejecting message due to consumer task error: #{inspect(reason: reason, msg_attributes: attributes, msg_payload: payload)}"
     )
-
     GenRMQ.Consumer.reject(message, false)
   end
 

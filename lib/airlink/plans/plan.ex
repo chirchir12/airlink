@@ -3,7 +3,7 @@ defmodule Airlink.Plans.Plan do
   import Ecto.Changeset
   import Airlink.Helpers
 
-  @valid_time_unit ["minute", "hour", "day", "week", "month"]
+  @valid_time_unit ["minute", "hour", "day"]
   @valid_bundle_unit ["MB", "GB"]
 
   @permitted_field [
