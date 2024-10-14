@@ -3,6 +3,7 @@ defmodule Airlink.Subscriptions.SubscriptionConsumer do
   alias GenRMQ.Message
   require Logger
   alias Airlink.Subscriptions
+  import Airlink.Helpers
 
   def start_link() do
     GenRMQ.Consumer.start_link(__MODULE__, name: __MODULE__)
@@ -27,7 +28,7 @@ defmodule Airlink.Subscriptions.SubscriptionConsumer do
   @impl GenRMQ.Consumer
   def handle_message(%Message{payload: payload} = message) do
     Logger.info("Received message: #{inspect(message)}")
-    payload = Jason.decode!(payload)
+    payload = Jason.decode!(payload) |> atomize_map_keys()
     data = %{expires_at: payload.expires_at}
 
     with {:ok, sub} <- Subscriptions.get_subscription_by_uuid(payload.subscription_id),

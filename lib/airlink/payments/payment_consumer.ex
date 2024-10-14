@@ -3,6 +3,7 @@ defmodule Airlink.Payments.PaymentConsumer do
   alias GenRMQ.Message
   require Logger
   alias Airlink.Payments
+  import Airlink.Helpers
 
   def start_link() do
     GenRMQ.Consumer.start_link(__MODULE__, name: __MODULE__)
@@ -27,7 +28,7 @@ defmodule Airlink.Payments.PaymentConsumer do
   @impl GenRMQ.Consumer
   def handle_message(%Message{payload: payload} = message) do
     Logger.info("Received message: #{inspect(message)}")
-    payload = Jason.decode!(payload)
+    payload = Jason.decode!(payload) |> atomize_map_keys()
     :ok = Payments.update_payments(payload)
     ack(message)
   end
