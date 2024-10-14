@@ -56,7 +56,7 @@ defmodule Airlink.Companies.CompanyServer do
     result =
       case :ets.lookup(table, uuid) do
         [{^uuid, company_info}] -> {:ok, company_info}
-        [] -> {:error, :not_found}
+        [] -> {:error, :company_not_found}
       end
 
     {:reply, result, table}

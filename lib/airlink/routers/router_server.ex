@@ -56,7 +56,7 @@ defmodule Airlink.Routers.RouterServer do
     result =
       case :ets.lookup(@table_name, uuid) do
         [{^uuid, router_info}] -> {:ok, router_info}
-        [] -> {:error, :not_found}
+        [] -> {:error, :router_not_found}
       end
 
     {:reply, result, state}
