@@ -113,4 +113,15 @@ defmodule Airlink.Plans do
   def change_plan(%Plan{} = plan, attrs \\ %{}) do
     Plan.changeset(plan, attrs)
   end
+
+  def calculate_duration_mins(%Plan{duration: duration, time_unit: unit}) do
+    calculate_duration(duration, unit)
+  end
+
+  defp calculate_duration(duration, unit)
+
+  defp calculate_duration(duration, "minute"), do: duration
+  defp calculate_duration(duration, "hour"), do: duration * 60
+
+  defp calculate_duration(duration, "day"), do: duration * 24 * 60
 end

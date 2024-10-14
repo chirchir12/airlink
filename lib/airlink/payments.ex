@@ -35,13 +35,12 @@ defmodule Airlink.Payments do
 
   def update_payments(txn_params) do
     with {:ok, sub} <- update_subscription_status(txn_params),
-      {:ok, customer} <- update_customer_status(txn_params) do
-        maybe_publish_to_radius(sub, customer, txn_params)
+         {:ok, customer} <- update_customer_status(txn_params) do
+      maybe_publish_to_radius(sub, customer, txn_params)
     end
-
   end
 
-  defp maybe_publish_to_radius(%Subscription{status: "complete"}, %Customer{} = cust, txn_params ) do
+  defp maybe_publish_to_radius(%Subscription{status: "complete"}, %Customer{} = cust, txn_params) do
     with {:ok, plan} <- Plans.get_plan_uuid(txn_params.plan_id) do
       data = %{
         username: cust.username,
@@ -49,12 +48,13 @@ defmodule Airlink.Payments do
         customer: cust.uuid,
         service: "hotspot",
         duration_mins: Plans.calculate_duration_mins(plan),
-        plan: txn_params.plan_id,
+        plan: txn_params.plan_id
       }
+
       config = get_config(:radius)
       queue_name = config.renew_subscription_queue
       Logger.info("Punlishing to radius: Queue name -  #{inspect(queue_name)}")
-      {:ok,:ok } = RmqPulbisher.publish(data, queue_name)
+      {:ok, :ok} = RmqPulbisher.publish(data, queue_name)
       :ok
     end
   end
@@ -70,7 +70,8 @@ defmodule Airlink.Payments do
     end
   end
 
-  defp update_customer_status(%{status: status} = txn_params) when status in ["stale", "failed"] do
+  defp update_customer_status(%{status: status} = txn_params)
+       when status in ["stale", "failed"] do
     with {:ok, customer} <- Customers.get_customer_by_uuid(txn_params.customer_id) do
       params = %{status: "inactive"}
       Customers.update_customer(customer, params)
@@ -84,7 +85,8 @@ defmodule Airlink.Payments do
     end
   end
 
-  defp update_subscription_status(%{status: status} = txn_params) when status in ["failed", "stale"] do
+  defp update_subscription_status(%{status: status} = txn_params)
+       when status in ["failed", "stale"] do
     with {:ok, sub} <- Subscriptions.get_subscription_by_uuid(txn_params.ref_id) do
       params = %{status: "completed"}
       Subscriptions.update_subscription(sub, params)

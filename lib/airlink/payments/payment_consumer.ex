@@ -37,6 +37,7 @@ defmodule Airlink.Payments.PaymentConsumer do
     Logger.error(
       "Rejecting message due to consumer task error: #{inspect(reason: reason, msg_attributes: attributes, msg_payload: payload)}"
     )
+
     GenRMQ.Consumer.reject(message, false)
   end
 

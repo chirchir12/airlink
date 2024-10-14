@@ -9,6 +9,7 @@ defmodule Airlink.RmqPulbisher do
   @impl true
   def init() do
     config = get_options()
+
     [
       exchange: config[:exchange],
       uri: config[:url],
@@ -29,9 +30,8 @@ defmodule Airlink.RmqPulbisher do
     |> publish_data(queue)
   end
 
-
-
-  defp publish_data(encoded_data, queue) when is_binary(encoded_data) and byte_size(encoded_data) > 0 do
+  defp publish_data(encoded_data, queue)
+       when is_binary(encoded_data) and byte_size(encoded_data) > 0 do
     case GenRMQ.Publisher.publish(__MODULE__, encoded_data, queue) do
       :ok ->
         {:ok, :ok}
