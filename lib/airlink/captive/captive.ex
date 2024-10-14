@@ -1,6 +1,7 @@
 defmodule Airlink.Captive.Captive do
   use Ecto.Schema
   import Ecto.Changeset
+
   @permitted_field [
     :mac,
     :ip,

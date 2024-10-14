@@ -11,13 +11,12 @@ defmodule AirlinkWeb.CaptiveController do
 
   def create(conn, params) do
     with {:ok, {params, _company, _router, _hotspot}} <- validate(conn, params),
-         {:ok, %Customer{} = customer} <-
+         {:ok, %Customer{uuid: uuid} = customer} <-
            Customers.get_or_create_customer(params.mac, params.company_id),
-           {:ok, _data} <- Captive.create_entry(customer, params),
+         {:ok, _data} <- Captive.create_entry(customer, params),
          {:ok, :resubscribe} <- handle_subscription_check(conn, customer) do
-
-          #todo get correct url
-      url = "url=new=true"
+      config = get_config()
+      url = "#{config.base_url}/#{config.login_uri}?customer_id=#{uuid}isp=#{params.company_id}"
       redirect(conn, external: url)
     end
   end
@@ -72,7 +71,7 @@ defmodule AirlinkWeb.CaptiveController do
   defp handle_subs_status(conn, customer, sub) do
     case Subscriptions.check_status(sub) do
       {:expired, _sub} -> {:ok, :resubscribe}
-      {:not_expired, _sub} ->login(conn, customer)
+      {:not_expired, _sub} -> login(conn, customer)
     end
   end
 
@@ -94,5 +93,4 @@ defmodule AirlinkWeb.CaptiveController do
     |> Application.get_env(:captive)
     |> Helpers.kw_to_map()
   end
-
 end

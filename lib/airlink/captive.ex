@@ -21,10 +21,11 @@ defmodule Airlink.Captive do
       ip: Map.get(params, "ip") || nil,
       company_id: Map.get(params, "company_id") || nil,
       link_login_only: Map.get(params, "link-login-only") || nil,
-      link_orig: Map.get(params, "link-orig" ) || nil,
+      link_orig: Map.get(params, "link-orig") || nil,
       hotspot_id: Map.get(params, "server-name") || nil,
       router_id: Map.get(params, "identity") || nil
     }
+
     %CaptiveSchema{}
     |> CaptiveSchema.changeset(mapped_params)
     |> case do
