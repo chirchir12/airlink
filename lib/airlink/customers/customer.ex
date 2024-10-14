@@ -30,7 +30,7 @@ defmodule Airlink.Customers.Customer do
     field :email, :string
     field :phone_number, :string
     field :password_hash, :string
-    field :customer_id, Ecto.UUID
+    field :uuid, Ecto.UUID
 
     timestamps(type: :utc_datetime)
   end
@@ -41,7 +41,7 @@ defmodule Airlink.Customers.Customer do
     |> cast(attrs, @permitted_fields)
     |> validate_required(@required_fields)
     |> unique_constraint([:company_id, :username])
-    |> maybe_put_uuid(:customer_id)
+    |> maybe_put_uuid(:uuid)
     |> validate_status()
     |> maybe_generate_password_hash()
   end

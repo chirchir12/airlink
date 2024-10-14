@@ -3,7 +3,7 @@ defmodule Airlink.Repo.Migrations.CreateCustomers do
 
   def change do
     create table(:customers) do
-      add :customer_id, :uuid, null: false
+      add :uuid, :uuid, null: false
       add :username, :string, null: false
       add :password_hash, :string
       add :status, :string, null: false
@@ -19,6 +19,6 @@ defmodule Airlink.Repo.Migrations.CreateCustomers do
     create unique_index(:customers, [:company_id, :username])
     create index(:customers, [:company_id])
     create index(:customers, :username)
-    create index(:customers, :customer_id)
+    create index(:customers, :uuid)
   end
 end
