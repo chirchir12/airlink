@@ -4,6 +4,7 @@ defmodule AirlinkWeb.PaymentController do
   alias Airlink.Payments
   alias Airlink.Plans
   alias Airlink.Captive
+  action_fallback AirlinkWeb.FallbackController
 
   def create(conn, %{"params" => params}) do
     with {:ok, params} <- Payments.validate(params),

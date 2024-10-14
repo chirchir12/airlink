@@ -8,6 +8,7 @@ defmodule AirlinkWeb.CaptiveController do
   alias Airlink.Customers.Customer
   alias Airlink.Hotspots
   alias Airlink.Helpers
+  action_fallback AirlinkWeb.FallbackController
 
   def create(conn, params) do
     with {:ok, {params, _company, _router, _hotspot}} <- validate(conn, params),
