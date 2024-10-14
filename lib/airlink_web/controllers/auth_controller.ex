@@ -11,7 +11,8 @@ defmodule AirlinkWeb.AuthController do
          {:not_expired, _sub} <- Subscriptions.check_status(sub),
          {:ok, customer} <- Customers.get_customer_by_id(customer_id),
          {:ok, captive_entry} <- Captive.get_entry(customer_id) do
-          _ = Captive.delete_entry(customer_id)
+      _ = Captive.delete_entry(customer_id)
+
       conn
       |> render(:auth, data: {customer, captive_entry})
     end
