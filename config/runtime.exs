@@ -114,4 +114,13 @@ if config_env() == :prod do
   #     config :swoosh, :api_client, Swoosh.ApiClient.Hackney
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
+
+  # captive
+  config :airlink, :captive,
+  base_url: System.get_env("CAPTIVE_BASE_URL") || raise("CAPTIVE_BASE_URL is not set"),
+  login_uri: System.get_env("CAPTIVE_LOGIN_URI") || raise("CAPTIVE_LOGIN_URI is not set"),
+  validation_error: System.get_env("CAPTIVE_ERROR_VALIDATION") || raise("CAPTIVE_ERROR_VALIDATION is not set"),
+  company_not_found: System.get_env("CAPTIVE_ERROR_ISP") || raise("CAPTIVE_ERROR_ISP is not set"),
+  hotspot_not_found: System.get_env("CAPTIVE_ERROR_HOTSPOT") || raise("CAPTIVE_ERROR_HOTSPOT is not set"),
+  router_not_found: System.get_env("CAPTIVE_ERROR_ROUTER_NOT_FOUND") || raise("CAPTIVE_ERROR_ROUTER_NOT_FOUND is not set")
 end

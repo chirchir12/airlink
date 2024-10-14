@@ -1,21 +1,37 @@
 defmodule Airlink.Captive.Captive do
   use Ecto.Schema
   import Ecto.Changeset
+  @permitted_field [
+    :mac,
+    :ip,
+    :company_id,
+    :link_login_only,
+    :link_orig,
+    :hotspot_id,
+    :router_id
+  ]
+  @required_field [
+    :mac,
+    :company_id,
+    :link_login_only,
+    :hotspot_id,
+    :router_id
+  ]
 
   @primary_key false
   embedded_schema do
-    field :routerid, Ecto.UUID
     field :mac, :string
-    field :company_id, Ecto.UUID
     field :ip, :string
+    field :company_id, Ecto.UUID
+    field :link_login_only, :string
     field :link_orig, :string
-    field :server_name, Ecto.UUID
+    field :hotspot_id, Ecto.UUID
+    field :routerid, Ecto.UUID
   end
 
   def changeset(captive, attrs) do
     captive
-    |> cast(attrs, [:routerid, :mac, :company_id, :ip, :link_orig, :server_name])
-    |> validate_required([:routerid, :mac, :company_id, :ip, :link_orig, :server_name])
-    |> validate_format(:ip, ~r/^(\d{1,3}\.){3}\d{1,3}$/)
+    |> cast(attrs, @permitted_field)
+    |> validate_required(@required_field)
   end
 end
