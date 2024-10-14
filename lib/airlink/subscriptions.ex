@@ -61,6 +61,13 @@ defmodule Airlink.Subscriptions do
     end
   end
 
+  def check_status(%Subscription{expires_at: expire_at} = sub) do
+    case is_expired(expire_at) do
+      false -> {:not_expired, sub}
+      true -> {:expired, sub}
+    end
+  end
+
   @doc """
   Creates a subscription.
 
@@ -124,5 +131,11 @@ defmodule Airlink.Subscriptions do
   """
   def change_subscription(%Subscription{} = subscription, attrs \\ %{}) do
     Subscription.changeset(subscription, attrs)
+  end
+
+  # private
+  defp is_expired(expire_time) do
+    current_time = DateTime.utc_now()
+    DateTime.compare(expire_time, current_time) == :lt
   end
 end
