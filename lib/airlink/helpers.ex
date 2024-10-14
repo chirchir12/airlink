@@ -26,4 +26,10 @@ defmodule Airlink.Helpers do
   end
 
   def kw_to_map(data), do: data
+
+  def get_config(app) do
+    :airlink
+    |> Application.get_env(app)
+    |> kw_to_map()
+  end
 end

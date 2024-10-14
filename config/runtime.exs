@@ -129,4 +129,10 @@ if config_env() == :prod do
     router_not_found:
       System.get_env("CAPTIVE_ERROR_ROUTER_NOT_FOUND") ||
         raise("CAPTIVE_ERROR_ROUTER_NOT_FOUND is not set")
+
+  # Diralink
+  config :airlink, :diralink,
+    base_url: System.get_env("DIRALINK_BASE_URL") || raise("DIRALINK_BASE_URL is not set"),
+    username: System.get_env("DIRALINK_USERNAME") || raise("DIRALINK_USERNAME is not set"),
+    username: System.get_env("DIRALINK_PASSWORD") || raise("DIRALINK_PASSWORD is not set")
 end
