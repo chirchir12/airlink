@@ -135,4 +135,27 @@ if config_env() == :prod do
     base_url: System.get_env("DIRALINK_BASE_URL") || raise("DIRALINK_BASE_URL is not set"),
     username: System.get_env("DIRALINK_USERNAME") || raise("DIRALINK_USERNAME is not set"),
     username: System.get_env("DIRALINK_PASSWORD") || raise("DIRALINK_PASSWORD is not set")
+
+  # MAIN EXCHANGE
+  exchange_name =
+    System.get_env("RMQ_DIRALINK_EXCHANGE") || raise("RMQ_DIRALINK_EXCHANGE is missing")
+
+  connection = System.get_env("RMQ_URL") || raise("RMQ_URL environment variable is missing")
+
+  # rmq publisher
+  config :airlink, Airlink.RmqPublisher,
+    url: connection,
+    exchange: exchange_name
+
+  # payment consumer
+  config :airlink, Airlink.Payments.PaymentConsumer,
+    connection: connection,
+    exchange: exchange_name,
+    queue:
+      System.get_env("HOTSPOT_PAYMENT_QUEUE") ||
+        raise("HOTSPOT_PAYMENT_QUEUE environment variable is missing"),
+    prefetch_count: 10,
+    routing_key:
+      System.get_env("HOTSPOT_PAYMENT_QUEUE") ||
+        raise("HOTSPOT_PAYMENT_QUEUE environment variable is missing")
 end
