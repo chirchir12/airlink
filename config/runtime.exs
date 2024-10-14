@@ -158,4 +158,22 @@ if config_env() == :prod do
     routing_key:
       System.get_env("HOTSPOT_PAYMENT_QUEUE") ||
         raise("HOTSPOT_PAYMENT_QUEUE environment variable is missing")
+
+  # subscription consumer
+  config :airlink, Airlink.Subscriptions.SubscriptionConsumer,
+    connection: connection,
+    exchange: exchange_name,
+    queue:
+      System.get_env("UPDATE_SUBSCRIPTION_EXPIRY_QUEUE") ||
+        raise("UPDATE_SUBSCRIPTION_EXPIRY_QUEUE environment variable is missing"),
+    prefetch_count: 10,
+    routing_key:
+      System.get_env("UPDATE_SUBSCRIPTION_EXPIRY_QUEUE") ||
+        raise("UPDATE_SUBSCRIPTION_EXPIRY_QUEUE environment variable is missing")
+
+  # radius config
+  config :airlink, :radius,
+    renew_subscription_queue:
+      System.get_env("RENEW_HOTSPOT_SUBSCRIPTION_QUEUE") ||
+        raise("RENEW_HOTSPOT_SUBSCRIPTION_QUEUE environment variable is missing")
 end

@@ -12,6 +12,7 @@ defmodule Airlink.Application do
       Airlink.Repo,
       Airlink.Companies.CompanyServer,
       Airlink.Routers.RouterServer,
+      Airlink.Subscriptions.SubscriptionConsumer,
       Airlink.Payments.PaymentConsumer,
       Airlink.RmqPulbisher,
       {DNSCluster, query: Application.get_env(:airlink, :dns_cluster_query) || :ignore},
