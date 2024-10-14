@@ -9,16 +9,16 @@ defmodule Airlink.Captive.CaptiveServer do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
-  def add_captive_entry(key, value) do
-    GenServer.call(__MODULE__, {:add_captive_entry, key, value})
+  def add_captive_entry(customer_uuid, data) do
+    GenServer.call(__MODULE__, {:add_captive_entry, customer_uuid, data})
   end
 
-  def delete_captive_entry(key) do
-    GenServer.call(__MODULE__, {:delete_captive_entry, key})
+  def delete_captive_entry(customer_uuid) do
+    GenServer.call(__MODULE__, {:delete_captive_entry, customer_uuid})
   end
 
-  def get_captive_entry(key) do
-    GenServer.call(__MODULE__, {:get_captive_entry, key})
+  def get_captive_entry(customer_uuid) do
+    GenServer.call(__MODULE__, {:get_captive_entry, customer_uuid})
   end
 
   # Server Callbacks
@@ -30,23 +30,23 @@ defmodule Airlink.Captive.CaptiveServer do
   end
 
   @impl true
-  def handle_call({:add_captive, key, entry}, _from, table) do
-    result = :ets.insert(table, {key, entry})
+  def handle_call({:add_captive, customer_uuid, data}, _from, table) do
+    result = :ets.insert(table, {customer_uuid, data})
     {:reply, result, table}
   end
 
   @impl true
-  def handle_call({:delete_captive_entry, key}, _from, table) do
-    result = :ets.delete(table, key)
+  def handle_call({:delete_captive_entry, customer_uuid}, _from, table) do
+    result = :ets.delete(table, customer_uuid)
     {:reply, result, table}
   end
 
   @impl true
-  def handle_call({:get_captive_entry, key}, _from, table) do
+  def handle_call({:get_captive_entry, customer_uuid}, _from, table) do
     result =
-      case :ets.lookup(table, key) do
-        [{^key, entry}] -> {:ok, entry}
-        [] -> {:error, :not_found}
+      case :ets.lookup(table, customer_uuid) do
+        [{^customer_uuid, data}] -> {:ok, data}
+        [] -> {:error, :customer_not_found}
       end
 
     {:reply, result, table}
