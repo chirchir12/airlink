@@ -14,7 +14,7 @@ defmodule AirlinkWeb.CustomerJSON do
   def data(%Customer{} = customer) do
     %{
       id: customer.id,
-      customer_id: customer.customer_id,
+      customer_id: customer.uuid,
       company_id: customer.company_id,
       username: customer.username,
       phone: customer.phone_number,
