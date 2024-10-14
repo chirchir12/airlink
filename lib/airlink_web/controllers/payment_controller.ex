@@ -22,6 +22,5 @@ defmodule AirlinkWeb.PaymentController do
       conn
       |> render(:show, subscription: subscription)
     end
-
   end
 end

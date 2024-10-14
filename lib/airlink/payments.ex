@@ -29,7 +29,6 @@ defmodule Airlink.Payments do
     end
   end
 
-
   defp subscription_params(%Plan{id: id, price: price}, params) do
     %{
       status: "pending",

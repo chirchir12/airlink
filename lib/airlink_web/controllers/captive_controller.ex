@@ -61,18 +61,18 @@ defmodule AirlinkWeb.CaptiveController do
 
   defp handle_subscription_check(
          conn,
-         %Customer{id: customer_id, company_id: company_id} = customer
+         %Customer{id: customer_id, company_id: company_id}
        ) do
     case Subscriptions.get_subscription(company_id, customer_id) do
       {:error, _error} -> {:ok, :resubscribe}
-      {:ok, subs} -> handle_subs_status(conn, customer, subs)
+      {:ok, subs} -> handle_subs_status(conn, subs)
     end
   end
 
-  defp handle_subs_status(conn, customer, sub) do
+  defp handle_subs_status(conn, sub) do
     case Subscriptions.check_status(sub) do
       {:expired, _sub} -> {:ok, :resubscribe}
-      {:not_expired, _sub} -> login(conn, customer)
+      {:not_expired, _sub} -> login(conn, sub)
     end
   end
 
@@ -82,10 +82,10 @@ defmodule AirlinkWeb.CaptiveController do
     redirect(conn, external: url)
   end
 
-  defp login(conn, %Customer{uuid: uuid}) do
+  defp login(conn, ref_id) do
     # User is still active
     config = get_config()
-    url = "#{config.base_url}/#{config.login_uri}?customer_id=#{uuid}"
+    url = "#{config.base_url}/#{config.login_uri}/#{ref_id}"
     redirect(conn, external: url)
   end
 
