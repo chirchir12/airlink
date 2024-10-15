@@ -6,6 +6,10 @@ defmodule Airlink.Subscriptions do
   import Ecto.Query, warn: false
   alias Airlink.Repo
   alias Airlink.Subscriptions.Subscription
+  alias Airlink.Plans
+  alias Airlink.Plans.Plan
+  alias Airlink.Customers
+  alias Airlink.Customers.Customer
 
   @doc """
   Returns the list of subscriptions.
@@ -52,6 +56,20 @@ defmodule Airlink.Subscriptions do
     query =
       from s in Subscription,
         where: s.company_id == ^company_id and s.customer_id == ^customer_id,
+        order_by: [desc: s.id],
+        limit: 1
+
+    case Repo.one(query) do
+      nil -> {:error, :subscription_not_found}
+      subscription -> {:ok, subscription}
+    end
+  end
+
+  def get_subscription(company_id, customer_id, plan_id) do
+    query =
+      from s in Subscription,
+        where:
+          s.company_id == ^company_id and s.customer_id == ^customer_id and s.plan_id == ^plan_id,
         order_by: [desc: s.id],
         limit: 1
 
@@ -131,6 +149,16 @@ defmodule Airlink.Subscriptions do
   """
   def change_subscription(%Subscription{} = subscription, attrs \\ %{}) do
     Subscription.changeset(subscription, attrs)
+  end
+
+  def update_expiry(params) do
+    with {:ok, %Plan{id: plan_id}} <- Plans.get_plan_uuid(params.plan_id),
+         {:ok, %Customer{company_id: company_id, id: customer_id}} <-
+           Customers.get_customer_by_uuid(params.customer_id),
+         {:ok, subscription} <- get_subscription(company_id, customer_id, plan_id) do
+      data = %{expires_at: params.expires_at}
+      update_subscription(subscription, data)
+    end
   end
 
   # private

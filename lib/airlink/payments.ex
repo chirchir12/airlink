@@ -53,7 +53,7 @@ defmodule Airlink.Payments do
 
       config = get_config(:radius)
       queue_name = config.renew_subscription_queue
-      Logger.info("Punlishing to radius: Queue name -  #{inspect(queue_name)}")
+      Logger.info("Publishing to radius: Queue name -  #{inspect(queue_name)}")
       {:ok, :ok} = RmqPulbisher.publish(data, queue_name)
       :ok
     end
