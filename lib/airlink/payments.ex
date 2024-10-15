@@ -51,10 +51,8 @@ defmodule Airlink.Payments do
         plan: txn_params.plan_id
       }
 
-      config = get_config(:radius)
-      queue_name = config.renew_subscription_queue
-      Logger.info("Publishing to radius: Queue name -  #{inspect(queue_name)}")
-      {:ok, :ok} = RmqPulbisher.publish(data, queue_name)
+       queue = System.get_env("RENEW_HOTSPOT_SUBSCRIPTION_QUEUE") || "renew_hotspot_subscription_queue"
+      {:ok, :ok} = RmqPulbisher.publish(data, queue)
       :ok
     end
   end

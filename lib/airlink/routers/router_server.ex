@@ -1,5 +1,9 @@
 defmodule Airlink.Routers.RouterServer do
   use GenServer
+  import Airlink.Helpers
+  alias Airlink.HttpClient
+
+  require Logger
 
   @table_name :routers_cache
 
@@ -30,7 +34,7 @@ defmodule Airlink.Routers.RouterServer do
   @impl true
   def init(_args) do
     table = :ets.new(@table_name, [:set, :protected, :named_table])
-    {:ok, table, {:continiue, :hydrate_cache}}
+    {:ok, table, {:continue, :hydrate_cache}}
   end
 
   @impl true
@@ -61,4 +65,59 @@ defmodule Airlink.Routers.RouterServer do
 
     {:reply, result, table}
   end
+
+  @impl true
+  def handle_continue(:hydrate_cache, state) do
+    _ = get_routers()
+    {:noreply, state}
+  end
+
+
+  # private
+  defp get_routers() do
+    with {:ok, :ok} <- handle_request() do
+      Logger.info("Routers Hydration Completed")
+    else
+      _ ->
+        Logger.error("Routers Hydration Failed")
+    end
+  end
+
+  defp handle_request() do
+    config = get_config(:radius)
+    url = "#{config.base_url}/v1/system/nas"
+    headers = basic_auth(config)
+
+    case HttpClient.get(url, headers) do
+      {:ok, response} -> handle_response(response)
+      {:error, error} -> handle_error(error)
+    end
+  end
+
+  defp handle_response(%HTTPoison.Response{status_code: 200, body: body}) do
+    body.data
+    |> atomize_map_keys()
+    |> hydrate_cache()
+  end
+
+  defp handle_error(%HTTPoison.Error{id: nil, reason: reason}) do
+    {:error, reason}
+  end
+
+  defp hydrate_cache(routers) when is_list(routers) and length(routers) > 0 do
+    routers
+    |> Enum.each(&save_router/1)
+
+    {:ok, :ok}
+  end
+
+  defp hydrate_cache(routers) do
+    Logger.warning("Got zero routers: #{inspect(routers)}")
+    {:ok, :ok}
+  end
+
+  defp save_router(%{uuid: router_id} = router) do
+    add_router(router_id, router)
+  end
+
 end

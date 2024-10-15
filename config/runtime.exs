@@ -138,6 +138,12 @@ if config_env() == :prod do
     username: System.get_env("DIRALINK_API_KEY") || raise("DIRALINK_API_KEY is not set"),
     password: System.get_env("DIRALINK_API_SECRET") || raise("DIRALINK_API_SECRET is not set")
 
+  # Radius
+  config :airlink, :radius,
+  base_url: System.get_env("RADIUS_BASE_URL") || raise("RADIUS_BASE_URL is not set"),
+  username: System.get_env("RADIUS_API_KEY") || raise("RADIUS_API_KEY is not set"),
+  password: System.get_env("RADIUS_API_SECRET") || raise("RADIUS_API_SECRET is not set")
+
   # MAIN EXCHANGE
   exchange_name =
     System.get_env("RMQ_DIRALINK_EXCHANGE") || raise("RMQ_DIRALINK_EXCHANGE is missing")
@@ -197,9 +203,4 @@ if config_env() == :prod do
       System.get_env("ROUTER_CHANGES_QUEUE") ||
         raise("ROUTER_CHANGES_QUEUE environment variable is missing")
 
-  # radius config
-  config :airlink, :radius,
-    renew_subscription_queue:
-      System.get_env("RENEW_HOTSPOT_SUBSCRIPTION_QUEUE") ||
-        raise("RENEW_HOTSPOT_SUBSCRIPTION_QUEUE environment variable is missing")
 end

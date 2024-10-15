@@ -77,7 +77,7 @@ defmodule Airlink.Companies.CompanyServer do
       Logger.info("Company Hydration Completed")
     else
       _ ->
-        Logger.info("Company Hydration Failed")
+        Logger.error("Company Hydration Failed")
     end
   end
 
