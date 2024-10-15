@@ -69,7 +69,6 @@ defmodule Airlink.Companies.CompanyServer do
   def handle_continue(:hydrate_cache, state) do
     _ = get_companies()
     {:noreply, state}
-
   end
 
   # private
@@ -79,7 +78,6 @@ defmodule Airlink.Companies.CompanyServer do
     else
       _ ->
         Logger.info("Company Hydration Failed")
-
     end
   end
 
@@ -98,7 +96,6 @@ defmodule Airlink.Companies.CompanyServer do
     body.data
     |> atomize_map_keys()
     |> hydrate_cache()
-
   end
 
   defp handle_error(%HTTPoison.Error{id: nil, reason: reason}) do
@@ -109,12 +106,12 @@ defmodule Airlink.Companies.CompanyServer do
     companies
     |> Enum.each(&save_company/1)
 
-    { :ok, :ok}
+    {:ok, :ok}
   end
 
   defp hydrate_cache(companies) do
     Logger.warning("Got zero companies: #{inspect(companies)}")
-   { :ok, :ok}
+    {:ok, :ok}
   end
 
   defp save_company(%{company_oid: company_id} = company) do
