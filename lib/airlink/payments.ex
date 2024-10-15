@@ -147,9 +147,4 @@ defmodule Airlink.Payments do
       service: "hotspot"
     }
   end
-
-  defp basic_auth(config) do
-    credentials = Base.encode64("#{config.username}:#{config.password}")
-    [{"Authorization", "Basic #{credentials}"}]
-  end
 end

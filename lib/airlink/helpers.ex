@@ -33,6 +33,11 @@ defmodule Airlink.Helpers do
     |> kw_to_map()
   end
 
+  def basic_auth(config) do
+    credentials = Base.encode64("#{config.username}:#{config.password}")
+    [{"Authorization", "Basic #{credentials}"}]
+  end
+
   def atomize_map_keys(map) when is_map(map) do
     map
     |> Enum.map(fn {k, v} -> {atomize_key(k), atomize_value(v)} end)
