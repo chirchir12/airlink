@@ -7,6 +7,7 @@ defmodule Airlink.Plans do
   alias Airlink.Repo
 
   alias Airlink.Plans.Plan
+  alias Airlink.RmqPulbisher
 
   @doc """
   Returns the list of plans.
@@ -65,6 +66,7 @@ defmodule Airlink.Plans do
     %Plan{}
     |> Plan.changeset(attrs)
     |> Repo.insert()
+    |> handle_plan_response()
   end
 
   @doc """
@@ -83,6 +85,7 @@ defmodule Airlink.Plans do
     plan
     |> Plan.changeset(attrs)
     |> Repo.update()
+    |> handle_plan_response()
   end
 
   @doc """
@@ -99,6 +102,7 @@ defmodule Airlink.Plans do
   """
   def delete_plan(%Plan{} = plan) do
     Repo.delete(plan)
+    |> handle_plan_response()
   end
 
   @doc """
@@ -124,4 +128,27 @@ defmodule Airlink.Plans do
   defp calculate_duration(duration, "hour"), do: duration * 60
 
   defp calculate_duration(duration, "day"), do: duration * 24 * 60
+
+  defp handle_plan_response({:ok, plan}) do
+    :ok = maybe_publish_to_rmq(plan)
+    {:ok, plan}
+  end
+
+  defp handle_plan_response({:error, error}) do
+    {:error, error}
+  end
+
+  defp maybe_publish_to_rmq(%Plan{} = plan) do
+    queue = System.get_env("HOTSPOT_PLANS_QUEUE") || "hotspot_plans_queue"
+
+    data = %{
+      plan: plan.uuid,
+      upload: plan.upload_speed,
+      donwload: plan.download_speed,
+      duration: calculate_duration_mins(plan) * 60
+    }
+
+    {:ok, _} = RmqPulbisher.publish(data, queue)
+    :ok
+  end
 end
