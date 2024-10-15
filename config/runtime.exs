@@ -173,6 +173,18 @@ if config_env() == :prod do
       System.get_env("UPDATE_SUBSCRIPTION_EXPIRY_QUEUE") ||
         raise("UPDATE_SUBSCRIPTION_EXPIRY_QUEUE environment variable is missing")
 
+  # company consumer
+  config :airlink, Airlink.Companies.CompanyConsumer,
+  connection: connection,
+  exchange: exchange_name,
+  queue:
+    System.get_env("COMPANY_CHANGES_QUEUE") ||
+      raise("COMPANY_CHANGES_QUEUE environment variable is missing"),
+  prefetch_count: 10,
+  routing_key:
+    System.get_env("COMPANY_CHANGES_QUEUE") ||
+      raise("COMPANY_CHANGES_QUEUE environment variable is missing")
+
   # radius config
   config :airlink, :radius,
     renew_subscription_queue:
