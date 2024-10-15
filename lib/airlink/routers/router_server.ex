@@ -30,35 +30,35 @@ defmodule Airlink.Routers.RouterServer do
   @impl true
   def init(_args) do
     table = :ets.new(@table_name, [:set, :protected, :named_table])
-    {:ok, %{table: table}}
+    {:ok, table, {:continiue, :hydrate_cache}}
   end
 
   @impl true
-  def handle_call({:add_router, uuid, router_info}, _from, state) do
-    result = :ets.insert(@table_name, {uuid, router_info})
-    {:reply, result, state}
+  def handle_call({:add_router, uuid, router_info}, _from, table) do
+    result = :ets.insert(table, {uuid, router_info})
+    {:reply, result, table}
   end
 
   @impl true
-  def handle_call({:delete_router, uuid}, _from, state) do
-    result = :ets.delete(@table_name, uuid)
-    {:reply, result, state}
+  def handle_call({:delete_router, uuid}, _from, table) do
+    result = :ets.delete(table, uuid)
+    {:reply, result, table}
   end
 
   @impl true
-  def handle_call({:update_router, uuid, router_info}, _from, state) do
-    result = :ets.insert(@table_name, {uuid, router_info})
-    {:reply, result, state}
+  def handle_call({:update_router, uuid, router_info}, _from, table) do
+    result = :ets.insert(table, {uuid, router_info})
+    {:reply, result, table}
   end
 
   @impl true
-  def handle_call({:get_router, uuid}, _from, state) do
+  def handle_call({:get_router, uuid}, _from, table) do
     result =
-      case :ets.lookup(@table_name, uuid) do
+      case :ets.lookup(table, uuid) do
         [{^uuid, router_info}] -> {:ok, router_info}
         [] -> {:error, :router_not_found}
       end
 
-    {:reply, result, state}
+    {:reply, result, table}
   end
 end
