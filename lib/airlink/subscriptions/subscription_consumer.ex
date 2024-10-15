@@ -30,7 +30,7 @@ defmodule Airlink.Subscriptions.SubscriptionConsumer do
     Logger.info("Received message: #{inspect(message)}")
     payload = Jason.decode!(payload) |> atomize_map_keys()
 
-    with {:ok, _updated_sub} <- Subscriptions.update_expiry(payload) do
+    with {:ok, _updated_sub} <- Subscriptions.handle_subscription_changes(payload) do
       ack(message)
     end
   end

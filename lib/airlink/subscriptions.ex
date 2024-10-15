@@ -151,14 +151,8 @@ defmodule Airlink.Subscriptions do
     Subscription.changeset(subscription, attrs)
   end
 
-  def update_expiry(params) do
-    with {:ok, %Plan{id: plan_id}} <- Plans.get_plan_uuid(params.plan_id),
-         {:ok, %Customer{company_id: company_id, id: customer_id}} <-
-           Customers.get_customer_by_uuid(params.customer_id),
-         {:ok, subscription} <- get_subscription(company_id, customer_id, plan_id) do
-      data = %{expires_at: params.expires_at}
-      update_subscription(subscription, data)
-    end
+  def handle_subscription_changes(params) do
+    handle_change(params)
   end
 
   # private
@@ -166,4 +160,31 @@ defmodule Airlink.Subscriptions do
     current_time = DateTime.utc_now()
     DateTime.compare(expire_time, current_time) == :lt
   end
+
+  defp handle_change(params) when is_list(params) do
+    params
+    |> Enum.each(&handle_change/1)
+    :ok
+  end
+
+  defp handle_change(%{action: "session_expired", customer_id: uuid}) do
+    with {:ok, customer} <- Customers.get_customer_by_uuid(uuid) do
+      data = %{status: "inactive"}
+      Customers.update_customer(customer, data)
+    end
+
+  end
+
+  defp handle_change(%{action: "session_activated"} = params) do
+    with {:ok, %Plan{id: plan_id}} <- Plans.get_plan_uuid(params.plan_id),
+         {:ok, %Customer{company_id: company_id, id: customer_id}} <-
+           Customers.get_customer_by_uuid(params.customer_id),
+         {:ok, subscription} <- get_subscription(company_id, customer_id, plan_id) do
+      data = %{expires_at: params.expires_at}
+      update_subscription(subscription, data)
+      :ok
+    end
+  end
+
+
 end
