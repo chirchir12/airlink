@@ -1,8 +1,8 @@
-defmodule Airlink.Companies.CompanyConsumer do
+defmodule Airlink.Routers.RouterConsumer do
   @behaviour GenRMQ.Consumer
   alias GenRMQ.Message
   require Logger
-  alias Airlink.Companies
+  alias Airlink.Routers
   import Airlink.Helpers
 
   def start_link() do
@@ -30,7 +30,7 @@ defmodule Airlink.Companies.CompanyConsumer do
     Logger.info("Received message: #{inspect(message)}")
     payload = Jason.decode!(payload) |> atomize_map_keys()
 
-    with :ok <- Companies.handle_company_changes(payload) do
+    with :ok <- Routers.handle_router_changes(payload) do
       ack(message)
     end
   end
@@ -47,7 +47,7 @@ defmodule Airlink.Companies.CompanyConsumer do
   @impl GenRMQ.Consumer
   def consumer_tag() do
     {:ok, hostname} = :inet.gethostname()
-    "#{hostname}-company-consumer"
+    "#{hostname}-router-consumer"
   end
 
   defp get_options() do

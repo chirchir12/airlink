@@ -60,17 +60,17 @@ defmodule Airlink.Companies do
     handle_change(params)
   end
 
-  defp handle_change(%{action: "create", company_id: company_id} = params ) do
+  defp handle_change(%{action: "create", company_id: company_id} = params) do
     {:ok, _} = add_company(company_id, params)
     :ok
   end
 
-  defp handle_change(%{action: "delete", company_id: company_id} ) do
+  defp handle_change(%{action: "delete", company_id: company_id}) do
     {:ok, _} = delete_company(company_id)
     :ok
   end
 
-  defp handle_change(%{action: "update", company_id: company_id} = params ) do
+  defp handle_change(%{action: "update", company_id: company_id} = params) do
     {:ok, _} = update_company(company_id, params)
     :ok
   end

@@ -55,4 +55,23 @@ defmodule Airlink.Routers do
   def get_router(uuid) do
     RouterServer.get_router(uuid)
   end
+
+  def handle_router_changes(params) do
+    handle_change(params)
+  end
+
+  defp handle_change(%{action: "create", router_id: router_id} = params) do
+    {:ok, _} = add_router(router_id, params)
+    :ok
+  end
+
+  defp handle_change(%{action: "update", router_id: router_id} = params) do
+    {:ok, _} = update_router(router_id, params)
+    :ok
+  end
+
+  defp handle_change(%{action: "delete", router_id: router_id}) do
+    {:ok, _} = delete_router(router_id)
+    :ok
+  end
 end
