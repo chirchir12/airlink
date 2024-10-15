@@ -79,7 +79,7 @@ defmodule Airlink.Payments do
   end
 
   defp update_subscription_status(%{status: "completed"} = txn_params) do
-    with {:ok, sub} <- Subscriptions.get_subscription_by_uuid(txn_params.ref_id) do
+    with {:ok, sub} <- Subscriptions.get_subscription_by_uuid(txn_params.request_id) do
       params = %{status: "completed"}
       Subscriptions.update_subscription(sub, params)
     end
@@ -87,7 +87,7 @@ defmodule Airlink.Payments do
 
   defp update_subscription_status(%{status: status} = txn_params)
        when status in ["failed", "stale"] do
-    with {:ok, sub} <- Subscriptions.get_subscription_by_uuid(txn_params.ref_id) do
+    with {:ok, sub} <- Subscriptions.get_subscription_by_uuid(txn_params.request_id) do
       params = %{status: "failed"}
       Subscriptions.update_subscription(sub, params)
     end
