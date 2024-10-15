@@ -88,7 +88,7 @@ defmodule Airlink.Payments do
   defp update_subscription_status(%{status: status} = txn_params)
        when status in ["failed", "stale"] do
     with {:ok, sub} <- Subscriptions.get_subscription_by_uuid(txn_params.ref_id) do
-      params = %{status: "completed"}
+      params = %{status: "failed"}
       Subscriptions.update_subscription(sub, params)
     end
   end
@@ -108,19 +108,19 @@ defmodule Airlink.Payments do
 
   defp create_payment(params, %Plan{} = plan, %Subscription{} = subscription) do
     with request <- payment_request(params, plan, subscription),
-         {:ok, response} <- handle_request(request) do
+         {:ok, response} <- handle_request(request, subscription) do
       {:ok, response}
     end
   end
 
-  defp handle_request(request) do
+  defp handle_request(request, subscription) do
     config = get_config(:diralink)
-    url = "#{config.base_url}/payments"
+    url = "#{config.base_url}/v1/system/payments"
     headers = basic_auth(config)
 
     case HttpClient.post(url, request, headers) do
       {:ok, response} -> handle_response(response)
-      {:error, error} -> handle_error(error)
+      {:error, error} -> handle_error(error, subscription)
     end
   end
 
@@ -128,7 +128,9 @@ defmodule Airlink.Payments do
     {:ok, body}
   end
 
-  defp handle_error(%HTTPoison.Error{id: nil, reason: reason}) do
+  defp handle_error(%HTTPoison.Error{id: nil, reason: reason}, subscription) do
+    params = %{status: "failed"}
+    {:ok, _sub} = Subscriptions.update_subscription(subscription, params)
     {:error, reason}
   end
 
@@ -141,7 +143,7 @@ defmodule Airlink.Payments do
       customer_id: params.customer_id,
       transaction_type: "c2b",
       description: "Hotspot Payment",
-      ref_id: sub_uuid,
+      request_id: sub_uuid,
       service: "hotspot"
     }
   end

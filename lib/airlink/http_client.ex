@@ -12,7 +12,7 @@ defmodule Airlink.HttpClient do
 
   @doc false
   def process_request_headers(headers) do
-    [{"Content-Type", "application/json"} | headers]
+    [{"Content-Type", "application/json"}, {"x-app_name", "airlink"} | headers]
   end
 
   @doc false

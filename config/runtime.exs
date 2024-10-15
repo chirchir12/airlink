@@ -120,6 +120,7 @@ if config_env() == :prod do
     base_url: System.get_env("CAPTIVE_BASE_URL") || raise("CAPTIVE_BASE_URL is not set"),
     plans_url: System.get_env("CAPTIVE_PACKAGES_URL") || raise("CAPTIVE_PACKAGES_URL is not set"),
     login_uri: System.get_env("CAPTIVE_LOGIN_URI") || raise("CAPTIVE_LOGIN_URI is not set"),
+    suspended_isp: System.get_env("CAPTIVE_SUSPENDED_ISP") || raise("CAPTIVE_SUSPENDED_ISP is not set"),
     validation_error:
       System.get_env("CAPTIVE_ERROR_VALIDATION") || raise("CAPTIVE_ERROR_VALIDATION is not set"),
     company_not_found:
@@ -133,8 +134,8 @@ if config_env() == :prod do
   # Diralink
   config :airlink, :diralink,
     base_url: System.get_env("DIRALINK_BASE_URL") || raise("DIRALINK_BASE_URL is not set"),
-    username: System.get_env("DIRALINK_USERNAME") || raise("DIRALINK_USERNAME is not set"),
-    username: System.get_env("DIRALINK_PASSWORD") || raise("DIRALINK_PASSWORD is not set")
+    username: System.get_env("DIRALINK_API_KEY") || raise("DIRALINK_API_KEY is not set"),
+    password: System.get_env("DIRALINK_API_SECRET") || raise("DIRALINK_API_SECRET is not set")
 
   # MAIN EXCHANGE
   exchange_name =
@@ -152,12 +153,12 @@ if config_env() == :prod do
     connection: connection,
     exchange: exchange_name,
     queue:
-      System.get_env("HOTSPOT_PAYMENT_QUEUE") ||
-        raise("HOTSPOT_PAYMENT_QUEUE environment variable is missing"),
+      System.get_env("PAYMENT_RESULT_QUEUE") ||
+        raise("PAYMENT_RESULT_QUEUE environment variable is missing"),
     prefetch_count: 10,
     routing_key:
-      System.get_env("HOTSPOT_PAYMENT_QUEUE") ||
-        raise("HOTSPOT_PAYMENT_QUEUE environment variable is missing")
+      System.get_env("PAYMENT_RESULT_QUEUE") ||
+        raise("PAYMENT_RESULT_QUEUE environment variable is missing")
 
   # subscription consumer
   config :airlink, Airlink.Subscriptions.SubscriptionConsumer,

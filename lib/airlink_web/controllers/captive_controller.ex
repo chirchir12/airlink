@@ -33,9 +33,17 @@ defmodule AirlinkWeb.CaptiveController do
 
   defp handle_company_check(conn, company_id) do
     case Companies.get_company(company_id) do
-      {:ok, company} -> {:ok, company}
+      {:ok, company} -> handle_disabled_campanies(conn, company)
       {:error, error} -> handle_redirection(conn, error)
     end
+  end
+
+  defp handle_disabled_campanies(_conn, %{enabled: true} = company) do
+    {:ok, company}
+  end
+
+  defp handle_disabled_campanies(conn, %{enabled: false}) do
+    handle_redirection(conn, :suspended_isp)
   end
 
   defp handle_validation_check(conn, params) do
