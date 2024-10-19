@@ -164,7 +164,7 @@ if config_env() == :prod do
     queue:
       System.get_env("PAYMENT_RESULT_QUEUE") ||
         raise("PAYMENT_RESULT_QUEUE environment variable is missing"),
-    prefetch_count: 10,
+    prefetch_count: "10",
     routing_key:
       System.get_env("PAYMENT_RESULT_QUEUE") ||
         raise("PAYMENT_RESULT_QUEUE environment variable is missing")
@@ -178,12 +178,12 @@ if config_env() == :prod do
       durable: true
     ],
     queue:
-      System.get_env("RMQ_HOTSPOT_SUBSCRIPTION_QUEUE") ||
-        raise("RMQ_HOTSPOT_SUBSCRIPTION_QUEUE environment variable is missing"),
-    prefetch_count: 10,
+      System.get_env("RMQ_SUBSCRIPTION_QUEUE") ||
+        raise("RMQ_SUBSCRIPTION_QUEUE environment variable is missing"),
+    prefetch_count: "10",
     routing_key:
-      System.get_env("RMQ_HOTSPOT_SUBSCRIPTION_QUEUE") ||
-        raise("RMQ_HOTSPOT_SUBSCRIPTION_QUEUE environment variable is missing")
+      System.get_env("RMQ_SUBSCRIPTION_QUEUE") ||
+        raise("RMQ_SUBSCRIPTION_QUEUE environment variable is missing")
 
   # company consumer
   config :airlink, Airlink.Companies.CompanyConsumer,
@@ -196,7 +196,7 @@ if config_env() == :prod do
     queue:
       System.get_env("COMPANY_CHANGES_QUEUE") ||
         raise("COMPANY_CHANGES_QUEUE environment variable is missing"),
-    prefetch_count: 10,
+    prefetch_count: "10",
     routing_key:
       System.get_env("COMPANY_CHANGES_QUEUE") ||
         raise("COMPANY_CHANGES_QUEUE environment variable is missing")
@@ -212,7 +212,7 @@ if config_env() == :prod do
     queue:
       System.get_env("RMQ_ROUTER_QUEUE") ||
         raise("RMQ_ROUTER_QUEUE environment variable is missing"),
-    prefetch_count: 10,
+    prefetch_count: "10",
     routing_key:
       System.get_env("RMQ_ROUTER_QUEUE") ||
         raise("RMQ_ROUTER_QUEUE environment variable is missing")
