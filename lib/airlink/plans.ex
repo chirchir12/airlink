@@ -66,7 +66,7 @@ defmodule Airlink.Plans do
     %Plan{}
     |> Plan.changeset(attrs)
     |> Repo.insert()
-    |> handle_plan_response()
+    |> handle_plan_response("create")
   end
 
   @doc """
@@ -85,7 +85,7 @@ defmodule Airlink.Plans do
     plan
     |> Plan.changeset(attrs)
     |> Repo.update()
-    |> handle_plan_response()
+    |> handle_plan_response("update")
   end
 
   @doc """
@@ -102,7 +102,7 @@ defmodule Airlink.Plans do
   """
   def delete_plan(%Plan{} = plan) do
     Repo.delete(plan)
-    |> handle_plan_response()
+    |> handle_plan_response("delete")
   end
 
   @doc """
@@ -129,19 +129,20 @@ defmodule Airlink.Plans do
 
   defp calculate_duration(duration, "day"), do: duration * 24 * 60
 
-  defp handle_plan_response({:ok, plan}) do
-    :ok = maybe_publish_to_rmq(plan)
+  defp handle_plan_response(action, {:ok, plan}) do
+    :ok = maybe_publish_to_rmq(action, plan)
     {:ok, plan}
   end
 
-  defp handle_plan_response({:error, error}) do
+  defp handle_plan_response(_action, {:error, error}) do
     {:error, error}
   end
 
-  defp maybe_publish_to_rmq(%Plan{} = plan) do
+  defp maybe_publish_to_rmq(action, %Plan{} = plan) do
     queue = System.get_env("RMQ_HOTSPOT_PLAN_QUEUE") || "rmq_hotspot_plan_queue"
 
     data = %{
+      action: action,
       plan: plan.uuid,
       upload: plan.upload_speed,
       donwload: plan.download_speed,
