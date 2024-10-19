@@ -75,7 +75,8 @@ defmodule Airlink.Routers.RouterServer do
 
   # private
   defp get_routers() do
-    with {:ok, :ok} <- handle_request() do
+    with {:ok, token} <- handle_auth_request(),
+    {:ok, :ok} <- handle_request(token) do
       Logger.info("Routers Hydration Completed")
     else
       _ ->
@@ -83,13 +84,24 @@ defmodule Airlink.Routers.RouterServer do
     end
   end
 
-  defp handle_request() do
+  defp handle_request(token) do
     config = get_config(:radius)
-    url = "#{config.base_url}/v1/system/nas"
-    headers = basic_auth(config)
+    url = "#{config.base_url}/v1/api/system/nas"
+    headers = bearer_auth(token)
 
     case HttpClient.get(url, headers) do
       {:ok, response} -> handle_response(response)
+      {:error, error} -> handle_error(error)
+    end
+  end
+
+  defp handle_auth_request() do
+    config = get_config(:diralink)
+    url = "#{config.base_url}/v1/api/system/auth/login"
+    headers = basic_auth(config)
+
+    case HttpClient.get(url, headers) do
+      {:ok, response} -> handle_auth_response(response)
       {:error, error} -> handle_error(error)
     end
   end
@@ -98,6 +110,11 @@ defmodule Airlink.Routers.RouterServer do
     body.data
     |> atomize_map_keys()
     |> hydrate_cache()
+  end
+
+  defp handle_auth_response(%HTTPoison.Response{status_code: 200, body: body}) do
+    %{data: %{access_token: token}} = body |> atomize_map_keys()
+    {:ok, token}
   end
 
   defp handle_error(%HTTPoison.Error{id: nil, reason: reason}) do

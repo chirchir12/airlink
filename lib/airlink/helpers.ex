@@ -38,6 +38,10 @@ defmodule Airlink.Helpers do
     [{"Authorization", "Basic #{credentials}"}]
   end
 
+  def bearer_auth(token) do
+    [{"Authorization", "Bearer #{token}"}]
+  end
+
   def atomize_map_keys(map) when is_map(map) do
     map
     |> Enum.map(fn {k, v} -> {atomize_key(k), atomize_value(v)} end)

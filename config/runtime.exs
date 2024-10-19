@@ -140,9 +140,7 @@ if config_env() == :prod do
 
   # Radius
   config :airlink, :radius,
-  base_url: System.get_env("RADIUS_BASE_URL") || raise("RADIUS_BASE_URL is not set"),
-  username: System.get_env("RADIUS_API_KEY") || raise("RADIUS_API_KEY is not set"),
-  password: System.get_env("RADIUS_API_SECRET") || raise("RADIUS_API_SECRET is not set")
+  base_url: System.get_env("RADIUS_BASE_URL") || raise("RADIUS_BASE_URL is not set")
 
   # MAIN EXCHANGE
   exchange_name =
