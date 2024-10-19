@@ -172,12 +172,12 @@ if config_env() == :prod do
     connection: connection,
     exchange: exchange_name,
     queue:
-      System.get_env("UPDATE_SUBSCRIPTION_EXPIRY_QUEUE") ||
-        raise("UPDATE_SUBSCRIPTION_EXPIRY_QUEUE environment variable is missing"),
+      System.get_env("RMQ_HOTSPOT_SUBSCRIPTION_QUEUE") ||
+        raise("RMQ_HOTSPOT_SUBSCRIPTION_QUEUE environment variable is missing"),
     prefetch_count: 10,
     routing_key:
-      System.get_env("UPDATE_SUBSCRIPTION_EXPIRY_QUEUE") ||
-        raise("UPDATE_SUBSCRIPTION_EXPIRY_QUEUE environment variable is missing")
+      System.get_env("RMQ_HOTSPOT_SUBSCRIPTION_QUEUE") ||
+        raise("RMQ_HOTSPOT_SUBSCRIPTION_QUEUE environment variable is missing")
 
   # company consumer
   config :airlink, Airlink.Companies.CompanyConsumer,
@@ -196,11 +196,11 @@ if config_env() == :prod do
     connection: connection,
     exchange: exchange_name,
     queue:
-      System.get_env("ROUTER_CHANGES_QUEUE") ||
-        raise("ROUTER_CHANGES_QUEUE environment variable is missing"),
+      System.get_env("RMQ_ROUTER_QUEUE") ||
+        raise("RMQ_ROUTER_QUEUE environment variable is missing"),
     prefetch_count: 10,
     routing_key:
-      System.get_env("ROUTER_CHANGES_QUEUE") ||
-        raise("ROUTER_CHANGES_QUEUE environment variable is missing")
+      System.get_env("RMQ_ROUTER_QUEUE") ||
+        raise("RMQ_ROUTER_QUEUE environment variable is missing")
 
 end

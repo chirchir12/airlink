@@ -139,7 +139,7 @@ defmodule Airlink.Plans do
   end
 
   defp maybe_publish_to_rmq(%Plan{} = plan) do
-    queue = System.get_env("HOTSPOT_PLANS_QUEUE") || "hotspot_plans_queue"
+    queue = System.get_env("RMQ_HOTSPOT_PLAN_QUEUE") || "rmq_hotspot_plan_queue"
 
     data = %{
       plan: plan.uuid,
