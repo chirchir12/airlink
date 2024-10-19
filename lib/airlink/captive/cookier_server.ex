@@ -52,5 +52,4 @@ defmodule Airlink.Captive.CookierServer do
 
     {:reply, result, table}
   end
-
 end

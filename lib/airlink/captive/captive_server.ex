@@ -26,7 +26,6 @@ defmodule Airlink.Captive.CaptiveServer do
     CookierServer.get_customer_id(cookie)
   end
 
-
   # Server Callbacks
 
   @impl true
@@ -36,9 +35,13 @@ defmodule Airlink.Captive.CaptiveServer do
   end
 
   @impl true
-  def handle_call({:add_captive_entry, customer_uuid, {_customer, %{cookie: cookie}} =data}, _from, table) do
+  def handle_call(
+        {:add_captive_entry, customer_uuid, {_customer, %{cookie: cookie}} = data},
+        _from,
+        table
+      ) do
     result = :ets.insert(table, {customer_uuid, data})
-    _= CookierServer.add_cookie(cookie, customer_uuid)
+    _ = CookierServer.add_cookie(cookie, customer_uuid)
 
     {:reply, result, table}
   end
@@ -49,10 +52,13 @@ defmodule Airlink.Captive.CaptiveServer do
       case :ets.lookup(table, customer_uuid) do
         [{^customer_uuid, {_customer, %{cookie: cookie}}}] ->
           result = :ets.delete(table, customer_uuid)
-          _= CookierServer.delete_cookie(cookie)
+          _ = CookierServer.delete_cookie(cookie)
           {:ok, result}
-        [] -> {:error, :customer_not_found}
+
+        [] ->
+          {:error, :customer_not_found}
       end
+
     {:reply, result, table}
   end
 

@@ -54,9 +54,10 @@ defmodule AirlinkWeb.EnsureAuthenticatedPlug do
 
   defp captive_login(conn) do
     with {:ok, cookie} <- get_cookie(conn),
-          {:ok, customer_id} <- Captive.get_customer_id(cookie),
-          {:ok, {_customer, _params}} <- Captive.get_entry(customer_id) do
-            conn
+         {:ok, customer_id} <- Captive.get_customer_id(cookie),
+         {:ok, {_customer, _params}} <- Captive.get_entry(customer_id) do
+      conn
+      |> assign(:roles, ["hotspot_user"])
     else
       _ ->
         conn
@@ -65,11 +66,11 @@ defmodule AirlinkWeb.EnsureAuthenticatedPlug do
         |> render(:"401", error: %{detail: :unauthorized})
         |> halt()
     end
-
   end
 
   defp get_cookie(conn) do
     conn = fetch_cookies(conn, signed: ~w(airlink_hotspot_cookie))
+
     case Map.get(conn.cookies, "airlink_hotspot_cookie") do
       nil -> {:error, :cookie_not_found}
       value -> {:ok, value}

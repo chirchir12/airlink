@@ -52,7 +52,7 @@ defmodule Airlink.Payments do
         action: "session_activate"
       }
 
-       queue = System.get_env("RMQ_SUBSCRIPTION_QUEUE") || "rmq_subscription_queue"
+      queue = System.get_env("RMQ_SUBSCRIPTION_QUEUE") || "rmq_subscription_queue"
       {:ok, :ok} = RmqPulbisher.publish(data, queue)
       :ok
     end

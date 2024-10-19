@@ -39,5 +39,4 @@ defmodule Airlink.Diralink.Auth do
     |> kw_to_map()
     |> Map.get(key_type)
   end
-
 end

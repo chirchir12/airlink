@@ -18,6 +18,7 @@ defmodule AirlinkWeb.CaptiveController do
          {:ok, :resubscribe} <- handle_subscription_check(conn, customer) do
       config = get_config()
       url = "#{config.base_url}/#{config.login_uri}?customer_id=#{uuid}&isp=#{params.company_id}"
+
       conn
       |> put_resp_cookie("airlink_hotspot_cookie", cookie, max_age: 600)
       |> redirect(external: url)
@@ -97,6 +98,7 @@ defmodule AirlinkWeb.CaptiveController do
     {:ok, {_customer, %{cookie: cookie}}} = Captive.get_entry(customer_id)
     config = get_config()
     url = "#{config.base_url}/#{config.login_uri}/#{ref_id}"
+
     conn
     |> put_resp_cookie("airlink_hotspot_cookie", cookie, max_age: 600)
     |> redirect(external: url)

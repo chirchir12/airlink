@@ -28,6 +28,7 @@ defmodule Airlink.Helpers do
       data
     end
   end
+
   def kw_to_map(data), do: data
 
   def get_config(app) do

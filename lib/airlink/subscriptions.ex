@@ -168,6 +168,7 @@ defmodule Airlink.Subscriptions do
   defp handle_change(params) when is_list(params) do
     params
     |> Enum.each(&handle_change/1)
+
     :ok
   end
 
@@ -176,7 +177,6 @@ defmodule Airlink.Subscriptions do
       data = %{status: "inactive"}
       Customers.update_customer(customer, data)
     end
-
   end
 
   defp handle_change(%{action: "session_activated"} = params) do
@@ -189,6 +189,4 @@ defmodule Airlink.Subscriptions do
       :ok
     end
   end
-
-
 end

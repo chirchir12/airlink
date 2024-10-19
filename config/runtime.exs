@@ -140,7 +140,7 @@ if config_env() == :prod do
 
   # Radius
   config :airlink, :radius,
-  base_url: System.get_env("RADIUS_BASE_URL") || raise("RADIUS_BASE_URL is not set")
+    base_url: System.get_env("RADIUS_BASE_URL") || raise("RADIUS_BASE_URL is not set")
 
   # MAIN EXCHANGE
   exchange_name =
@@ -218,12 +218,10 @@ if config_env() == :prod do
         raise("RMQ_ROUTER_QUEUE environment variable is missing")
 
   # auth
-system_secret = System.get_env("SYSTEM_AUTH_SECRET") || raise("SYSTEM_AUTH_SECRET is not set")
-users_secret = System.get_env("AUTH_SECRET") || raise("AUTH_SECRET is not set")
+  system_secret = System.get_env("SYSTEM_AUTH_SECRET") || raise("SYSTEM_AUTH_SECRET is not set")
+  users_secret = System.get_env("AUTH_SECRET") || raise("AUTH_SECRET is not set")
 
-config :radius, Airlink.Diralink.Auth,
-  system_secret: Joken.Signer.create("HS512", system_secret),
-  users_secret: Joken.Signer.create("HS512", users_secret)
-
-
+  config :radius, Airlink.Diralink.Auth,
+    system_secret: Joken.Signer.create("HS512", system_secret),
+    users_secret: Joken.Signer.create("HS512", users_secret)
 end

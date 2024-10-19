@@ -72,11 +72,10 @@ defmodule Airlink.Routers.RouterServer do
     {:noreply, state}
   end
 
-
   # private
   defp get_routers() do
     with {:ok, token} <- handle_auth_request(),
-    {:ok, :ok} <- handle_request(token) do
+         {:ok, :ok} <- handle_request(token) do
       Logger.info("Routers Hydration Completed")
     else
       _ ->
@@ -136,5 +135,4 @@ defmodule Airlink.Routers.RouterServer do
   defp save_router(%{uuid: router_id} = router) do
     add_router(router_id, router)
   end
-
 end
