@@ -151,8 +151,12 @@ defmodule Airlink.Subscriptions do
     Subscription.changeset(subscription, attrs)
   end
 
-  def handle_subscription_changes(params) do
+  def handle_subscription_changes(%{service: "hotspot"} = params) do
     handle_change(params)
+  end
+
+  def handle_subscription_changes(_params) do
+    :ok
   end
 
   # private
