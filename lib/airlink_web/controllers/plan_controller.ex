@@ -3,7 +3,7 @@ defmodule AirlinkWeb.PlanController do
 
   alias Airlink.Plans
   alias Airlink.Plans.Plan
-
+  plug AirlinkWeb.CheckRolesPlug, ["captive_user", "tenant", "%", "admin", "tenant.individual"]
   action_fallback AirlinkWeb.FallbackController
 
   def index(conn, _params) do

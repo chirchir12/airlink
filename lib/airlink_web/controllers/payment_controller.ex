@@ -4,6 +4,8 @@ defmodule AirlinkWeb.PaymentController do
   alias Airlink.Payments
   alias Airlink.Plans
   alias Airlink.Captive
+
+  plug AirlinkWeb.CheckRolesPlug, ["captive_user"]
   action_fallback AirlinkWeb.FallbackController
 
   def create(conn, %{"params" => params}) do

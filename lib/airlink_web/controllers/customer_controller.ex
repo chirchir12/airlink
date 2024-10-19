@@ -2,6 +2,7 @@ defmodule AirlinkWeb.CustomerController do
   use AirlinkWeb, :controller
 
   alias Airlink.Customers
+  plug AirlinkWeb.CheckRolesPlug, ["tenant", "%", "admin", "tenant.individual"]
   action_fallback AirlinkWeb.FallbackController
 
   def index(conn, _params) do

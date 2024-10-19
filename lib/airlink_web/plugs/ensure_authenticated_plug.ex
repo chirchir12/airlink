@@ -57,7 +57,7 @@ defmodule AirlinkWeb.EnsureAuthenticatedPlug do
          {:ok, customer_id} <- Captive.get_customer_id(cookie),
          {:ok, {_customer, _params}} <- Captive.get_entry(customer_id) do
       conn
-      |> assign(:roles, ["hotspot_user"])
+      |> assign(:roles, ["captive_user"])
     else
       _ ->
         conn
