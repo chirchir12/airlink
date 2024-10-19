@@ -7,6 +7,10 @@ defmodule Airlink.Captive do
     CaptiveServer.get_captive_entry(customer_uuid)
   end
 
+  def get_customer_id(cookie) do
+    CaptiveServer.get_customer_id(cookie)
+  end
+
   def create_entry(%Customer{uuid: customer_uuid} = customer, params) do
     CaptiveServer.add_captive_entry(customer_uuid, {customer, params})
   end

@@ -1,5 +1,6 @@
 defmodule Airlink.Captive.CaptiveServer do
   use GenServer
+  alias Airlink.Captive.CookierServer
 
   @table_name :captive_cache
 
@@ -21,6 +22,11 @@ defmodule Airlink.Captive.CaptiveServer do
     GenServer.call(__MODULE__, {:get_captive_entry, customer_uuid})
   end
 
+  def get_customer_id(cookie) do
+    CookierServer.get_customer_id(cookie)
+  end
+
+
   # Server Callbacks
 
   @impl true
@@ -30,14 +36,23 @@ defmodule Airlink.Captive.CaptiveServer do
   end
 
   @impl true
-  def handle_call({:add_captive, customer_uuid, data}, _from, table) do
+  def handle_call({:add_captive_entry, customer_uuid, {_customer, %{cookie: cookie}} =data}, _from, table) do
     result = :ets.insert(table, {customer_uuid, data})
+    _= CookierServer.add_cookie(cookie, customer_uuid)
+
     {:reply, result, table}
   end
 
   @impl true
   def handle_call({:delete_captive_entry, customer_uuid}, _from, table) do
-    result = :ets.delete(table, customer_uuid)
+    result =
+      case :ets.lookup(table, customer_uuid) do
+        [{^customer_uuid, {_customer, %{cookie: cookie}}}] ->
+          result = :ets.delete(table, customer_uuid)
+          _= CookierServer.delete_cookie(cookie)
+          {:ok, result}
+        [] -> {:error, :customer_not_found}
+      end
     {:reply, result, table}
   end
 

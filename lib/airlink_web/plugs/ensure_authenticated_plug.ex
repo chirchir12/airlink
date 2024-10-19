@@ -1,5 +1,6 @@
 defmodule AirlinkWeb.EnsureAuthenticatedPlug do
   import Plug.Conn
+  alias Airlink.Captive
   alias Airlink.Diralink.Auth
   import Phoenix.Controller
   import Airlink.Helpers
@@ -8,6 +9,10 @@ defmodule AirlinkWeb.EnsureAuthenticatedPlug do
 
   def call(%Plug.Conn{assigns: %{is_system: true}} = conn, _) do
     check_auth(conn, true)
+  end
+
+  def call(%Plug.Conn{assigns: %{is_captive: true}} = conn, _) do
+    captive_login(conn)
   end
 
   def call(conn, _) do
@@ -26,7 +31,7 @@ defmodule AirlinkWeb.EnsureAuthenticatedPlug do
       _ ->
         conn
         |> put_status(:unauthorized)
-        |> put_view(json: RadiusWeb.ErrorJSON)
+        |> put_view(json: AirlinkWeb.ErrorJSON)
         |> render(:"401", error: %{detail: :unauthorized})
         |> halt()
     end
@@ -45,5 +50,29 @@ defmodule AirlinkWeb.EnsureAuthenticatedPlug do
 
   defp get_token(_) do
     {:error, :missing_token}
+  end
+
+  defp captive_login(conn) do
+    with {:ok, cookie} <- get_cookie(conn),
+          {:ok, customer_id} <- Captive.get_customer_id(cookie),
+          {:ok, {_customer, _params}} <- Captive.get_entry(customer_id) do
+            conn
+    else
+      _ ->
+        conn
+        |> put_status(:unauthorized)
+        |> put_view(json: AirlinkWeb.ErrorJSON)
+        |> render(:"401", error: %{detail: :unauthorized})
+        |> halt()
+    end
+
+  end
+
+  defp get_cookie(conn) do
+    conn = fetch_cookies(conn, signed: ~w(airlink_hotspot_cookie))
+    case Map.get(conn.cookies, "airlink_hotspot_cookie") do
+      nil -> {:error, :cookie_not_found}
+      value -> {:ok, value}
+    end
   end
 end

@@ -13,11 +13,26 @@ defmodule AirlinkWeb.Router do
     plug AirlinkWeb.EnsureAuthenticatedPlug
   end
 
-  scope "/v1/api/system", AirlinkWeb do
-    pipe_through [:api, :is_system, :ensure_authenticated]
-
+  pipeline :captive_user do
+    plug AirlinkWeb.IsCaptivePlug
   end
 
+  # captive endpoints
+  scope "/v1/api/captive", AirlinkWeb do
+    pipe_through [:api, :captive_user, :ensure_authenticated]
+    # list packages
+    # create payment
+    # get payment
+    # login
+    # get customer
+  end
+
+  # system to system endpoints
+  scope "/v1/api/system", AirlinkWeb do
+    pipe_through [:api, :is_system, :ensure_authenticated]
+  end
+
+  # portal endpoints
   scope "/v1/api", AirlinkWeb do
     pipe_through [:api, :ensure_authenticated]
 
