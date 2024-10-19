@@ -5,8 +5,21 @@ defmodule AirlinkWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/api", AirlinkWeb do
-    pipe_through :api
+  pipeline :is_system do
+    plug AirlinkWeb.IsSystemPlug
+  end
+
+  pipeline :ensure_authenticated do
+    plug AirlinkWeb.EnsureAuthenticatedPlug
+  end
+
+  scope "/v1/api/system", AirlinkWeb do
+    pipe_through [:api, :is_system, :ensure_authenticated]
+
+  end
+
+  scope "/v1/api", AirlinkWeb do
+    pipe_through [:api, :ensure_authenticated]
 
     resources "/hotspots", HotspotController, except: [:new, :edit]
   end

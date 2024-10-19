@@ -46,7 +46,8 @@ defmodule Airlink.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.2"},
       {:httpoison, "~> 2.2"},
-      {:gen_rmq, "~> 4.0"}
+      {:gen_rmq, "~> 4.0"},
+      {:joken, "~> 2.6"}
     ]
   end
 
