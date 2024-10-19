@@ -9,6 +9,13 @@ defmodule Airlink.Routers.RouterConsumer do
     GenRMQ.Consumer.start_link(__MODULE__, name: __MODULE__)
   end
 
+  def child_spec(_arg) do
+    %{
+      id: __MODULE__,
+      start: {__MODULE__, :start_link, []}
+    }
+  end
+
   def ack(%Message{attributes: %{delivery_tag: tag}} = message) do
     Logger.debug("Message successfully processed. Tag: #{tag}")
     GenRMQ.Consumer.ack(message)
