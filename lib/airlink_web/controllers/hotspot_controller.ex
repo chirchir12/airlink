@@ -6,8 +6,8 @@ defmodule AirlinkWeb.HotspotController do
   plug AirlinkWeb.CheckRolesPlug, ["tenant", "%", "admin", "tenant.individual"]
   action_fallback AirlinkWeb.FallbackController
 
-  def index(conn, _params) do
-    with {:ok, hotspots} <- Hotspots.list_hotspots() do
+  def index(conn, %{"company_id" => company_id}) do
+    with {:ok, hotspots} <- Hotspots.list_hotspots(company_id) do
       conn
       |> render(:index, hotspots: hotspots)
     end

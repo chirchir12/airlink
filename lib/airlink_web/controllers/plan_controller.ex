@@ -6,8 +6,8 @@ defmodule AirlinkWeb.PlanController do
   plug AirlinkWeb.CheckRolesPlug, ["captive_user", "tenant", "%", "admin", "tenant.individual"]
   action_fallback AirlinkWeb.FallbackController
 
-  def index(conn, _params) do
-    with {:ok, plans} <- Plans.list_plans() do
+  def index(conn, %{"company_id" => company_id}) do
+    with {:ok, plans} <- Plans.list_plans(company_id) do
       conn
       |> render(:index, plans: plans)
     end

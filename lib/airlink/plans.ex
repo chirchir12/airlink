@@ -18,8 +18,9 @@ defmodule Airlink.Plans do
       [%Plan{}, ...]
 
   """
-  def list_plans do
-    {:ok, Repo.all(Plan)}
+  def list_plans(company_id) do
+    query = from p in Plan, where: p.company_id == ^company_id
+    {:ok, Repo.all(query)}
   end
 
   @doc """
