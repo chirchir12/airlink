@@ -20,5 +20,5 @@ defmodule AirlinkWeb.Gettext do
 
   See the [Gettext Docs](https://hexdocs.pm/gettext) for detailed usage.
   """
-  use Gettext, otp_app: :airlink
+  use Gettext.Backend, otp_app: :airlink
 end
