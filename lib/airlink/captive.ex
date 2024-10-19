@@ -23,7 +23,8 @@ defmodule Airlink.Captive do
       link_login_only: Map.get(params, "link-login-only") || nil,
       link_orig: Map.get(params, "link-orig") || nil,
       hotspot_id: Map.get(params, "server-name") || nil,
-      router_id: Map.get(params, "identity") || nil
+      router_id: Map.get(params, "identity") || nil,
+      cookie: generate_cookie_key()
     }
 
     %CaptiveSchema{}
@@ -32,5 +33,10 @@ defmodule Airlink.Captive do
       %{valid?: true, changes: changes} -> {:ok, changes}
       changeset -> {:error, changeset}
     end
+  end
+
+  defp generate_cookie_key() do
+    :crypto.strong_rand_bytes(16)
+    |> Base.url_encode64(padding: false)
   end
 end
