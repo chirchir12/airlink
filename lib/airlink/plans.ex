@@ -129,12 +129,12 @@ defmodule Airlink.Plans do
 
   defp calculate_duration(duration, "day"), do: duration * 24 * 60
 
-  defp handle_plan_response(action, {:ok, plan}) do
+  defp handle_plan_response({:ok, plan}, action) do
     :ok = maybe_publish_to_rmq(action, plan)
     {:ok, plan}
   end
 
-  defp handle_plan_response(_action, {:error, error}) do
+  defp handle_plan_response({:error, error}, _action) do
     {:error, error}
   end
 
