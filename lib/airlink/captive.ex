@@ -3,20 +3,20 @@ defmodule Airlink.Captive do
   alias __MODULE__.CaptiveServer
   alias Airlink.Customers.Customer
 
-  def get_entry(customer_uuid) do
-    CaptiveServer.get_captive_entry(customer_uuid)
+  def get_entry(cookie) do
+    CaptiveServer.get_captive_entry(cookie)
   end
 
-  def get_customer_id(cookie) do
-    CaptiveServer.get_customer_id(cookie)
+
+  def create_entry(%Customer{uuid: customer_uuid}, %{cookie: cookie} = captive_data) do
+    captive_data = captive_data
+    |> Map.put_new(:customer_id, customer_uuid)
+
+    CaptiveServer.add_captive_entry(cookie, captive_data)
   end
 
-  def create_entry(%Customer{uuid: customer_uuid} = customer, params) do
-    CaptiveServer.add_captive_entry(customer_uuid, {customer, params})
-  end
-
-  def delete_entry(customer_uuid) do
-    CaptiveServer.delete_captive_entry(customer_uuid)
+  def delete_entry(cookie) do
+    CaptiveServer.delete_captive_entry(cookie)
   end
 
   def validate(params) do

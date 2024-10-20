@@ -21,8 +21,7 @@ defmodule Airlink.Captive.Captive do
     :hotspot_id,
     :router_id,
     :cookie,
-    :created_at,
-    :customer_id
+    :created_at
   ]
 
   @primary_key false
