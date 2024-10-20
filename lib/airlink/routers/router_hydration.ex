@@ -1,45 +1,45 @@
 defmodule Airlink.Routers.RouterHydration do
-  use GenServer,  restart: :transient
+  use GenServer, restart: :transient
   alias Airlink.HttpClient
   require Logger
   import Airlink.Helpers
   alias Airlink.Routers.RouterServer
+  alias Airlink.Routers.Router
 
+  # Client
+  def start_link(_opts) do
+    GenServer.start_link(__MODULE__, [], name: __MODULE__)
+  end
 
-     # Client
-     def start_link(_opts) do
-      GenServer.start_link(__MODULE__, [], name: __MODULE__)
-    end
+  # Server (callbacks)
 
-    # Server (callbacks)
+  @impl true
+  def init(_args) do
+    Logger.info("[#{inspect(__MODULE__)}]: Router Hydration initialized")
+    {:ok, nil, {:continue, :hydrate_cache}}
+  end
 
-    @impl true
-    def init(_args) do
-      Logger.info("[#{inspect(__MODULE__)}]: Router Hydration initialized")
-      {:ok, nil, {:continue, :hydrate_cache}}
-    end
+  @impl true
+  def handle_continue(:hydrate_cache, state) do
+    _ = get_routers()
+    {:stop, :normal, state}
+  end
 
-    @impl true
-    def handle_continue(:hydrate_cache, state) do
-      _ = get_routers()
-      {:stop, :normal, state}
-    end
+  @impl true
+  def terminate(:normal, _state) do
+    Logger.info("[#{inspect(__MODULE__)}]: Done hydrating router server: Terminating")
+  end
 
-    @impl true
-    def terminate(:normal, _state) do
-      Logger.info("[#{inspect(__MODULE__)}]: Done hydrating router server: Terminating")
-    end
+  @impl true
+  def terminate(_reason, _state) do
+    Logger.error("[#{inspect(__MODULE__)}]: Failed to hydrate router server: Terminating")
+  end
 
-    @impl true
-    def terminate(_reason, _state) do
-      Logger.error("[#{inspect(__MODULE__)}]: Failed to hydrate router server: Terminating")
-    end
-
-    # private
+  # private
   defp get_routers() do
     with {:ok, token} <- handle_auth_request(),
          {:ok, :ok} <- handle_request(token) do
-          :ok
+      :ok
     else
       _ ->
         :error
@@ -70,6 +70,7 @@ defmodule Airlink.Routers.RouterHydration do
 
   defp handle_response(%HTTPoison.Response{status_code: 200, body: body}) do
     Logger.info("[#{inspect(__MODULE__)}]: Got routers from radius")
+
     body
     |> atomize_map_keys()
     |> hydrate_cache()
@@ -89,6 +90,7 @@ defmodule Airlink.Routers.RouterHydration do
     routers
     |> Enum.map(&atomize_map_keys/1)
     |> Enum.each(&save_router/1)
+
     {:ok, :ok}
   end
 
@@ -98,6 +100,6 @@ defmodule Airlink.Routers.RouterHydration do
   end
 
   defp save_router(%{uuid: router_id} = router) do
-    RouterServer.add_router(router_id, router)
+    RouterServer.add_router(router_id, Router.new(router))
   end
 end

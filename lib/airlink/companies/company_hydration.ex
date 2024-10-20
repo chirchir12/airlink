@@ -1,13 +1,12 @@
 defmodule Airlink.Companies.CompanyHydration do
-  use GenServer,  restart: :transient
+  use GenServer, restart: :transient
   alias Airlink.HttpClient
   require Logger
   import Airlink.Helpers
   alias Airlink.Companies.CompanyServer
   alias Airlink.Companies.Company
 
-
-   # Client
+  # Client
   def start_link(_opts) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
@@ -59,11 +58,11 @@ defmodule Airlink.Companies.CompanyHydration do
 
   defp handle_response(%HTTPoison.Response{status_code: 200, body: body}) do
     Logger.info("[#{inspect(__MODULE__)}]: Got companies from diralink")
+
     body
     |> atomize_map_keys()
     |> hydrate_cache()
   end
-
 
   defp handle_error(%HTTPoison.Error{id: nil, reason: reason}) do
     raise "HTTP request failed: #{inspect(reason)}"

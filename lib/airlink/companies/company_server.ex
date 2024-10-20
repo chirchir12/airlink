@@ -47,7 +47,6 @@ defmodule Airlink.Companies.CompanyServer do
     {:reply, result, table}
   end
 
-
   @impl true
   def handle_call({:update_company, uuid, company_info}, _from, table) do
     result = :ets.insert(table, {uuid, company_info})
@@ -64,5 +63,4 @@ defmodule Airlink.Companies.CompanyServer do
 
     {:reply, result, table}
   end
-
 end
