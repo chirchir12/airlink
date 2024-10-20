@@ -16,15 +16,15 @@ import Config
 #
 # Alternatively, you can use `mix phx.gen.release` to generate a `bin/server`
 # script that automatically sets the env var above.
-if System.get_env("PHX_SERVER") do
+if System.get_env("AIRLINK_PHX_SERVER") do
   config :airlink, AirlinkWeb.Endpoint, server: true
 end
 
 if config_env() == :prod do
   database_url =
-    System.get_env("DATABASE_URL") ||
+    System.get_env("AIRLINK_DATABASE_URL") ||
       raise """
-      environment variable DATABASE_URL is missing.
+      environment variable AIRLINK_DATABASE_URL is missing.
       For example: ecto://USER:PASS@HOST/DATABASE
       """
 
@@ -42,14 +42,14 @@ if config_env() == :prod do
   # to check this value into version control, so we use an environment
   # variable instead.
   secret_key_base =
-    System.get_env("SECRET_KEY_BASE") ||
+    System.get_env("AIRLINK_SECRET_KEY_BASE") ||
       raise """
-      environment variable SECRET_KEY_BASE is missing.
+      environment variable AIRLINK_SECRET_KEY_BASE is missing.
       You can generate one by calling: mix phx.gen.secret
       """
 
-  host = System.get_env("PHX_HOST") || "example.com"
-  port = String.to_integer(System.get_env("PORT") || "4000")
+  host = System.get_env("AIRLINK_PHX_HOST") || "example.com"
+  port = String.to_integer(System.get_env("AIRLINK_PORT") || "4002")
 
   config :airlink, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
 
@@ -218,8 +218,8 @@ if config_env() == :prod do
         raise("RMQ_ROUTER_QUEUE environment variable is missing")
 
   # auth
-  system_secret = System.get_env("SYSTEM_AUTH_SECRET") || raise("SYSTEM_AUTH_SECRET is not set")
-  users_secret = System.get_env("AUTH_SECRET") || raise("AUTH_SECRET is not set")
+  system_secret = System.get_env("AIRLINK_SYSTEM_AUTH_SECRET") || raise("AIRLINK_SYSTEM_AUTH_SECRET is not set")
+  users_secret = System.get_env("AIRLINK_AUTH_SECRET") || raise("AIRLINK_AUTH_SECRET is not set")
 
   config :radius, Airlink.Diralink.Auth,
     system_secret: Joken.Signer.create("HS512", system_secret),
