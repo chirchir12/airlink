@@ -14,8 +14,8 @@ defmodule AirlinkWeb.CaptiveController do
     with {:ok, {params, _company, _router, _hotspot}} <- validate(conn, params),
          {:ok, %Customer{uuid: uuid} = customer} <-
            Customers.get_or_create_customer(params.mac, params.company_id),
-         {:ok, {_customer, %{cookie: cookie}}} <- Captive.create_entry(customer, params),
-         {:ok, :resubscribe} <- handle_subscription_check(conn, customer) do
+         {:ok, %{cookie: cookie}} <- Captive.create_entry(customer, params),
+         {:ok, :resubscribe} <- handle_subscription_check(conn, customer, cookie) do
       config = get_config()
       url = "#{config.base_url}/#{config.login_uri}?customer_id=#{uuid}&isp=#{params.company_id}"
 
@@ -72,18 +72,19 @@ defmodule AirlinkWeb.CaptiveController do
 
   defp handle_subscription_check(
          conn,
-         %Customer{id: customer_id, company_id: company_id}
+         %Customer{id: customer_id, company_id: company_id},
+         cookie
        ) do
     case Subscriptions.get_subscription(company_id, customer_id) do
       {:error, _error} -> {:ok, :resubscribe}
-      {:ok, subs} -> handle_subs_status(conn, subs, customer_id)
+      {:ok, subs} -> handle_subs_status(conn, subs, cookie)
     end
   end
 
-  defp handle_subs_status(conn, sub, customer_id) do
+  defp handle_subs_status(conn, sub, cookie) do
     case Subscriptions.check_status(sub) do
       {:expired, _sub} -> {:ok, :resubscribe}
-      {:not_expired, _sub} -> login(conn, sub, customer_id)
+      {:not_expired, _sub} -> login(conn, sub, cookie)
     end
   end
 
@@ -93,9 +94,8 @@ defmodule AirlinkWeb.CaptiveController do
     redirect(conn, external: url)
   end
 
-  defp login(conn, ref_id, customer_id) do
+  defp login(conn, ref_id, cookie) do
     # User is still active
-    {:ok, {_customer, %{cookie: cookie}}} = Captive.get_entry(customer_id)
     config = get_config()
     url = "#{config.base_url}/#{config.login_uri}/#{ref_id}"
 
