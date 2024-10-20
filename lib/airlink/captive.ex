@@ -28,7 +28,8 @@ defmodule Airlink.Captive do
       link_orig: Map.get(params, "link-orig") || nil,
       hotspot_id: Map.get(params, "server-name") || nil,
       router_id: Map.get(params, "identity") || nil,
-      cookie: generate_cookie_key()
+      cookie: generate_cookie_key(),
+      created_at: DateTime.utc_now()
     }
 
     %CaptiveSchema{}
