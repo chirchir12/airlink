@@ -53,6 +53,9 @@ defmodule AirlinkWeb.Router do
 
     # plans
     post "/plans", PlanController, :create
+    get "/plans/list/:company_id", PlanController, :index
+    get "/plans/:id", PlanController, :show
+    put "/plans/:id", PlanController, :update
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
