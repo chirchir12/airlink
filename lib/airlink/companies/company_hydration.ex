@@ -4,6 +4,7 @@ defmodule Airlink.Companies.CompanyHydration do
   require Logger
   import Airlink.Helpers
   alias Airlink.Companies.CompanyServer
+  alias Airlink.Companies.Company
 
 
    # Client
@@ -81,7 +82,7 @@ defmodule Airlink.Companies.CompanyHydration do
     {:ok, :ok}
   end
 
-  defp save_company(%{company_oid: company_id} = company) do
-    CompanyServer.add_company(company_id, company)
+  defp save_company(%{company_id: company_id} = company) do
+    CompanyServer.add_company(company_id, Company.new(company))
   end
 end
