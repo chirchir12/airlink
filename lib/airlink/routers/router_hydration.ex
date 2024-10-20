@@ -99,7 +99,7 @@ defmodule Airlink.Routers.RouterHydration do
     {:ok, :ok}
   end
 
-  defp save_router(%{uuid: router_id} = router) do
+  defp save_router(%{router_id: router_id} = router) do
     RouterServer.add_router(router_id, Router.new(router))
   end
 end
