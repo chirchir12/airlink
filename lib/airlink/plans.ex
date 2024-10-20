@@ -151,7 +151,7 @@ defmodule Airlink.Plans do
       action: action,
       plan: plan.uuid,
       upload: plan.upload_speed,
-      donwload: plan.download_speed,
+      download: plan.download_speed,
       service: "hotspot",
       duration: calculate_duration_mins(plan) * 60
     }

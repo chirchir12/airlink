@@ -65,8 +65,7 @@ defmodule Airlink.Plans.Plan do
     plan
     |> cast(attrs, @permitted_field)
     |> validate_required(@required_field)
-    |> unique_constraint([:company_id, :name])
-    |> foreign_key_constraint(:hotspot_id)
+    |> unique_constraint([:name, :company_id])
     |> maybe_put_uuid(:uuid)
     |> validate_time_unit()
     |> validate_bundle_unit()

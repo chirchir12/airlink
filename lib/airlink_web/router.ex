@@ -50,6 +50,9 @@ defmodule AirlinkWeb.Router do
     get "/hotspots/list/:company_id", HotspotController, :index
     get "/hotspots/:id", HotspotController, :show
     put "/hotspots/:id", HotspotController, :update
+
+    # plans
+    post "/plans", PlanController, :create
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
