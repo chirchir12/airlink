@@ -30,6 +30,7 @@ defmodule AirlinkWeb.Router do
   scope "/v1/api/captive", AirlinkWeb do
     pipe_through [:api, :captive_user, :ensure_authenticated]
     # list packages
+    get "/plans/list/:company_id", PlanController, :index
     # create payment
     # get payment
     # login

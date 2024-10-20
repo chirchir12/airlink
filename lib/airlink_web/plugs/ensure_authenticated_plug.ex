@@ -69,7 +69,7 @@ defmodule AirlinkWeb.EnsureAuthenticatedPlug do
   end
 
   defp get_cookie(conn) do
-    conn = fetch_cookies(conn, signed: ~w(airlink_hotspot_cookie))
+    conn = fetch_cookies(conn)
 
     case Map.get(conn.cookies, "airlink_hotspot_cookie") do
       nil -> {:error, :cookie_not_found}
