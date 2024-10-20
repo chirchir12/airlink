@@ -3,7 +3,8 @@ defmodule Airlink.Captive.CaptiveServer do
   alias Airlink.Captive.CookierServer
 
   @table_name :captive_cache
-  @run_after 60_000 # 1 min
+  # 1 min
+  @run_after 60_000
   @expiration_period 30 * 60
 
   # Client API

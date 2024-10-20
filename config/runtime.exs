@@ -114,114 +114,115 @@ if config_env() == :prod do
   #     config :swoosh, :api_client, Swoosh.ApiClient.Hackney
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
-
-  # captive
-  config :airlink, :captive,
-    base_url: System.get_env("CAPTIVE_BASE_URL") || raise("CAPTIVE_BASE_URL is not set"),
-    plans_url: System.get_env("CAPTIVE_PACKAGES_URL") || raise("CAPTIVE_PACKAGES_URL is not set"),
-    login_uri: System.get_env("CAPTIVE_LOGIN_URI") || raise("CAPTIVE_LOGIN_URI is not set"),
-    suspended_isp:
-      System.get_env("CAPTIVE_SUSPENDED_ISP") || raise("CAPTIVE_SUSPENDED_ISP is not set"),
-    validation_error:
-      System.get_env("CAPTIVE_ERROR_VALIDATION") || raise("CAPTIVE_ERROR_VALIDATION is not set"),
-    company_not_found:
-      System.get_env("CAPTIVE_ERROR_ISP") || raise("CAPTIVE_ERROR_ISP is not set"),
-    hotspot_not_found:
-      System.get_env("CAPTIVE_ERROR_HOTSPOT") || raise("CAPTIVE_ERROR_HOTSPOT is not set"),
-    router_not_found:
-      System.get_env("CAPTIVE_ERROR_ROUTER_NOT_FOUND") ||
-        raise("CAPTIVE_ERROR_ROUTER_NOT_FOUND is not set")
-
-  # Diralink
-  config :airlink, :diralink,
-    base_url: System.get_env("DIRALINK_BASE_URL") || raise("DIRALINK_BASE_URL is not set"),
-    username: System.get_env("DIRALINK_API_KEY") || raise("DIRALINK_API_KEY is not set"),
-    password: System.get_env("DIRALINK_API_SECRET") || raise("DIRALINK_API_SECRET is not set")
-
-  # Radius
-  config :airlink, :radius,
-    base_url: System.get_env("RADIUS_BASE_URL") || raise("RADIUS_BASE_URL is not set")
-
-  # MAIN EXCHANGE
-  exchange_name =
-    System.get_env("RMQ_DIRALINK_EXCHANGE") || raise("RMQ_DIRALINK_EXCHANGE is missing")
-
-  connection = System.get_env("RMQ_URL") || raise("RMQ_URL environment variable is missing")
-
-  # rmq publisher
-  config :airlink, Airlink.RmqPublisher,
-    url: connection,
-    exchange: exchange_name
-
-  # payment consumer
-  config :airlink, Airlink.Payments.PaymentConsumer,
-    connection: connection,
-    exchange: exchange_name,
-    deadletter: false,
-    queue_options: [
-      durable: true
-    ],
-    queue:
-      System.get_env("PAYMENT_RESULT_QUEUE") ||
-        raise("PAYMENT_RESULT_QUEUE environment variable is missing"),
-    prefetch_count: "10",
-    routing_key:
-      System.get_env("PAYMENT_RESULT_QUEUE") ||
-        raise("PAYMENT_RESULT_QUEUE environment variable is missing")
-
-  # subscription consumer
-  config :airlink, Airlink.Subscriptions.SubscriptionConsumer,
-    connection: connection,
-    exchange: exchange_name,
-    deadletter: false,
-    queue_options: [
-      durable: true
-    ],
-    queue:
-      System.get_env("RMQ_SUBSCRIPTION_QUEUE") ||
-        raise("RMQ_SUBSCRIPTION_QUEUE environment variable is missing"),
-    prefetch_count: "10",
-    routing_key:
-      System.get_env("RMQ_SUBSCRIPTION_QUEUE") ||
-        raise("RMQ_SUBSCRIPTION_QUEUE environment variable is missing")
-
-  # company consumer
-  config :airlink, Airlink.Companies.CompanyConsumer,
-    connection: connection,
-    exchange: exchange_name,
-    deadletter: false,
-    queue_options: [
-      durable: true
-    ],
-    queue:
-      System.get_env("COMPANY_CHANGES_QUEUE") ||
-        raise("COMPANY_CHANGES_QUEUE environment variable is missing"),
-    prefetch_count: "10",
-    routing_key:
-      System.get_env("COMPANY_CHANGES_QUEUE") ||
-        raise("COMPANY_CHANGES_QUEUE environment variable is missing")
-
-  # router consumer
-  config :airlink, Airlink.Routers.RouterConsumer,
-    connection: connection,
-    exchange: exchange_name,
-    deadletter: false,
-    queue_options: [
-      durable: true
-    ],
-    queue:
-      System.get_env("RMQ_ROUTER_QUEUE") ||
-        raise("RMQ_ROUTER_QUEUE environment variable is missing"),
-    prefetch_count: "10",
-    routing_key:
-      System.get_env("RMQ_ROUTER_QUEUE") ||
-        raise("RMQ_ROUTER_QUEUE environment variable is missing")
-
-  # auth
-  system_secret = System.get_env("AIRLINK_SYSTEM_AUTH_SECRET") || raise("AIRLINK_SYSTEM_AUTH_SECRET is not set")
-  users_secret = System.get_env("AIRLINK_AUTH_SECRET") || raise("AIRLINK_AUTH_SECRET is not set")
-
-  config :radius, Airlink.Diralink.Auth,
-    system_secret: Joken.Signer.create("HS512", system_secret),
-    users_secret: Joken.Signer.create("HS512", users_secret)
 end
+
+# captive
+config :airlink, :captive,
+  base_url: System.get_env("CAPTIVE_BASE_URL") || raise("CAPTIVE_BASE_URL is not set"),
+  plans_url: System.get_env("CAPTIVE_PACKAGES_URL") || raise("CAPTIVE_PACKAGES_URL is not set"),
+  login_uri: System.get_env("CAPTIVE_LOGIN_URI") || raise("CAPTIVE_LOGIN_URI is not set"),
+  suspended_isp:
+    System.get_env("CAPTIVE_SUSPENDED_ISP") || raise("CAPTIVE_SUSPENDED_ISP is not set"),
+  validation_error:
+    System.get_env("CAPTIVE_ERROR_VALIDATION") || raise("CAPTIVE_ERROR_VALIDATION is not set"),
+  company_not_found: System.get_env("CAPTIVE_ERROR_ISP") || raise("CAPTIVE_ERROR_ISP is not set"),
+  hotspot_not_found:
+    System.get_env("CAPTIVE_ERROR_HOTSPOT") || raise("CAPTIVE_ERROR_HOTSPOT is not set"),
+  router_not_found:
+    System.get_env("CAPTIVE_ERROR_ROUTER_NOT_FOUND") ||
+      raise("CAPTIVE_ERROR_ROUTER_NOT_FOUND is not set")
+
+# Diralink
+config :airlink, :diralink,
+  base_url: System.get_env("DIRALINK_BASE_URL") || raise("DIRALINK_BASE_URL is not set"),
+  username: System.get_env("DIRALINK_API_KEY") || raise("DIRALINK_API_KEY is not set"),
+  password: System.get_env("DIRALINK_API_SECRET") || raise("DIRALINK_API_SECRET is not set")
+
+# Radius
+config :airlink, :radius,
+  base_url: System.get_env("RADIUS_BASE_URL") || raise("RADIUS_BASE_URL is not set")
+
+# MAIN EXCHANGE
+exchange_name =
+  System.get_env("RMQ_DIRALINK_EXCHANGE") || raise("RMQ_DIRALINK_EXCHANGE is missing")
+
+connection = System.get_env("RMQ_URL") || raise("RMQ_URL environment variable is missing")
+
+# rmq publisher
+config :airlink, Airlink.RmqPublisher,
+  url: connection,
+  exchange: exchange_name
+
+# payment consumer
+config :airlink, Airlink.Payments.PaymentConsumer,
+  connection: connection,
+  exchange: exchange_name,
+  deadletter: false,
+  queue_options: [
+    durable: true
+  ],
+  queue:
+    System.get_env("PAYMENT_RESULT_QUEUE") ||
+      raise("PAYMENT_RESULT_QUEUE environment variable is missing"),
+  prefetch_count: "10",
+  routing_key:
+    System.get_env("PAYMENT_RESULT_QUEUE") ||
+      raise("PAYMENT_RESULT_QUEUE environment variable is missing")
+
+# subscription consumer
+config :airlink, Airlink.Subscriptions.SubscriptionConsumer,
+  connection: connection,
+  exchange: exchange_name,
+  deadletter: false,
+  queue_options: [
+    durable: true
+  ],
+  queue:
+    System.get_env("RMQ_SUBSCRIPTION_QUEUE") ||
+      raise("RMQ_SUBSCRIPTION_QUEUE environment variable is missing"),
+  prefetch_count: "10",
+  routing_key:
+    System.get_env("RMQ_SUBSCRIPTION_QUEUE") ||
+      raise("RMQ_SUBSCRIPTION_QUEUE environment variable is missing")
+
+# company consumer
+config :airlink, Airlink.Companies.CompanyConsumer,
+  connection: connection,
+  exchange: exchange_name,
+  deadletter: false,
+  queue_options: [
+    durable: true
+  ],
+  queue:
+    System.get_env("COMPANY_CHANGES_QUEUE") ||
+      raise("COMPANY_CHANGES_QUEUE environment variable is missing"),
+  prefetch_count: "10",
+  routing_key:
+    System.get_env("COMPANY_CHANGES_QUEUE") ||
+      raise("COMPANY_CHANGES_QUEUE environment variable is missing")
+
+# router consumer
+config :airlink, Airlink.Routers.RouterConsumer,
+  connection: connection,
+  exchange: exchange_name,
+  deadletter: false,
+  queue_options: [
+    durable: true
+  ],
+  queue:
+    System.get_env("RMQ_ROUTER_QUEUE") ||
+      raise("RMQ_ROUTER_QUEUE environment variable is missing"),
+  prefetch_count: "10",
+  routing_key:
+    System.get_env("RMQ_ROUTER_QUEUE") ||
+      raise("RMQ_ROUTER_QUEUE environment variable is missing")
+
+# auth
+system_secret =
+  System.get_env("AIRLINK_SYSTEM_AUTH_SECRET") || raise("AIRLINK_SYSTEM_AUTH_SECRET is not set")
+
+users_secret = System.get_env("AIRLINK_AUTH_SECRET") || raise("AIRLINK_AUTH_SECRET is not set")
+
+config :radius, Airlink.Diralink.Auth,
+  system_secret: Joken.Signer.create("HS512", system_secret),
+  users_secret: Joken.Signer.create("HS512", users_secret)

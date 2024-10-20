@@ -5,6 +5,7 @@ defmodule AirlinkWeb.AuthController do
   alias Airlink.Subscriptions
   alias Airlink.Subscriptions.Subscription
   plug AirlinkWeb.CheckRolesPlug, ["captive_user"]
+
   def login(conn, %{"ref_id" => sub_uud}) do
     with {:ok, %Subscription{customer_id: customer_id} = sub} <-
            Subscriptions.get_subscription_by_uuid(sub_uud),
