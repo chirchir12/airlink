@@ -30,7 +30,7 @@ defmodule Airlink.Hotspots do
   end
 
   def get_hotspot_by_uuid(uuid) do
-    case Repo.get(Hotspot, uuid: uuid) do
+    case Repo.get_by(Hotspot, uuid: uuid) do
       nil -> {:error, :hotspot_not_found}
       hotspot -> {:ok, hotspot}
     end

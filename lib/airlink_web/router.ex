@@ -9,15 +9,24 @@ defmodule AirlinkWeb.Router do
     plug AirlinkWeb.IsSystemPlug
   end
 
-  pipeline :ensure_authenticated do
-    plug AirlinkWeb.EnsureAuthenticatedPlug
-  end
-
   pipeline :captive_user do
     plug AirlinkWeb.IsCaptivePlug
   end
 
+  pipeline :ensure_authenticated do
+    plug AirlinkWeb.EnsureAuthenticatedPlug
+  end
+
+
+
   # captive endpoints
+    # captive endpoints: No Auth
+    scope "/v1/api/captive", AirlinkWeb do
+      pipe_through [:api, :captive_user]
+      post "/create", CaptiveController, :create
+    end
+
+     # captive endpoints: Auth-cookie
   scope "/v1/api/captive", AirlinkWeb do
     pipe_through [:api, :captive_user, :ensure_authenticated]
     # list packages
@@ -36,7 +45,10 @@ defmodule AirlinkWeb.Router do
   scope "/v1/api", AirlinkWeb do
     pipe_through [:api, :ensure_authenticated]
 
-    resources "/hotspots", HotspotController, except: [:new, :edit]
+    post "/hotspots", HotspotController, :create
+    get "/hotspots/list/:company_id", HotspotController, :index
+    get "/hotspots/:id", HotspotController, :show
+    put "/hotspots/:id", HotspotController, :update
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

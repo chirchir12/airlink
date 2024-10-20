@@ -14,7 +14,7 @@ defmodule AirlinkWeb.CustomerController do
     with {:ok, customer} <- Customers.create_customer(params) do
       conn
       |> put_status(:created)
-      |> render(:show, custoemr: customer)
+      |> render(:show, customer: customer)
     end
   end
 

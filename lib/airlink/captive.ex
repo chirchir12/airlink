@@ -12,7 +12,8 @@ defmodule Airlink.Captive do
     captive_data = captive_data
     |> Map.put_new(:customer_id, customer_uuid)
 
-    CaptiveServer.add_captive_entry(cookie, captive_data)
+    true = CaptiveServer.add_captive_entry(cookie, captive_data)
+    {:ok, captive_data}
   end
 
   def delete_entry(cookie) do

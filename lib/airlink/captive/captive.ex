@@ -32,7 +32,7 @@ defmodule Airlink.Captive.Captive do
     field :link_login_only, :string
     field :link_orig, :string
     field :hotspot_id, Ecto.UUID
-    field :routerid, Ecto.UUID
+    field :router_id, Ecto.UUID
     field :cookie, :string
     field :created_at, :utc_datetime
     field :customer_id, Ecto.UUID
