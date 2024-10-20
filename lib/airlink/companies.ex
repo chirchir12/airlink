@@ -1,5 +1,6 @@
 defmodule Airlink.Companies do
   alias Airlink.Companies.CompanyServer
+  alias Airlink.Companies.Company
 
   @doc """
   Adds a new company to the CompanyServer.
@@ -11,7 +12,7 @@ defmodule Airlink.Companies do
 
   """
   def add_company(uuid, company_info) do
-    CompanyServer.add_company(uuid, company_info)
+    CompanyServer.add_company(uuid, Company.new(company_info))
   end
 
   @doc """
@@ -37,7 +38,7 @@ defmodule Airlink.Companies do
 
   """
   def update_company(uuid, company_info) do
-    CompanyServer.update_company(uuid, company_info)
+    CompanyServer.update_company(uuid, Company.new(company_info))
   end
 
   @doc """

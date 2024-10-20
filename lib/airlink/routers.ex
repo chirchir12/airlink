@@ -1,5 +1,6 @@
 defmodule Airlink.Routers do
   alias Airlink.Routers.RouterServer
+  alias Airlink.Routers.Router
 
   @doc """
   Adds a new router to the cache.
@@ -11,7 +12,7 @@ defmodule Airlink.Routers do
 
   """
   def add_router(uuid, router_info) do
-    RouterServer.add_router(uuid, router_info)
+    RouterServer.add_router(uuid, Router.new(router_info))
   end
 
   @doc """
@@ -37,7 +38,7 @@ defmodule Airlink.Routers do
 
   """
   def update_router(uuid, router_info) do
-    RouterServer.update_router(uuid, router_info)
+    RouterServer.update_router(uuid, Router.new(router_info))
   end
 
   @doc """
