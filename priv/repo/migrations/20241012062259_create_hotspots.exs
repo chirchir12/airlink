@@ -10,8 +10,8 @@ defmodule Airlink.Repo.Migrations.CreateHotspots do
       add :router_id, :uuid, null: false
       add :uuid, :uuid, null: false
       add :company_id, :uuid, null: false
-      add :latitude, :float, null: false
-      add :longitude, :float, null: false
+      add :latitude, :float
+      add :longitude, :float
 
       timestamps(type: :utc_datetime)
     end

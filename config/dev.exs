@@ -22,7 +22,7 @@ config :airlink, AirlinkWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
   check_origin: false,
   code_reloader: true,
-  debug_errors: true,
+  debug_errors: false,
   secret_key_base: "00Gn5+EbPrst/bSja6N041nJJgIbtqWBkUSt4E5QWplHK259SIIkREja+otxqWFB",
   watchers: []
 
