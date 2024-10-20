@@ -7,7 +7,7 @@ defmodule Airlink.Plans do
   alias Airlink.Repo
 
   alias Airlink.Plans.Plan
-  alias Airlink.RmqPulbisher
+  alias Airlink.RmqPublisher
 
   @doc """
   Returns the list of plans.
@@ -156,7 +156,7 @@ defmodule Airlink.Plans do
       duration: calculate_duration_mins(plan) * 60
     }
 
-    {:ok, _} = RmqPulbisher.publish(data, queue)
+    {:ok, _} = RmqPublisher.publish(data, queue)
     :ok
   end
 end

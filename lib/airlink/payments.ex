@@ -8,7 +8,7 @@ defmodule Airlink.Payments do
   import Airlink.Helpers
   alias Airlink.Customers
   alias Airlink.Customers.Customer
-  alias Airlink.RmqPulbisher
+  alias Airlink.RmqPublisher
   require Logger
 
   def create(%Plan{} = plan, params) do
@@ -53,7 +53,7 @@ defmodule Airlink.Payments do
       }
 
       queue = System.get_env("RMQ_SUBSCRIPTION_QUEUE") || "rmq_subscription_queue"
-      {:ok, :ok} = RmqPulbisher.publish(data, queue)
+      {:ok, :ok} = RmqPublisher.publish(data, queue)
       :ok
     end
   end
