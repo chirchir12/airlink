@@ -49,7 +49,6 @@ defmodule Airlink.Hotspots do
 
   """
   def create_hotspot(attrs \\ %{}) do
-    IO.inspect(attrs)
     %Hotspot{}
     |> Hotspot.changeset(attrs)
     |> Repo.insert()

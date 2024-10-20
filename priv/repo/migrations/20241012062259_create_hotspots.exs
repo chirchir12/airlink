@@ -21,5 +21,6 @@ defmodule Airlink.Repo.Migrations.CreateHotspots do
     create index(:hotspots, [:uuid])
     create index(:hotspots, :company_id)
     create index(:hotspots, [:router_id])
+    create unique_index(:hotspots, [:name, :company_id, :router_id])
   end
 end

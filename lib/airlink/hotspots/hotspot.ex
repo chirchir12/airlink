@@ -44,6 +44,7 @@ defmodule Airlink.Hotspots.Hotspot do
     hotspot
     |> cast(attrs, @permitted_fields)
     |> validate_required(@required_fields)
+    |> unique_constraint([:name, :company_id, :router_id])
     |> maybe_put_uuid(:uuid)
   end
 end
