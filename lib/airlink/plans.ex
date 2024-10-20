@@ -18,6 +18,11 @@ defmodule Airlink.Plans do
       [%Plan{}, ...]
 
   """
+  def list_plans(company_id, hotspot_id) do
+    query = from p in Plan, where: p.company_id == ^company_id and p.hotspot_id == ^hotspot_id
+    {:ok, Repo.all(query)}
+  end
+
   def list_plans(company_id) do
     query = from p in Plan, where: p.company_id == ^company_id
     {:ok, Repo.all(query)}

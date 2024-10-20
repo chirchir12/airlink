@@ -3,8 +3,18 @@ defmodule AirlinkWeb.PlanController do
 
   alias Airlink.Plans
   alias Airlink.Plans.Plan
+  alias Airlink.Hotspots
+  alias Airlink.Hotspots.Hotspot
   plug AirlinkWeb.CheckRolesPlug, ["captive_user", "tenant", "%", "admin", "tenant.individual"]
   action_fallback AirlinkWeb.FallbackController
+
+  def index(%Plug.Conn{assigns: %{hotspot_id: hotspot_uuid}} = conn, %{"company_id" => company_id}) do
+    with {:ok, %Hotspot{id: hotspot_id}} <- Hotspots.get_hotspot_by_uuid(hotspot_uuid),
+    {:ok, plans} <- Plans.list_plans(company_id, hotspot_id) do
+      conn
+      |> render(:index, plans: plans)
+    end
+  end
 
   def index(conn, %{"company_id" => company_id}) do
     with {:ok, plans} <- Plans.list_plans(company_id) do
