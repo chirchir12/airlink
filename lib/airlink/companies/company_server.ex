@@ -31,7 +31,7 @@ defmodule Airlink.Companies.CompanyServer do
   @impl true
   def init(_args) do
     table = :ets.new(@table_name, [:set, :protected, :named_table])
-    Logger.info("[#{__MODULE__}]: is started")
+    Logger.info("[#{__MODULE__}]: Company Server started")
     {:ok, table}
   end
 

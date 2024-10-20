@@ -41,7 +41,7 @@ defmodule Airlink.Companies.CompanyHydration do
       :ok
     else
       _ ->
-        Logger.error("[#{inspect(__MODULE__)}]: Http Request Failed")
+        :error
     end
   end
 
@@ -64,7 +64,6 @@ defmodule Airlink.Companies.CompanyHydration do
 
 
   defp handle_error(%HTTPoison.Error{id: nil, reason: reason}) do
-    Logger.debug("[#{inspect(__MODULE__)}]: Http request failed. reason: #{inspect(reason)}")
     raise "HTTP request failed: #{inspect(reason)}"
   end
 
