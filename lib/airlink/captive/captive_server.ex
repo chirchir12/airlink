@@ -1,10 +1,11 @@
 defmodule Airlink.Captive.CaptiveServer do
   use GenServer
-  alias Airlink.Captive.CookierServer
+  require Logger
 
   @table_name :captive_cache
   # 1 min
-  @run_after 60_000
+  @schedule_clean_up_after 60_000
+  # 30 mins
   @expiration_period 30 * 60
 
   # Client API
@@ -13,20 +14,16 @@ defmodule Airlink.Captive.CaptiveServer do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
-  def add_captive_entry(customer_uuid, data) do
-    GenServer.call(__MODULE__, {:add_captive_entry, customer_uuid, data})
+  def add_captive_entry(cookie, captive_data) do
+    GenServer.call(__MODULE__, {:add_captive_entry, cookie, captive_data})
   end
 
-  def delete_captive_entry(customer_uuid) do
-    GenServer.call(__MODULE__, {:delete_captive_entry, customer_uuid})
+  def delete_captive_entry(cookie) do
+    GenServer.call(__MODULE__, {:delete_captive_entry, cookie})
   end
 
-  def get_captive_entry(customer_uuid) do
-    GenServer.call(__MODULE__, {:get_captive_entry, customer_uuid})
-  end
-
-  def get_customer_id(cookie) do
-    CookierServer.get_customer_id(cookie)
+  def get_captive_entry(cookie) do
+    GenServer.call(__MODULE__, {:get_captive_entry, cookie})
   end
 
   # Server Callbacks
@@ -40,38 +37,36 @@ defmodule Airlink.Captive.CaptiveServer do
 
   @impl true
   def handle_call(
-        {:add_captive_entry, customer_uuid, {_customer, %{cookie: cookie}} = data},
+        {:add_captive_entry, cookie, captive_data},
         _from,
         table
       ) do
-    result = :ets.insert(table, {customer_uuid, data})
-    _ = CookierServer.add_cookie(cookie, customer_uuid)
+    result = :ets.insert(table, {cookie, captive_data})
 
     {:reply, result, table}
   end
 
   @impl true
-  def handle_call({:delete_captive_entry, customer_uuid}, _from, table) do
+  def handle_call({:delete_captive_entry, cookie}, _from, table) do
     result =
-      case :ets.lookup(table, customer_uuid) do
-        [{^customer_uuid, {_customer, %{cookie: cookie}}}] ->
-          result = :ets.delete(table, customer_uuid)
-          _ = CookierServer.delete_cookie(cookie)
+      case :ets.lookup(table, cookie) do
+        [{^cookie, _captive_data}] ->
+          result = :ets.delete(table, cookie)
           {:ok, result}
 
         [] ->
-          {:error, :customer_not_found}
+          {:error, :captive_data_not_found}
       end
 
     {:reply, result, table}
   end
 
   @impl true
-  def handle_call({:get_captive_entry, customer_uuid}, _from, table) do
+  def handle_call({:get_captive_entry, cookie}, _from, table) do
     result =
-      case :ets.lookup(table, customer_uuid) do
-        [{^customer_uuid, data}] -> {:ok, data}
-        [] -> {:error, :customer_not_found}
+      case :ets.lookup(table, cookie) do
+        [{^cookie, data}] -> {:ok, data}
+        [] -> {:error, :captive_data_not_found}
       end
 
     {:reply, result, table}
@@ -84,21 +79,32 @@ defmodule Airlink.Captive.CaptiveServer do
   end
 
   defp schedule_evacution() do
-    _ = Process.send_after(self(), :clear_expired, @run_after)
+    _ = Process.send_after(self(), :clear_expired, @schedule_clean_up_after)
     :ok
   end
 
   defp clear_expired(table) do
-    current_time = DateTime.utc_now()
+    now = DateTime.utc_now()
+    cutoff = DateTime.add(now, - @expiration_period, :second)
 
-    :ets.select_delete(table, [
-      {{:"$1", {:"$2", :"$3"}},
-       [{:>, {:-, current_time, {:map_get, :created_at, :"$3"}}, @expiration_period}],
-       [{:ok, {{:"$1", {:map_get, :cookie, :"$3"}}}}]}
-    ])
-    |> Enum.each(fn {_customer_uuid, cookie} ->
-      CookierServer.delete_cookie(cookie)
-    end)
+    :ets.foldl(
+      fn
+        {cookie,  %{created_at: created_at}} = entry, acc
+        when is_struct(created_at, DateTime) ->
+          if DateTime.compare(created_at, cutoff) == :lt do
+            :ets.delete(table, cookie)
+            [entry | acc]
+          else
+            acc
+          end
+
+        entry, acc ->
+          Logger.warning("[#{inspect(__MODULE__)}] Unexpected entry format: #{inspect(entry)}")
+          acc
+      end,
+      [],
+      table
+    )
 
     schedule_evacution()
     table

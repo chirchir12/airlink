@@ -10,8 +10,7 @@ defmodule Airlink.Application do
     children = [
       AirlinkWeb.Telemetry,
       Airlink.Repo,
-      # Airlink.Captive.CaptiveServer,
-      # Airlink.Captive.CookierServer,
+      Airlink.Captive.CaptiveServer,
       Airlink.Companies.CompanyServerSupervisor,
       Airlink.Routers.RouterSupervisor,
       Airlink.Subscriptions.SubscriptionConsumer,
