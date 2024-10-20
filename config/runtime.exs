@@ -223,6 +223,6 @@ system_secret =
 
 users_secret = System.get_env("AIRLINK_AUTH_SECRET") || raise("AIRLINK_AUTH_SECRET is not set")
 
-config :radius, Airlink.Diralink.Auth,
+config :airlink, Airlink.Diralink.Auth,
   system_secret: Joken.Signer.create("HS512", system_secret),
   users_secret: Joken.Signer.create("HS512", users_secret)

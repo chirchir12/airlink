@@ -1,4 +1,4 @@
-defmodule Airlink.RmqPulbisher do
+defmodule Airlink.RmqPublisher do
   @behaviour GenRMQ.Publisher
   require Logger
 
@@ -53,7 +53,7 @@ defmodule Airlink.RmqPulbisher do
   end
 
   defp get_options() do
-    :diralink
+    :airlink
     |> Application.get_env(__MODULE__)
   end
 end

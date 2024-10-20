@@ -34,7 +34,7 @@ defmodule Airlink.Diralink.Auth do
   end
 
   defp get_signer(key_type) do
-    :radius
+    :airlink
     |> Application.get_env(__MODULE__)
     |> kw_to_map()
     |> Map.get(key_type)

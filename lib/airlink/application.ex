@@ -18,7 +18,7 @@ defmodule Airlink.Application do
       Airlink.Payments.PaymentConsumer,
       Airlink.Companies.CompanyConsumer,
       Airlink.Routers.RouterConsumer,
-      Airlink.RmqPulbisher,
+      Airlink.RmqPublisher,
       {DNSCluster, query: Application.get_env(:airlink, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Airlink.PubSub},
       # Start the Finch HTTP client for sending emails
