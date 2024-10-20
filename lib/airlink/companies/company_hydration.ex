@@ -57,6 +57,7 @@ defmodule Airlink.Companies.CompanyHydration do
   end
 
   defp handle_response(%HTTPoison.Response{status_code: 200, body: body}) do
+    Logger.info("[#{inspect(__MODULE__)}]: Got companies from diralink")
     body
     |> atomize_map_keys()
     |> hydrate_cache()
