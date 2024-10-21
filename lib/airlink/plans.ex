@@ -50,7 +50,7 @@ defmodule Airlink.Plans do
   end
 
   def get_plan_uuid(uuid) do
-    case Repo.get(Plan, uuid: uuid) do
+    case Repo.get_by(Plan, uuid: uuid) do
       nil -> {:error, :plan_not_found}
       plan -> {:ok, plan}
     end

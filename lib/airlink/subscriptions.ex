@@ -46,7 +46,7 @@ defmodule Airlink.Subscriptions do
   end
 
   def get_subscription_by_uuid(uuid) do
-    case Repo.get(Subscription, uuid: uuid) do
+    case Repo.get_by(Subscription, uuid: uuid) do
       nil -> {:error, :subscription_not_found}
       subscription -> {:ok, subscription}
     end
@@ -160,9 +160,13 @@ defmodule Airlink.Subscriptions do
   end
 
   # private
-  defp is_expired(expire_time) do
+  defp is_expired(expire_time) when not is_nil(expire_time) do
     current_time = DateTime.utc_now()
     DateTime.compare(expire_time, current_time) == :lt
+  end
+
+  defp is_expired(_expire_time) do
+    true
   end
 
   defp handle_change(params) when is_list(params) do

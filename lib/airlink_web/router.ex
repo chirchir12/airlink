@@ -29,10 +29,13 @@ defmodule AirlinkWeb.Router do
      # captive endpoints: Auth-cookie
   scope "/v1/api/captive", AirlinkWeb do
     pipe_through [:api, :captive_user, :ensure_authenticated]
+
     # list packages
     get "/plans/list/:company_id", PlanController, :index
     # create payment
+    post "/payments", PaymentController, :create
     # get payment
+    get "/payments/:ref_id", PaymentController, :show
     # login
     # get customer
   end

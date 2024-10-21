@@ -1,17 +1,23 @@
 defmodule AirlinkWeb.PaymentController do
   use AirlinkWeb, :controller
 
+  alias Airlink.Customers.Customer
+  alias Airlink.Customers
   alias Airlink.Payments
   alias Airlink.Plans
-  alias Airlink.Captive
+
 
   plug AirlinkWeb.CheckRolesPlug, ["captive_user"]
   action_fallback AirlinkWeb.FallbackController
 
   def create(conn, %{"params" => params}) do
-    with {:ok, params} <- Payments.validate(params),
-         {:ok, {_customer, _captive_entry}} <- Captive.get_entry(params.customer_id),
+
+    with customer_uuid = params |> Map.get("customer_id"),
+          {:ok, %Customer{id: customer_id}} <- Customers.get_customer_by_uuid(customer_uuid),
+          {:ok, params} <- Payments.validate(params),
+          params <- params |> Map.put(:customer_id, customer_id),
          {:ok, plan} <- Plans.get_plan_uuid(params.plan_id),
+         params <- params |> Map.put_new(:customer_uuid, customer_uuid),
          {:ok, subscription} <- Payments.create(plan, params) do
       conn
       |> put_status(:accepted)

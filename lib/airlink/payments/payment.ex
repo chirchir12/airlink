@@ -28,6 +28,6 @@ defmodule Airlink.Payments.Payment do
   end
 
   defp is_valid_mobile_number?(mobile_number) do
-    Regex.match?(~r/^\d{13}$/, mobile_number)
+    Regex.match?(~r/^\d{12}$/, mobile_number)
   end
 end

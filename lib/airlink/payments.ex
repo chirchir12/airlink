@@ -40,7 +40,7 @@ defmodule Airlink.Payments do
     end
   end
 
-  defp maybe_publish_to_radius(%Subscription{status: "complete"}, %Customer{} = cust, txn_params) do
+  defp maybe_publish_to_radius(%Subscription{status: "completed"}, %Customer{} = cust, txn_params) do
     with {:ok, plan} <- Plans.get_plan_uuid(txn_params.plan_id) do
       data = %{
         username: cust.username,
@@ -114,8 +114,11 @@ defmodule Airlink.Payments do
 
   defp handle_request(request, subscription) do
     config = get_config(:diralink)
-    url = "#{config.base_url}/v1/system/payments"
+    url = "#{config.base_url}/v1/api/system/payments"
     headers = basic_auth(config)
+    request = %{
+      params: request
+    }
 
     case HttpClient.post(url, request, headers) do
       {:ok, response} -> handle_response(response)
@@ -139,7 +142,7 @@ defmodule Airlink.Payments do
       amount: price,
       plan_id: uuid,
       company_id: params.company_id,
-      customer_id: params.customer_id,
+      customer_id: params.customer_uuid,
       transaction_type: "c2b",
       description: "Hotspot Payment",
       request_id: sub_uuid,

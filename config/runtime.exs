@@ -162,12 +162,12 @@ config :airlink, Airlink.Payments.PaymentConsumer,
     durable: true
   ],
   queue:
-    System.get_env("PAYMENT_RESULT_QUEUE") ||
-      raise("PAYMENT_RESULT_QUEUE environment variable is missing"),
+    System.get_env("RMQ_DIRALINK_PAYMENT_RESULT_QUEUE") ||
+      raise("RMQ_DIRALINK_PAYMENT_RESULT_QUEUE environment variable is missing"),
   prefetch_count: "10",
   routing_key:
-    System.get_env("PAYMENT_RESULT_QUEUE") ||
-      raise("PAYMENT_RESULT_QUEUE environment variable is missing")
+    System.get_env("RMQ_DIRALINK_PAYMENT_RESULT_QUEUE") ||
+      raise("RMQ_DIRALINK_PAYMENT_RESULT_QUEUE environment variable is missing")
 
 # subscription consumer
 config :airlink, Airlink.Subscriptions.SubscriptionConsumer,
@@ -194,12 +194,12 @@ config :airlink, Airlink.Companies.CompanyConsumer,
     durable: true
   ],
   queue:
-    System.get_env("COMPANY_CHANGES_QUEUE") ||
-      raise("COMPANY_CHANGES_QUEUE environment variable is missing"),
+    System.get_env("RMQ_COMPANY_QUEUE") ||
+      raise("RMQ_COMPANY_QUEUE environment variable is missing"),
   prefetch_count: "10",
   routing_key:
-    System.get_env("COMPANY_CHANGES_QUEUE") ||
-      raise("COMPANY_CHANGES_QUEUE environment variable is missing")
+    System.get_env("RMQ_COMPANY_QUEUE") ||
+      raise("RMQ_COMPANY_QUEUE environment variable is missing")
 
 # router consumer
 config :airlink, Airlink.Routers.RouterConsumer,
