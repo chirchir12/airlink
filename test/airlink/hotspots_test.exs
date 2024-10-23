@@ -40,10 +40,10 @@ defmodule Airlink.HotspotsTest do
     hotspot
   end
 
-  describe "list_hotspots/0" do
+  describe "list_hotspots/1" do
     test "returns all hotspots" do
       hotspot = hotspot_fixture()
-      {:ok, hotspots} = Hotspots.list_hotspots()
+      {:ok, hotspots} = Hotspots.list_hotspots(hotspot.company_id)
       assert hotspots == [hotspot]
     end
   end
