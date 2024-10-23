@@ -145,7 +145,7 @@ defmodule Airlink.Plans do
   end
 
   defp maybe_publish_to_rmq(action, %Plan{} = plan) do
-    queue = System.get_env("RMQ_PLAN_QUEUE") || "rmq_plan_queue"
+    queue = System.get_env("RMQ_PLAN_ROUTING_KEY") || "rmq_plan_changes_rk"
 
     data = %{
       action: action,
