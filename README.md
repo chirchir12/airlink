@@ -1,18 +1,20 @@
 # Airlink
 
-To start your Phoenix server:
+Service to handle hotspot functinality for diralink
 
-  * Run `mix setup` to install and setup dependencies
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+### Functionalities
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+1. Create hotspots
+2. create plans/packages
+3. create hotspot customers
+4. handle hotspot payments
+5. handle internet subscription for hotspot users
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+## Message Queues Required to be set
 
-## Learn more
-
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+| Queue Name/Consumer           | Routing Key             | Description                             |
+| ----------------------------- | ----------------------- | --------------------------------------- |
+| airlink_subscription_consumer | subscription_changes_rk | Internet Subscription notification      |
+| airlink_payment_consumer      | payment_results_rk      | Payment notifications                   |
+| airlink_company_consumer      | company_changes_rk      | handle notification for payment changes |
+| airlink_router_consumer       | router_changes_rk       | handle notifications for router changes |
