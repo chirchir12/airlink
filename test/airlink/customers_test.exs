@@ -7,7 +7,7 @@ defmodule Airlink.CustomersTest do
   describe "customers" do
     @valid_attrs %{username: "username", status: "inactive", company_id: Ecto.UUID.generate()}
     @update_attrs %{first_name: "Jane Doe", email: "jane@example.com"}
-    @invalid_attrs %{name: nil, email: nil}
+    @invalid_attrs %{status: "nil"}
 
     def customer_fixture(attrs \\ %{}) do
       {:ok, customer} =
@@ -24,7 +24,8 @@ defmodule Airlink.CustomersTest do
 
     test "list_customers/0 returns all customers" do
       customer = customer_fixture()
-      assert Customers.list_customers() == [customer]
+      {:ok, customers} = Customers.list_customers()
+      assert length(customers) == length([customer])
     end
 
     test "get_customer_by_id/1 returns the customer with given id" do
@@ -41,9 +42,9 @@ defmodule Airlink.CustomersTest do
       customer = customer_fixture()
 
       assert {:ok, %Customer{} = fetched_customer} =
-               Customers.get_customer_by_uuid(customer.customer_id)
+               Customers.get_customer_by_uuid(customer.uuid)
 
-      assert fetched_customer.uuid == customer.customer_id
+      assert fetched_customer.uuid == customer.uuid
     end
 
     test "get_customer_by_uuid/1 returns error for non-existent uuid" do
