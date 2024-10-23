@@ -3,16 +3,20 @@ defmodule Airlink.Helpers do
 
   # changeset functions
   def maybe_put_uuid(%Ecto.Changeset{valid?: true} = changeset, field) do
-    if changeset.data.id do
-      changeset
-    else
-      case get_field(changeset, field) do
-        nil -> changeset |> put_change(field, Ecto.UUID.generate())
-        _ -> changeset
-      end
+    cond do
+      # Check if the changeset already has an ID
+      get_field(changeset, :id) ->
+        changeset
+      # Check if the specified field is already set
+      get_field(changeset, field) ->
+        changeset
+      # If neither ID nor the field is set, generate a new UUID
+      true ->
+        put_change(changeset, field, Ecto.UUID.generate())
     end
   end
 
+  # Handle invalid changesets
   def maybe_put_uuid(changeset, _field), do: changeset
 
   def kw_to_map(data) when is_list(data) do
