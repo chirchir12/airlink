@@ -152,12 +152,8 @@ defmodule Airlink.Subscriptions do
     Subscription.changeset(subscription, attrs)
   end
 
-  def handle_subscription_changes(%{service: "hotspot"} = params) do
+  def handle_subscription_changes(params) do
     handle_change(params)
-  end
-
-  def handle_subscription_changes(_params) do
-    :ok
   end
 
   # private
@@ -176,6 +172,8 @@ defmodule Airlink.Subscriptions do
 
     :ok
   end
+
+
 
   defp handle_change(%{action: "session_expired", customer_id: uuid}) do
     with {:ok, customer} <- Customers.get_customer_by_uuid(uuid) do

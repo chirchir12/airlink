@@ -37,7 +37,7 @@ defmodule Airlink.Routers.RouterConsumer do
     Logger.info("Received message: #{inspect(message)}")
     payload = Jason.decode!(payload) |> atomize_map_keys()
 
-    with :ok <- Routers.handle_router_changes(payload) do
+    with :ok <- process_message(payload, &Routers.handle_router_changes/1) do
       ack(message)
     end
   end

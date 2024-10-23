@@ -37,7 +37,7 @@ defmodule Airlink.Companies.CompanyConsumer do
     Logger.info("Received message: #{inspect(message)}")
     payload = Jason.decode!(payload) |> atomize_map_keys()
 
-    with :ok <- Companies.handle_company_changes(payload) do
+    with :ok <- process_message(payload, &Companies.handle_company_changes/1) do
       ack(message)
     end
   end

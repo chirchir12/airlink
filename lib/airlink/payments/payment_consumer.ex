@@ -36,7 +36,7 @@ defmodule Airlink.Payments.PaymentConsumer do
   def handle_message(%Message{payload: payload} = message) do
     Logger.info("Received message: #{inspect(message)}")
     payload = Jason.decode!(payload) |> atomize_map_keys()
-    :ok = Payments.update_payments(payload)
+    :ok = process_message(payload, &Payments.update_payments/1)
     ack(message)
   end
 

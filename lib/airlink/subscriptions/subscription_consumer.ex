@@ -37,7 +37,7 @@ defmodule Airlink.Subscriptions.SubscriptionConsumer do
     Logger.info("Received message: #{inspect(message)}")
     payload = Jason.decode!(payload) |> atomize_map_keys()
 
-    with :ok <- Subscriptions.handle_subscription_changes(payload) do
+    with :ok <- process_message(payload, &Subscriptions.handle_subscription_changes/1) do
       ack(message)
     end
   end
