@@ -62,7 +62,7 @@ defmodule Airlink.Helpers do
     |> Enum.each(&process_message(&1, func))
   end
 
-  def process_message(%{sender: "radius"}, _func) do
+  def process_message(%{sender: "airlink"}, _func) do
     :ok
   end
 
