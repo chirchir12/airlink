@@ -4,6 +4,7 @@ defmodule Airlink.Subscriptions do
   """
 
   import Ecto.Query, warn: false
+  require Logger
   alias Airlink.Repo
   alias Airlink.Subscriptions.Subscription
   alias Airlink.Plans
@@ -192,5 +193,13 @@ defmodule Airlink.Subscriptions do
       update_subscription(subscription, data)
       :ok
     end
+  end
+
+  defp handle_change(%{sender: "airlink"}) do
+    :ok
+  end
+  defp handle_change(params) do
+    Logger.warning("Message was not handled: #{inspect(params)}")
+    :ok
   end
 end

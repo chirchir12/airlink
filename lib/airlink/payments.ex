@@ -49,10 +49,11 @@ defmodule Airlink.Payments do
         service: "hotspot",
         duration_mins: Plans.calculate_duration_mins(plan),
         plan: txn_params.plan_id,
-        action: "session_activate"
+        action: "session_activate",
+        sender: :airlink
       }
 
-      queue = System.get_env("RMQ_SUBSCRIPTION_QUEUE") || "rmq_subscription_queue"
+      queue = System.get_env("RMQ_SUBSCRIPTION_ROUTING_KEY") || "RMQ_SUBSCRIPTION_ROUTING_KEY"
       {:ok, :ok} = RmqPublisher.publish(data, queue)
       :ok
     end

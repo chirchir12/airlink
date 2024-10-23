@@ -162,12 +162,12 @@ config :airlink, Airlink.Payments.PaymentConsumer,
     durable: true
   ],
   queue:
-    System.get_env("RMQ_DIRALINK_PAYMENT_RESULT_QUEUE") ||
-      raise("RMQ_DIRALINK_PAYMENT_RESULT_QUEUE environment variable is missing"),
+    System.get_env("RMQ_AIRLINK_PAYMENT_RESULT_CONSUMER") ||
+      raise("RMQ_AIRLINK_PAYMENT_RESULT_CONSUMER environment variable is missing"),
   prefetch_count: "10",
   routing_key:
-    System.get_env("RMQ_DIRALINK_PAYMENT_RESULT_QUEUE") ||
-      raise("RMQ_DIRALINK_PAYMENT_RESULT_QUEUE environment variable is missing")
+    System.get_env("RMQ_PAYMENT_RESULT_ROUTING_KEY") ||
+      raise("RMQ_PAYMENT_RESULT_ROUTING_KEY environment variable is missing")
 
 # subscription consumer
 config :airlink, Airlink.Subscriptions.SubscriptionConsumer,
@@ -178,12 +178,12 @@ config :airlink, Airlink.Subscriptions.SubscriptionConsumer,
     durable: true
   ],
   queue:
-    System.get_env("RMQ_SUBSCRIPTION_QUEUE") ||
-      raise("RMQ_SUBSCRIPTION_QUEUE environment variable is missing"),
+    System.get_env("RMQ_AIRLINK_SUBSCRIPTION_CONSUMER") ||
+      raise("RMQ_AIRLINK_SUBSCRIPTION_CONSUMER environment variable is missing"),
   prefetch_count: "10",
   routing_key:
-    System.get_env("RMQ_SUBSCRIPTION_QUEUE") ||
-      raise("RMQ_SUBSCRIPTION_QUEUE environment variable is missing")
+    System.get_env("RMQ_SUBSCRIPTION_ROUTING_KEY") ||
+      raise("RMQ_SUBSCRIPTION_ROUTING_KEY environment variable is missing")
 
 # company consumer
 config :airlink, Airlink.Companies.CompanyConsumer,
@@ -194,12 +194,12 @@ config :airlink, Airlink.Companies.CompanyConsumer,
     durable: true
   ],
   queue:
-    System.get_env("RMQ_COMPANY_QUEUE") ||
-      raise("RMQ_COMPANY_QUEUE environment variable is missing"),
+    System.get_env("RMQ_AIRLINK_COMPANY_CONSUMER") ||
+      raise("RMQ_AIRLINK_COMPANY_CONSUMER environment variable is missing"),
   prefetch_count: "10",
   routing_key:
-    System.get_env("RMQ_COMPANY_QUEUE") ||
-      raise("RMQ_COMPANY_QUEUE environment variable is missing")
+    System.get_env("RMQ_COMPANY_ROUTING_KEY") ||
+      raise("RMQ_COMPANY_ROUTING_KEY environment variable is missing")
 
 # router consumer
 config :airlink, Airlink.Routers.RouterConsumer,
@@ -210,12 +210,12 @@ config :airlink, Airlink.Routers.RouterConsumer,
     durable: true
   ],
   queue:
-    System.get_env("RMQ_ROUTER_QUEUE") ||
-      raise("RMQ_ROUTER_QUEUE environment variable is missing"),
+    System.get_env("RMQ_AIRLINK_ROUTER_CONSUMER") ||
+      raise("RMQ_AIRLINK_ROUTER_CONSUMER environment variable is missing"),
   prefetch_count: "10",
   routing_key:
-    System.get_env("RMQ_ROUTER_QUEUE") ||
-      raise("RMQ_ROUTER_QUEUE environment variable is missing")
+    System.get_env("RMQ_ROUTER_ROUTING_KEY") ||
+      raise("RMQ_ROUTER_ROUTING_KEY environment variable is missing")
 
 # auth
 system_secret =

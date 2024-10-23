@@ -10,7 +10,9 @@ Service to handle hotspot functinality for diralink
 4. handle hotspot payments
 5. handle internet subscription for hotspot users
 
-## Message Queues Required to be set
+## Environment Configuration
+
+### Airlink Message Queues Configuration
 
 | Queue Name/Consumer           | Routing Key             | Description                             |
 | ----------------------------- | ----------------------- | --------------------------------------- |
@@ -18,3 +20,6 @@ Service to handle hotspot functinality for diralink
 | airlink_payment_consumer      | payment_results_rk      | Payment notifications                   |
 | airlink_company_consumer      | company_changes_rk      | handle notification for payment changes |
 | airlink_router_consumer       | router_changes_rk       | handle notifications for router changes |
+|                               | rmq_plan_changes_rk     | Handle plan/packages notifications      |
+
+###
