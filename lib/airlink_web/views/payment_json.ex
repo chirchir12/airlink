@@ -1,14 +1,20 @@
 defmodule AirlinkWeb.PaymentJSON do
   alias Airlink.Subscriptions.Subscription
 
-  def show(%{subscription: subscription}) do
-    %{data: data(subscription)}
+  def show(%{payment: {customer, subscription}}) do
+    %{data: data(customer, subscription)}
   end
 
-  defp data(%Subscription{} = sub) do
+  defp data(customer, %Subscription{} = sub) do
+    is_activated = case customer.status do
+      "active" -> true
+      "inactive" -> false
+
+    end
     %{
       status: sub.status,
-      ref_id: sub.uuid
+      ref_id: sub.uuid,
+      is_activated: is_activated
     }
   end
 end
