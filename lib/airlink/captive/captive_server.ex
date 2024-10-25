@@ -85,11 +85,11 @@ defmodule Airlink.Captive.CaptiveServer do
 
   defp clear_expired(table) do
     now = DateTime.utc_now()
-    cutoff = DateTime.add(now, - @expiration_period, :second)
+    cutoff = DateTime.add(now, -@expiration_period, :second)
 
     :ets.foldl(
       fn
-        {cookie,  %{created_at: created_at}} = entry, acc
+        {cookie, %{created_at: created_at}} = entry, acc
         when is_struct(created_at, DateTime) ->
           if DateTime.compare(created_at, cutoff) == :lt do
             :ets.delete(table, cookie)

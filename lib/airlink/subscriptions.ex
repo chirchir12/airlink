@@ -173,8 +173,6 @@ defmodule Airlink.Subscriptions do
     :ok
   end
 
-
-
   defp handle_change(%{action: "session_expired", customer_id: uuid}) do
     with {:ok, customer} <- Customers.get_customer_by_uuid(uuid) do
       data = %{status: "inactive"}
@@ -196,6 +194,7 @@ defmodule Airlink.Subscriptions do
   defp handle_change(%{sender: "airlink"}) do
     :ok
   end
+
   defp handle_change(params) do
     Logger.warning("Message was not handled: #{inspect(params)}")
     :ok

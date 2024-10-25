@@ -20,10 +20,11 @@ defmodule AirlinkWeb.CustomerController do
 
   def show(%Plug.Conn{assigns: %{captive_data: captive_data}} = conn, _params) do
     with {:ok, customer} <- Customers.get_customer_by_uuid(captive_data.customer_id) do
-    data = {customer, captive_data}
-    conn
-    |> put_status(:ok)
-    |> render(:show, data: data )
+      data = {customer, captive_data}
+
+      conn
+      |> put_status(:ok)
+      |> render(:show, data: data)
     end
   end
 

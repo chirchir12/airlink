@@ -17,16 +17,14 @@ defmodule AirlinkWeb.Router do
     plug AirlinkWeb.EnsureAuthenticatedPlug
   end
 
-
-
   # captive endpoints
-    # captive endpoints: No Auth
-    scope "/v1/api/captive", AirlinkWeb do
-      pipe_through [:api, :captive_user]
-      post "/create", CaptiveController, :create
-    end
+  # captive endpoints: No Auth
+  scope "/v1/api/captive", AirlinkWeb do
+    pipe_through [:api, :captive_user]
+    post "/create", CaptiveController, :create
+  end
 
-     # captive endpoints: Auth-cookie
+  # captive endpoints: Auth-cookie
   scope "/v1/api/captive", AirlinkWeb do
     pipe_through [:api, :captive_user, :ensure_authenticated]
 
@@ -39,9 +37,11 @@ defmodule AirlinkWeb.Router do
     # get payment
     get "/payments/:ref_id", PaymentController, :show
 
-
-     # get customer
+    # get customer
     get "/customer", CustomerController, :show
+
+    # get customer
+    get "/company", CompanyController, :show
   end
 
   # system to system endpoints
