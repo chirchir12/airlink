@@ -116,8 +116,21 @@ if config_env() == :prod do
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
 end
 
+
+
+# CORS
+origins = [
+  "http://localhost:3000"
+]
+
+config :cors_plug,
+  origin: origins,
+  methods: ["GET", "POST"]
+
 # captive
 config :airlink, :captive,
+  # 30 mins
+  cookie_ttl: 60 * 30,
   base_url: System.get_env("CAPTIVE_BASE_URL") || raise("CAPTIVE_BASE_URL is not set"),
   plans_uri: System.get_env("CAPTIVE_PACKAGES_URL") || raise("CAPTIVE_PACKAGES_URL is not set"),
   login_uri: System.get_env("CAPTIVE_LOGIN_URI") || raise("CAPTIVE_LOGIN_URI is not set"),

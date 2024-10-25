@@ -31,7 +31,7 @@ defmodule AirlinkWeb.Router do
     # list packages
     get "/plans/list/:company_id", PlanController, :index
     # get plans
-    get "/plans/:id", PlanController, :show
+    get "/plans/:uuid", PlanController, :show
     # create payment
     post "/payments", PaymentController, :create
     # get payment

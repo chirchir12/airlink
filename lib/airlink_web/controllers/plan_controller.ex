@@ -48,6 +48,13 @@ defmodule AirlinkWeb.PlanController do
     end
   end
 
+  def show(conn, %{"uuid" => uuid}) do
+    with {:ok, plan} <- Plans.get_plan_uuid(uuid) do
+      conn
+      |> render(:show, plan: plan)
+    end
+  end
+
   def update(conn, %{"id" => id, "params" => plan_params}) do
     with {:ok, plan} <- Plans.get_plan_id(id),
          {:ok, %Plan{} = plan} <- Plans.update_plan(plan, plan_params) do

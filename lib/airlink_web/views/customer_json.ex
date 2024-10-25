@@ -30,7 +30,8 @@ defmodule AirlinkWeb.CustomerJSON do
       status: customer.status,
       email: customer.email,
       first_name: customer.first_name,
-      last_name: customer.last_name
+      last_name: customer.last_name,
+      hash: customer.password_hash
     }
   end
 end

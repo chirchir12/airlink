@@ -16,11 +16,10 @@ defmodule AirlinkWeb.CaptiveController do
            Customers.get_or_create_customer(params.mac, params.company_id),
          {:ok, %{cookie: cookie}} <- Captive.create_entry(customer, params),
          {:ok, :resubscribe} <- handle_subscription_check(conn, customer, cookie) do
-      config = get_config()
+      config = get_captive_config()
       url = "#{config.base_url}/#{config.plans_uri}/#{company_id}"
-
       conn
-      |> put_resp_cookie("airlink_hotspot_cookie", cookie, max_age: 600)
+      |> put_resp_cookie("airlink_hotspot_cookie", cookie, max_age: config.cookie_ttl)
       |> redirect(external: url)
     end
   end
@@ -89,22 +88,22 @@ defmodule AirlinkWeb.CaptiveController do
   end
 
   defp handle_redirection(conn, error_name) do
-    config = get_config()
+    config = get_captive_config()
     url = "#{config.base_url}/#{config[error_name]}"
     redirect(conn, external: url)
   end
 
   defp login(conn, ref_id, cookie) do
     # User is still active
-    config = get_config()
+    config = get_captive_config()
     url = "#{config.base_url}/#{config.login_uri}/#{ref_id}"
 
     conn
-    |> put_resp_cookie("airlink_hotspot_cookie", cookie, max_age: 600)
+    |> put_resp_cookie("airlink_hotspot_cookie", cookie, max_age: config.cookie_ttl)
     |> redirect(external: url)
   end
 
-  defp get_config() do
+  defp get_captive_config() do
     :airlink
     |> Application.get_env(:captive)
     |> Helpers.kw_to_map()

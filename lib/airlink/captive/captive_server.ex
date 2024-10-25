@@ -4,9 +4,7 @@ defmodule Airlink.Captive.CaptiveServer do
 
   @table_name :captive_cache
   # 1 min
-  @schedule_clean_up_after 60_000
-  # 30 mins
-  @expiration_period 30 * 60
+  @schedule_clean_up_after 1_000 * 60
 
   # Client API
 
@@ -31,6 +29,7 @@ defmodule Airlink.Captive.CaptiveServer do
   @impl true
   def init(_args) do
     table = :ets.new(@table_name, [:set, :protected, :named_table])
+    Logger.info("[#{__MODULE__}]: Captive Server started")
     :ok = schedule_evacution()
     {:ok, table}
   end
@@ -85,13 +84,15 @@ defmodule Airlink.Captive.CaptiveServer do
 
   defp clear_expired(table) do
     now = DateTime.utc_now()
-    cutoff = DateTime.add(now, -@expiration_period, :second)
+    cookie_ttl = Application.get_env(:airlink, :captive)[:cookie_ttl]
+    cutoff = DateTime.add(now, -cookie_ttl, :second)
 
     :ets.foldl(
       fn
         {cookie, %{created_at: created_at}} = entry, acc
         when is_struct(created_at, DateTime) ->
           if DateTime.compare(created_at, cutoff) == :lt do
+            :ok = Logger.debug("Cleared Captive Data: #{inspect(entry)}")
             :ets.delete(table, cookie)
             [entry | acc]
           else
