@@ -1,19 +1,27 @@
 defmodule AirlinkWeb.AuthJSON do
   alias Airlink.Customers.Customer
 
-  def auth(%{data: {customer, captive}}) do
+  def show(%{data: {customer, captive_data}}) do
     %{
       data: %{
-        customer: customer_data(customer),
-        captive: captive
+        customer: data(customer),
+        captive: captive_data
       }
     }
   end
 
-  def customer_data(%Customer{} = customer) do
+  def data(%Customer{} = customer) do
     %{
+      id: customer.id,
+      customer_id: customer.uuid,
+      company_id: customer.company_id,
       username: customer.username,
-      password: customer.password_hash
+      phone: customer.phone_number,
+      status: customer.status,
+      email: customer.email,
+      first_name: customer.first_name,
+      last_name: customer.last_name,
+      hash: customer.password_hash
     }
   end
 end

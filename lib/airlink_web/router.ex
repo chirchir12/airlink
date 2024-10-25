@@ -40,7 +40,7 @@ defmodule AirlinkWeb.Router do
     get "/payments/:ref_id", PaymentController, :show
 
     # get customer
-    get "/customer", CustomerController, :show
+    get "/customer", AuthController, :show
 
     # get customer
     get "/company", CompanyController, :show

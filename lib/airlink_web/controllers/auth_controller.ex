@@ -2,20 +2,17 @@ defmodule AirlinkWeb.AuthController do
   use AirlinkWeb, :controller
   alias Airlink.Captive
   alias Airlink.Customers
-  alias Airlink.Subscriptions
-  alias Airlink.Subscriptions.Subscription
   plug AirlinkWeb.CheckRolesPlug, ["captive_user"]
 
-  def login(conn, %{"ref_id" => sub_uud}) do
-    with {:ok, %Subscription{customer_id: customer_id} = sub} <-
-           Subscriptions.get_subscription_by_uuid(sub_uud),
-         {:not_expired, _sub} <- Subscriptions.check_status(sub),
-         {:ok, customer} <- Customers.get_customer_by_id(customer_id),
-         {:ok, captive_entry} <- Captive.get_entry(customer_id) do
-      _ = Captive.delete_entry(customer_id)
-
+  def show(%Plug.Conn{assigns: %{captive_data: captive_data}} = conn, _params) do
+    with {:ok, customer} <- Customers.get_customer_by_uuid(captive_data.customer_uuid) do
+      data = {customer, captive_data}
+      # delete the cookie to save memory
+      Captive.delete_entry(captive_data.cookie)
       conn
-      |> render(:auth, data: {customer, captive_entry})
+      |> put_status(:ok)
+      |> render(:show, data: data)
     end
   end
+
 end

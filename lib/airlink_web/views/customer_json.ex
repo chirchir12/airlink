@@ -5,14 +5,7 @@ defmodule AirlinkWeb.CustomerJSON do
     %{data: for(customer <- customers, do: data(customer))}
   end
 
-  def show(%{data: {customer, captive_data}}) do
-    %{
-      data: %{
-        customer: data(customer),
-        captive: captive_data
-      }
-    }
-  end
+
 
   def show(%{customer: customer}) do
     %{
