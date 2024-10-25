@@ -9,10 +9,10 @@ defmodule AirlinkWeb.AuthController do
       data = {customer, captive_data}
       # delete the cookie to save memory
       Captive.delete_entry(captive_data.cookie)
+
       conn
       |> put_status(:ok)
       |> render(:show, data: data)
     end
   end
-
 end

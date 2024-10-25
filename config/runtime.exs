@@ -116,8 +116,6 @@ if config_env() == :prod do
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
 end
 
-
-
 # CORS
 origins = [
   "http://localhost:3000"

@@ -6,11 +6,12 @@ defmodule AirlinkWeb.PaymentJSON do
   end
 
   defp data(customer, %Subscription{} = sub) do
-    is_activated = case customer.status do
-      "active" -> true
-      "inactive" -> false
+    is_activated =
+      case customer.status do
+        "active" -> true
+        "inactive" -> false
+      end
 
-    end
     %{
       status: sub.status,
       ref_id: sub.uuid,
