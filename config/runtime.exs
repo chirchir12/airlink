@@ -119,7 +119,7 @@ end
 # captive
 config :airlink, :captive,
   base_url: System.get_env("CAPTIVE_BASE_URL") || raise("CAPTIVE_BASE_URL is not set"),
-  plans_url: System.get_env("CAPTIVE_PACKAGES_URL") || raise("CAPTIVE_PACKAGES_URL is not set"),
+  plans_uri: System.get_env("CAPTIVE_PACKAGES_URL") || raise("CAPTIVE_PACKAGES_URL is not set"),
   login_uri: System.get_env("CAPTIVE_LOGIN_URI") || raise("CAPTIVE_LOGIN_URI is not set"),
   suspended_isp:
     System.get_env("CAPTIVE_SUSPENDED_ISP") || raise("CAPTIVE_SUSPENDED_ISP is not set"),

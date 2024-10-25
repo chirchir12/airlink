@@ -32,12 +32,16 @@ defmodule AirlinkWeb.Router do
 
     # list packages
     get "/plans/list/:company_id", PlanController, :index
+    # get plans
+    get "/plans/:id", PlanController, :show
     # create payment
     post "/payments", PaymentController, :create
     # get payment
     get "/payments/:ref_id", PaymentController, :show
-    # login
-    # get customer
+
+
+     # get customer
+    get "/customer", CustomerController, :show
   end
 
   # system to system endpoints

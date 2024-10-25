@@ -16,6 +16,14 @@ defmodule AirlinkWeb.PlanController do
     end
   end
 
+  def index(%Plug.Conn{assigns: %{captive_data: captive_data}} = conn, _params) do
+    with {:ok, %Hotspot{id: hotspot_id}} <- Hotspots.get_hotspot_by_uuid(captive_data.hotspot_id),
+         {:ok, plans} <- Plans.list_plans(captive_data.company_id, hotspot_id) do
+      conn
+      |> render(:index, plans: plans)
+    end
+  end
+
   def index(conn, %{"company_id" => company_id}) do
     with {:ok, plans} <- Plans.list_plans(company_id) do
       conn

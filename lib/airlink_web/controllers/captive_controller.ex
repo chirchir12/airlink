@@ -12,12 +12,12 @@ defmodule AirlinkWeb.CaptiveController do
 
   def create(conn, params) do
     with {:ok, {params, _company, _router, _hotspot}} <- validate(conn, params),
-         {:ok, %Customer{uuid: uuid} = customer} <-
+         {:ok, %Customer{company_id: company_id} = customer} <-
            Customers.get_or_create_customer(params.mac, params.company_id),
          {:ok, %{cookie: cookie}} <- Captive.create_entry(customer, params),
          {:ok, :resubscribe} <- handle_subscription_check(conn, customer, cookie) do
       config = get_config()
-      url = "#{config.base_url}/#{config.login_uri}?customer_id=#{uuid}&isp=#{params.company_id}"
+      url = "#{config.base_url}/#{config.plans_uri}/#{company_id}"
 
       conn
       |> put_resp_cookie("airlink_hotspot_cookie", cookie, max_age: 600)

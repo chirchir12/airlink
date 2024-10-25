@@ -2,7 +2,7 @@ defmodule AirlinkWeb.CustomerController do
   use AirlinkWeb, :controller
 
   alias Airlink.Customers
-  plug AirlinkWeb.CheckRolesPlug, ["tenant", "%", "admin", "tenant.individual"]
+  plug AirlinkWeb.CheckRolesPlug, ["captive_user", "tenant", "%", "admin", "tenant.individual"]
   action_fallback AirlinkWeb.FallbackController
 
   def index(conn, _params) do
@@ -15,6 +15,15 @@ defmodule AirlinkWeb.CustomerController do
       conn
       |> put_status(:created)
       |> render(:show, customer: customer)
+    end
+  end
+
+  def show(%Plug.Conn{assigns: %{captive_data: captive_data}} = conn, _params) do
+    with {:ok, customer} <- Customers.get_customer_by_uuid(captive_data.customer_id) do
+    data = {customer, captive_data}
+    conn
+    |> put_status(:ok)
+    |> render(:show, data: data )
     end
   end
 
