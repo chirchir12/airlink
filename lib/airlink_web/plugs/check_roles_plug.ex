@@ -19,7 +19,7 @@ defmodule AirlinkWeb.CheckRolesPlug do
   defp handle_error(conn) do
     conn
     |> put_status(:forbidden)
-    |> put_view(json: RadiusWeb.ErrorJSON)
+    |> put_view(json: Airlink.ErrorJSON)
     |> render(:"403",
       error: %{
         status: :forbidden,

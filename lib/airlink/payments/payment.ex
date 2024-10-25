@@ -4,16 +4,17 @@ defmodule Airlink.Payments.Payment do
 
   @primary_key false
   embedded_schema do
-    field :customer_id, Ecto.UUID
+    field :customer_id, :integer
     field :company_id, Ecto.UUID
     field :plan_id, Ecto.UUID
     field :phone_number, :string
+    field :customer_uuid, Ecto.UUID
   end
 
   def changeset(payment, attrs) do
     payment
-    |> cast(attrs, [:customer_id, :company_id, :plan_id, :phone_number])
-    |> validate_required([:customer_id, :company_id, :plan_id, :phone_number])
+    |> cast(attrs, [:customer_id, :company_id, :plan_id, :phone_number, :customer_uuid])
+    |> validate_required([:customer_id, :company_id, :plan_id, :phone_number, :customer_uuid])
     |> validate_mobile_number(:phone_number)
   end
 

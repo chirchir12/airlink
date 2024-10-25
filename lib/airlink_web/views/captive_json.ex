@@ -5,4 +5,8 @@ defmodule AirlinkWeb.CaptiveJSON do
       status: status
     }
   end
+
+  def show(%{params: params}) do
+    params
+  end
 end

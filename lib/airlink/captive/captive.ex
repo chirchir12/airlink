@@ -12,7 +12,8 @@ defmodule Airlink.Captive.Captive do
     :router_id,
     :cookie,
     :created_at,
-    :customer_id
+    :customer_id,
+    :customer_uuid
   ]
   @required_field [
     :mac,
@@ -35,7 +36,8 @@ defmodule Airlink.Captive.Captive do
     field :router_id, Ecto.UUID
     field :cookie, :string
     field :created_at, :utc_datetime
-    field :customer_id, Ecto.UUID
+    field :customer_id, :integer
+    field :customer_uuid, Ecto.UUID
   end
 
   def changeset(captive, attrs) do

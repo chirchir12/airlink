@@ -24,6 +24,12 @@ defmodule AirlinkWeb.CaptiveController do
     end
   end
 
+  def test_post_to_router(conn, params) do
+    conn
+    |> put_status(:ok)
+    |> render(:show, params: params)
+end
+
   defp validate(conn, params) do
     with {:ok, params} <- handle_validation_check(conn, params),
          {:ok, company} <- handle_company_check(conn, params.company_id),
@@ -83,7 +89,7 @@ defmodule AirlinkWeb.CaptiveController do
   defp handle_subs_status(conn, sub, cookie) do
     case Subscriptions.check_status(sub) do
       {:expired, _sub} -> {:ok, :resubscribe}
-      {:not_expired, _sub} -> login(conn, sub, cookie)
+      {:not_expired, _sub} -> login(conn, cookie)
     end
   end
 
@@ -93,10 +99,10 @@ defmodule AirlinkWeb.CaptiveController do
     redirect(conn, external: url)
   end
 
-  defp login(conn, ref_id, cookie) do
+  defp login(conn, cookie) do
     # User is still active
     config = get_captive_config()
-    url = "#{config.base_url}/#{config.login_uri}/#{ref_id}"
+    url = "#{config.base_url}/#{config.login_uri}"
 
     conn
     |> put_resp_cookie("airlink_hotspot_cookie", cookie, max_age: config.cookie_ttl)

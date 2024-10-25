@@ -22,6 +22,8 @@ defmodule AirlinkWeb.Router do
   scope "/v1/api/captive", AirlinkWeb do
     pipe_through [:api, :captive_user]
     post "/create", CaptiveController, :create
+    # test post to router
+    post "/test", CaptiveController, :test_post_to_router
   end
 
   # captive endpoints: Auth-cookie
