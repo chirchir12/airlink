@@ -7,9 +7,11 @@ defmodule Airlink.Helpers do
       # Check if the changeset already has an ID
       get_field(changeset, :id) ->
         changeset
+
       # Check if the specified field is already set
       get_field(changeset, field) ->
         changeset
+
       # If neither ID nor the field is set, generate a new UUID
       true ->
         put_change(changeset, field, Ecto.UUID.generate())
@@ -54,6 +56,7 @@ defmodule Airlink.Helpers do
     data
     |> Enum.map(&atomize_map_keys/1)
   end
+
   def atomize_map_keys(map) when is_map(map) do
     map
     |> Enum.map(fn {k, v} -> {atomize_key(k), atomize_value(v)} end)

@@ -54,7 +54,7 @@ defmodule Airlink.PlansTest do
 
     test "list_plans/2 returns all plans", %{hotspot: hotspot} do
       plan = plan_fixture(%{hotspot_id: hotspot.id})
-      {:ok, plans} = Plans.list_plans(plan.company_id,hotspot.id)
+      {:ok, plans} = Plans.list_plans(plan.company_id, hotspot.id)
       assert length(plans) == 1
       assert hd(plans).id == plan.id
     end
@@ -123,19 +123,21 @@ defmodule Airlink.PlansTest do
     end
 
     test "create_plan/1 with invalid time_unit returns error changeset", %{hotspot: hotspot} do
-      invalid_attrs = @valid_attrs
-                    |> Map.put(:hotspot_id, hotspot.id)
-                    |> Map.put(:time_unit, "invalid_unit")
+      invalid_attrs =
+        @valid_attrs
+        |> Map.put(:hotspot_id, hotspot.id)
+        |> Map.put(:time_unit, "invalid_unit")
 
       assert {:error, %Ecto.Changeset{} = changeset} = Plans.create_plan(invalid_attrs)
       assert "is not supported" in errors_on(changeset).time_unit
     end
 
+    test "create_plan/1 with name containing spaces returns error changeset", %{hotspot: hotspot} do
+      invalid_attrs =
+        @valid_attrs
+        |> Map.put(:hotspot_id, hotspot.id)
+        |> Map.put(:name, "plan with spaces")
 
-    test "create_plan/1 with name containing spaces returns error changeset",  %{hotspot: hotspot} do
-      invalid_attrs = @valid_attrs
-                    |> Map.put(:hotspot_id, hotspot.id)
-                    |>Map.put(:name, "plan with spaces")
       assert {:error, %Ecto.Changeset{} = changeset} = Plans.create_plan(invalid_attrs)
       assert "must not contain spaces" in errors_on(changeset).name
     end

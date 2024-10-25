@@ -13,6 +13,7 @@ defmodule AirlinkWeb.CustomerJSON do
       }
     }
   end
+
   def show(%{customer: customer}) do
     %{
       data: data(customer)

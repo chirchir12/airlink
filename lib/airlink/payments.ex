@@ -117,6 +117,7 @@ defmodule Airlink.Payments do
     config = get_config(:diralink)
     url = "#{config.base_url}/v1/api/system/payments"
     headers = basic_auth(config)
+
     request = %{
       params: request
     }

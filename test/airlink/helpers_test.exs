@@ -2,14 +2,12 @@ defmodule Airlink.HelpersTest do
   use ExUnit.Case, async: true
   alias Airlink.Helpers
 
-
   # Define a simple struct for testing
   defmodule TestStruct do
     defstruct [:id, :uuid]
   end
 
   def callback(_params), do: :ok
-
 
   describe "kw_to_map/1" do
     test "converts keyword list to map" do
@@ -71,8 +69,7 @@ defmodule Airlink.HelpersTest do
     test "processes list of messages" do
       messages = [%{"type" => "test1"}, %{"type" => "test2"}]
 
-      :ok= Helpers.process_message(messages, &callback/1)
-
+      :ok = Helpers.process_message(messages, &callback/1)
     end
 
     test "ignores messages from airlink" do
@@ -83,7 +80,6 @@ defmodule Airlink.HelpersTest do
     test "processes non-airlink messages" do
       message = %{"sender" => "user", "content" => "test"}
       :ok = Helpers.process_message(message, &callback/1)
-
     end
   end
 end
