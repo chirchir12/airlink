@@ -33,46 +33,46 @@ defmodule AirlinkWeb.CaptiveController do
 
   defp validate(conn, params) do
     with {:ok, params} <- handle_validation_check(conn, params),
-         {:ok, company} <- handle_company_check(conn, params.company_id),
-         {:ok, router} <- handle_router_check(conn, params.router_id),
-         {:ok, hotspot} <- handle_hotspot_check(conn, params.hotspot_id) do
+         {:ok, company} <- handle_company_check(conn, params),
+         {:ok, router} <- handle_router_check(conn, params),
+         {:ok, hotspot} <- handle_hotspot_check(conn, params) do
       {:ok, {params, company, router, hotspot}}
     end
   end
 
-  defp handle_company_check(conn, company_id) do
-    case Companies.get_company(company_id) do
-      {:ok, company} -> handle_disabled_campanies(conn, company)
-      {:error, error} -> handle_redirection(conn, error)
+  defp handle_company_check(conn, params) do
+    case Companies.get_company(params.company_id) do
+      {:ok, company} -> handle_disabled_campanies(conn, params, company)
+      {:error, error} -> handle_redirection(conn, params, error)
     end
   end
 
-  defp handle_disabled_campanies(_conn, %{enabled: true} = company) do
+  defp handle_disabled_campanies(_conn, _params, %{enabled: true} = company) do
     {:ok, company}
   end
 
-  defp handle_disabled_campanies(conn, %{enabled: false}) do
-    handle_redirection(conn, :suspended_isp)
+  defp handle_disabled_campanies(conn, params, %{enabled: false}) do
+    handle_redirection(conn, params, :suspended_isp)
   end
 
   defp handle_validation_check(conn, params) do
     case Captive.validate(params) do
       {:ok, params} -> {:ok, params}
-      {:error, _changeset} -> handle_redirection(conn, :validation_error)
+      {:error, _changeset} -> handle_redirection(conn, params, :validation_error)
     end
   end
 
-  defp handle_router_check(conn, router_id) do
-    case Routers.get_router(router_id) do
+  defp handle_router_check(conn,  params) do
+    case Routers.get_router(params.router_id) do
       {:ok, router} -> {:ok, router}
-      {:error, error} -> handle_redirection(conn, error)
+      {:error, error} -> handle_redirection(conn, params, error)
     end
   end
 
-  defp handle_hotspot_check(conn, hotspot_uuid) do
-    case Hotspots.get_hotspot_by_uuid(hotspot_uuid) do
+  defp handle_hotspot_check(conn, params) do
+    case Hotspots.get_hotspot_by_uuid(params.hotspot_id) do
       {:ok, hotspot} -> {:ok, hotspot}
-      {:error, error} -> handle_redirection(conn, error)
+      {:error, error} -> handle_redirection(conn, params, error)
     end
   end
 
@@ -94,9 +94,9 @@ defmodule AirlinkWeb.CaptiveController do
     end
   end
 
-  defp handle_redirection(conn, error_name) do
+  defp handle_redirection(conn, params, error_name) do
     config = get_captive_config()
-    url = "#{config.base_url}/#{config[error_name]}"
+    url = "#{config.base_url}/#{config[error_name]}/?company_id=#{params.company_id}&auth=false"
     redirect(conn, external: url)
   end
 

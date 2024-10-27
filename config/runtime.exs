@@ -118,7 +118,7 @@ end
 
 # CORS
 origins = [
-  "http://192.168.100.190:3000"
+  "http://localhost:3000"
 ]
 
 config :cors_plug,
