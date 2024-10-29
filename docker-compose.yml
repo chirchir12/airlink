@@ -1,0 +1,52 @@
+name: airlink
+services:
+  airlink:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: airlink
+    restart: always
+    env_file: ".env"
+    ports:
+      - "4002:4002"
+    networks:
+      - backend
+      - diralink_net
+    depends_on:
+      - airlink_db
+    # Add other app-specific configurations here
+
+  airlink_db:
+    container_name: airlink_db
+    image: postgres:14.13-alpine
+    restart: always
+    env_file: ".env"
+    environment:
+      POSTGRES_USER: ${AIRLINK_DB_USERNAME}
+      POSTGRES_PASSWORD: ${AIRLINK_DB_PASSWORD}
+      POSTGRES_DB: ${AIRLINK_DB_DATABASE}
+    networks:
+      - backend
+      - diralink_net
+    ports:
+      - "5400:5432"
+    volumes:
+      - postgres_airlink_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${AIRLINK_DB_USERNAME} -d ${AIRLINK_DB_DATABASE}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  diralink_net:
+    driver: bridge
+  backend:
+    external: true
+
+volumes:
+  postgres_airlink_data:
