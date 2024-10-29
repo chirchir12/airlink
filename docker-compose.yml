@@ -29,7 +29,7 @@ services:
       - backend
       - diralink_net
     ports:
-      - "5400:5432"
+      - "5402:5432"
     volumes:
       - postgres_airlink_data:/var/lib/postgresql/data
     healthcheck:
