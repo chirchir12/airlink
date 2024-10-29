@@ -4,7 +4,7 @@ defmodule Airlink.Captive.CaptiveServer do
 
   @table_name :captive_cache
   # 1 min
-  @schedule_clean_up_after 1_000 * 60
+  @sweep_after 1_000 * 60
 
   # Client API
 
@@ -78,7 +78,7 @@ defmodule Airlink.Captive.CaptiveServer do
   end
 
   defp schedule_evacution() do
-    _ = Process.send_after(self(), :clear_expired, @schedule_clean_up_after)
+    _ = Process.send_after(self(), :clear_expired, @sweep_after)
     :ok
   end
 
