@@ -4,6 +4,8 @@ defmodule AirlinkWeb.AuthController do
   alias Airlink.Customers
   plug AirlinkWeb.CheckRolesPlug, ["captive_user"]
 
+  action_fallback AirlinkWeb.FallbackController
+
   def show(%Plug.Conn{assigns: %{captive_data: captive_data}} = conn, _params) do
     with {:ok, customer} <- Customers.get_customer_by_uuid(captive_data.customer_uuid) do
       data = {customer, captive_data}

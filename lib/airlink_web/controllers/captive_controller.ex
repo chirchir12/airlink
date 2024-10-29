@@ -8,6 +8,8 @@ defmodule AirlinkWeb.CaptiveController do
   alias Airlink.Customers.Customer
   alias Airlink.Hotspots
   alias Airlink.Helpers
+
+  plug AirlinkWeb.RateLimitPlug
   action_fallback AirlinkWeb.FallbackController
 
   def create(conn, params) do
@@ -62,7 +64,7 @@ defmodule AirlinkWeb.CaptiveController do
     end
   end
 
-  defp handle_router_check(conn,  params) do
+  defp handle_router_check(conn, params) do
     case Routers.get_router(params.router_id) do
       {:ok, router} -> {:ok, router}
       {:error, error} -> handle_redirection(conn, params, error)

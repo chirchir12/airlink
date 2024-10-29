@@ -11,6 +11,7 @@ defmodule Airlink.Application do
       AirlinkWeb.Telemetry,
       Airlink.Repo,
       Airlink.Captive.CaptiveServer,
+      Airlink.Captive.CaptiveRateLimiter,
       Airlink.Companies.CompanyServerSupervisor,
       Airlink.Routers.RouterSupervisor,
       Airlink.Subscriptions.SubscriptionConsumer,
