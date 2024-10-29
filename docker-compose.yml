@@ -11,7 +11,7 @@ services:
       - "4002:4002"
     networks:
       - backend
-      - airlink_net
+      - diralink_net
     depends_on:
       - airlink_db
     # Add other app-specific configurations here
@@ -27,7 +27,7 @@ services:
       POSTGRES_DB: ${AIRLINK_DB_DATABASE}
     networks:
       - backend
-      - airlink_net
+      - diralink_net
     ports:
       - "5402:5432"
     volumes:
@@ -43,7 +43,7 @@ services:
       retries: 5
 
 networks:
-  airlink_net:
+  diralink_net:
     driver: bridge
   backend:
     external: true
