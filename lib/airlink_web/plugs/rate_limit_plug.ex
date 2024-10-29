@@ -34,7 +34,7 @@ defmodule AirlinkWeb.RateLimitPlug do
     opts = captive_options()
     rate_limit_opt = opts[:rate_limit]
     max_requests = rate_limit_opt[:max_requests]
-    allowed_time_window = rate_limit_opt[:period]
+    allowed_time_window = rate_limit_opt[:allowed_window_in_sec]
     reset_after = rate_limit_opt[:reset_after_in_ms]
     url = opts[:base_url]
     uri = opts[:rate_limit_error_uri]
