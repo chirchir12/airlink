@@ -11,7 +11,7 @@ defmodule AirlinkWeb.CorsPlug do
 
     origin = get_req_header(conn, "origin") |> List.first()
 
-    if origin in allowed_origins do
+    conn = if origin in allowed_origins do
       conn
       |> put_resp_header("access-control-allow-origin", origin)
       |> put_resp_header("access-control-allow-credentials", "true")
@@ -21,6 +21,17 @@ defmodule AirlinkWeb.CorsPlug do
       |> put_resp_header("access-control-max-age", "86400")
     else
       conn
+    end
+
+    # Handle OPTIONS request
+    case conn.method do
+      "OPTIONS" ->
+        conn
+        |> put_resp_header("content-length", "0")
+        |> send_resp(:no_content, "")
+        |> halt()
+      _ ->
+        conn
     end
   end
 
