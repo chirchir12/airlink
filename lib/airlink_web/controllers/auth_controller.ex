@@ -1,6 +1,6 @@
 defmodule AirlinkWeb.AuthController do
   use AirlinkWeb, :controller
-  # alias Airlink.Captive
+  alias Airlink.Captive
   alias Airlink.Customers
   plug AirlinkWeb.CheckRolesPlug, ["captive_user"]
 
@@ -10,7 +10,7 @@ defmodule AirlinkWeb.AuthController do
     with {:ok, customer} <- Customers.get_customer_by_uuid(captive_data.customer_uuid) do
       data = {customer, captive_data}
       # delete the cookie to save memory
-      # Captive.delete_entry(captive_data.cookie)
+      Captive.delete_entry(captive_data.cookie)
 
       conn
       |> put_status(:ok)
