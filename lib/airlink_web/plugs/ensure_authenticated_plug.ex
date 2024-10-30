@@ -4,6 +4,7 @@ defmodule AirlinkWeb.EnsureAuthenticatedPlug do
   alias Airlink.Diralink.Auth
   import Phoenix.Controller
   import Airlink.Helpers
+  require Logger
 
   def init(default), do: default
 
@@ -28,7 +29,8 @@ defmodule AirlinkWeb.EnsureAuthenticatedPlug do
       conn
       |> assign(:roles, roles)
     else
-      _ ->
+      error ->
+        :ok = Logger.error("Failed to Authenticate Captive User: #{inspect(error)}")
         conn
         |> put_status(:unauthorized)
         |> put_view(json: AirlinkWeb.ErrorJSON)
