@@ -118,6 +118,7 @@ end
 
 # CORS
 origins = [
+  "https://captive.diracloud.com",
   "http://localhost:3000"
 ]
 other_origins = System.get_env("ALLOWED_ORIGINS")
