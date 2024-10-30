@@ -117,16 +117,29 @@ if config_env() == :prod do
 end
 
 # CORS
+# CORS
 origins = [
   "https://captive.diracloud.com",
   "http://localhost:3000"
 ]
 other_origins = System.get_env("ALLOWED_ORIGINS")
-other_origins = String.split(other_origins, ",")
-
+other_origins = if other_origins, do: String.split(other_origins, ","), else: []
 
 config :cors_plug,
-  origin: origins ++ other_origins
+  origin: fn(conn) ->
+    # Get the Origin header from the request
+    request_origin = Plug.Conn.get_req_header(conn, "origin") |> List.first()
+
+    # Check if the request origin is in our allowed list
+    if request_origin in (origins ++ other_origins) do
+      request_origin
+    end
+  end,
+  credentials: true,
+  headers: ["Authorization", "Content-Type", "Accept", "Origin", "User-Agent"],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  expose: ["Authorization"],
+  max_age: 86400
 
 # captive
 config :airlink, :captive,
