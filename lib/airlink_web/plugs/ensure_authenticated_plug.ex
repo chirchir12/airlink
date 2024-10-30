@@ -29,8 +29,8 @@ defmodule AirlinkWeb.EnsureAuthenticatedPlug do
       conn
       |> assign(:roles, roles)
     else
-      error ->
-        :ok = Logger.error("Failed to Authenticate Captive User: #{inspect(error)}")
+      _ ->
+
         conn
         |> put_status(:unauthorized)
         |> put_view(json: AirlinkWeb.ErrorJSON)
@@ -61,7 +61,8 @@ defmodule AirlinkWeb.EnsureAuthenticatedPlug do
       |> assign(:roles, ["captive_user"])
       |> assign(:captive_data, params)
     else
-      _ ->
+      error ->
+        :ok = Logger.error("Failed to Authenticate Captive User: #{inspect(error)}")
         conn
         |> put_status(:unauthorized)
         |> put_view(json: AirlinkWeb.ErrorJSON)
