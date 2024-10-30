@@ -48,5 +48,6 @@ defmodule AirlinkWeb.Endpoint do
   plug Plug.Head
   plug Plug.Session, @session_options
   plug CORSPlug
+  plug AirlinkWeb.CorsPlug
   plug AirlinkWeb.Router
 end

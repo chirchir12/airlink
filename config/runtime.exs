@@ -138,7 +138,10 @@ config :cors_plug,
     "x-app-name"
     ],
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  expose: ["Authorization"],
+  expose: [
+    "Authorization",
+    "Set-Cookie"
+  ],
   max_age: 86400
 
 # captive
