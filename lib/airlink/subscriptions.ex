@@ -173,14 +173,14 @@ defmodule Airlink.Subscriptions do
     :ok
   end
 
-  defp handle_change(%{action: "session_expired", customer_id: uuid}) do
+  defp handle_change(%{action: "hotspot_session_expired", customer_id: uuid}) do
     with {:ok, customer} <- Customers.get_customer_by_uuid(uuid) do
       data = %{status: "inactive"}
       Customers.update_customer(customer, data)
     end
   end
 
-  defp handle_change(%{action: "session_activated"} = params) do
+  defp handle_change(%{action: "hotspot_session_activated"} = params) do
     with {:ok, %Plan{id: plan_id}} <- Plans.get_plan_uuid(params.plan_id),
          {:ok, %Customer{company_id: company_id, id: customer_id}} <-
            Customers.get_customer_by_uuid(params.customer_id),
