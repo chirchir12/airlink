@@ -121,6 +121,7 @@ end
 origins = [
   "https://captive.diracloud.com"
 ]
+
 other_origins = System.get_env("ALLOWED_ORIGINS")
 other_origins = if other_origins, do: String.split(other_origins, ","), else: []
 
@@ -133,10 +134,12 @@ config :cors_plug,
     "Accept",
     "Origin",
     "User-Agent",
-    "Cookie",                    # Allow Cookie header
-    "Set-Cookie",               # Allow Set-Cookie header
+    # Allow Cookie header
+    "Cookie",
+    # Allow Set-Cookie header
+    "Set-Cookie",
     "x-app-name"
-    ],
+  ],
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   expose: [
     "Authorization",

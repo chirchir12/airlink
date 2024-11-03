@@ -21,6 +21,7 @@ defmodule Airlink.Captive.CaptiveRateLimiter do
   def reset(customer_uuid, after_ms) do
     Process.whereis(__MODULE__)
     |> Process.send_after({:reset, customer_uuid}, after_ms)
+
     :ok
   end
 
@@ -35,7 +36,8 @@ defmodule Airlink.Captive.CaptiveRateLimiter do
         write_concurrency: true,
         read_concurrency: true
       ])
-      schedule_sweep()
+
+    schedule_sweep()
     {:ok, table}
   end
 
@@ -50,7 +52,6 @@ defmodule Airlink.Captive.CaptiveRateLimiter do
     sweep(table)
     {:noreply, table}
   end
-
 
   # private
   defp sweep(table) do

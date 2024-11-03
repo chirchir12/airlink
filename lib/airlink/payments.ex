@@ -53,7 +53,7 @@ defmodule Airlink.Payments do
         sender: :airlink
       }
 
-      queue = System.get_env("RMQ_SUBSCRIPTION_ROUTING_KEY") || "RMQ_SUBSCRIPTION_ROUTING_KEY"
+      queue = System.get_env("RMQ_SUBSCRIPTION_ROUTING_KEY") || "hotspot_subscription_changes_rk"
       {:ok, :ok} = RmqPublisher.publish(data, queue)
       :ok
     end

@@ -43,7 +43,7 @@ defmodule AirlinkWeb.RateLimitPlug do
     time_diff = now - last_timestamp
 
     cond do
-      count >= max_requests->
+      count >= max_requests ->
         CaptiveRateLimiter.reset(mac_addr, reset_after)
 
         conn
