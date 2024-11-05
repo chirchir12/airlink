@@ -26,3 +26,5 @@ erl_crash.dump
 airlink-*.tar
 
 .env
+
+migration_scripts
