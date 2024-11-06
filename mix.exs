@@ -48,7 +48,8 @@ defmodule Airlink.MixProject do
       {:httpoison, "~> 2.2"},
       {:gen_rmq, "~> 4.0"},
       {:joken, "~> 2.6"},
-      {:cors_plug, "~> 3.0"}
+      {:cors_plug, "~> 3.0"},
+      {:csv, "~> 3.2"}
     ]
   end
 
