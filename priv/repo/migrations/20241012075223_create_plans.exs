@@ -28,6 +28,6 @@ defmodule Airlink.Repo.Migrations.CreatePlans do
     create index(:plans, [:company_id])
     create index(:plans, [:hotspot_id])
     create unique_index(:plans, [:uuid])
-    create unique_index(:plans, [:name, :company_id])
+    create unique_index(:plans, [:name, :company_id, :hotspot_id])
   end
 end

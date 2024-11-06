@@ -3,10 +3,12 @@ defmodule Airlink.Plans.Plan do
   import Ecto.Changeset
   import Airlink.Helpers
 
-  @valid_time_unit ["minute", "hour", "day"]
+  @valid_time_unit ["minute", "hour", "day", "week", "month"]
   @valid_bundle_unit ["MB", "GB"]
 
   @permitted_field [
+    :id,
+    :uuid,
     :name,
     :description,
     :duration,
@@ -19,7 +21,9 @@ defmodule Airlink.Plans.Plan do
     :price,
     :currency,
     :company_id,
-    :hotspot_id
+    :hotspot_id,
+    :inserted_at,
+    :updated_at
   ]
 
   @required_field [
@@ -65,11 +69,12 @@ defmodule Airlink.Plans.Plan do
     plan
     |> cast(attrs, @permitted_field)
     |> validate_required(@required_field)
-    |> unique_constraint([:name, :company_id])
+    |> unique_constraint([:name, :company_id, :hotspot_id])
     |> maybe_put_uuid(:uuid)
     |> validate_time_unit()
     |> validate_bundle_unit()
     |> validate_name()
+    |> unique_constraint(:id, name: "plans_pkey")
   end
 
   defp validate_time_unit(
