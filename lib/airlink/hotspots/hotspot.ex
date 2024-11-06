@@ -4,6 +4,8 @@ defmodule Airlink.Hotspots.Hotspot do
   import Airlink.Helpers
 
   @permitted_fields [
+    :id,
+    :uuid,
     :name,
     :description,
     :bridge_name,
@@ -11,7 +13,9 @@ defmodule Airlink.Hotspots.Hotspot do
     :company_id,
     :latitude,
     :longitude,
-    :router_id
+    :router_id,
+    :inserted_at,
+    :updated_at
   ]
 
   @required_fields [

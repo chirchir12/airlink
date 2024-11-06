@@ -6,13 +6,18 @@ defmodule Airlink.Customers.Customer do
   @allowed_status ["active", "inactive"]
 
   @permitted_fields [
-    :company_id,
+    :id,
+    :uuid,
     :username,
+    :password_hash,
+    :company_id,
     :status,
     :first_name,
     :last_name,
     :email,
-    :phone_number
+    :phone_number,
+    :inserted_at,
+    :updated_at
   ]
 
   @required_fields [
@@ -44,6 +49,7 @@ defmodule Airlink.Customers.Customer do
     |> maybe_put_uuid(:uuid)
     |> validate_status()
     |> maybe_generate_password_hash()
+    |> unique_constraint(:id, name: "customers_pkey")
   end
 
   defp validate_status(%Ecto.Changeset{valid?: true, changes: %{status: status}} = changeset) do
@@ -57,7 +63,7 @@ defmodule Airlink.Customers.Customer do
   defp validate_status(changeset), do: changeset
 
   defp maybe_generate_password_hash(%Ecto.Changeset{valid?: true} = changeset) do
-    case get_change(changeset, :password) do
+    case get_change(changeset, :password_hash) do
       nil ->
         random_password = generate_random_password(8)
         put_change(changeset, :password_hash, random_password)

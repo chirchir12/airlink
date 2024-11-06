@@ -63,6 +63,15 @@ defmodule Airlink.Helpers do
     |> Enum.into(%{})
   end
 
+  def normalize_mac(value) when is_binary(value) do
+    case String.match?(value, ~r/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/) do
+      true -> String.upcase(value)
+      false -> value
+    end
+  end
+
+  def normalize_mac(value), do: value
+
   def process_message(params, func) when is_list(params) do
     params
     |> Enum.map(&atomize_map_keys/1)
