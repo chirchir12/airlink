@@ -128,6 +128,10 @@ defmodule Airlink.Plans do
     calculate_duration(duration, unit)
   end
 
+  def calculate_duration_mins(duration, unit) do
+    calculate_duration(duration, unit)
+  end
+
   defp calculate_duration(duration, unit)
 
   defp calculate_duration(duration, "minute"), do: duration
