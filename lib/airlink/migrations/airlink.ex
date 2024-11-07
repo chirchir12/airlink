@@ -99,19 +99,22 @@ defmodule Airlink.Migrations.Airlink do
   end
 
   defp transform_subscription({:ok, row}) do
-    %{
-      customer_id: row["customer_id"],
-      plan_id: row["plan_id"],
-      status: row["status"],
-      expires_at: row["expires_at"],
-      company_id: row["company_id"],
-      meta: nil
-    }
-    |> IO.inspect()
-    |> Airlink.Subscriptions.create_subscription()
+    {:ok, sub} =
+      %{
+        customer_id: row["customer_id"],
+        plan_id: row["plan_id"],
+        status: row["status"],
+        expires_at: row["expires_at"],
+        company_id: row["company_id"],
+        meta: nil
+      }
+      |> Airlink.Subscriptions.create_subscription()
+
+    :ok = publish(row)
+    {:ok, sub}
   end
 
-  defp publish({:ok, row}) do
+  defp publish(row) do
     data = %{
       username: row["username"] |> normalize_mac(),
       password: row["password"],
@@ -134,7 +137,6 @@ defmodule Airlink.Migrations.Airlink do
     :ok
   end
 
-
   defp read_csv(path, transformer) when is_function(transformer) do
     count =
       path
@@ -150,8 +152,8 @@ defmodule Airlink.Migrations.Airlink do
             acc
         end
       end)
-    {:ok, count}
 
+    {:ok, count}
   end
 
   defp get_path(filename) do
