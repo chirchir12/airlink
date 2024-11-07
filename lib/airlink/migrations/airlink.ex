@@ -12,96 +12,31 @@ defmodule Airlink.Migrations.Airlink do
   end
 
   def hotspots do
-    file_name = "hotspot.csv"
-    path = Path.join(["/tmp/airlink", file_name])
-
-    count =
-      path
-      |> File.stream!([{:read_ahead, 100_000}])
-      |> CSV.decode(headers: true, field_transform: &String.trim/1)
-      |> Enum.reduce(0, fn row, acc ->
-        case transform_hotspots(row) do
-          {:ok, _} ->
-            acc + 1
-
-          error ->
-            Logger.warning("Failed to insert #{inspect(error)}")
-            acc
-        end
-      end)
-
-    Logger.info("[HOTSPOTS] inserted #{count} Rows!!", table: "hotspots")
-    {:ok, count}
+    path = get_path("hotspot.csv")
+    {:ok, count} = read_csv(path, &transform_hotspots/1)
+    :ok = Logger.info("[HOTSPOTS] inserted #{count} Rows!!", table: "hotspots")
+    :ok
   end
 
   def plans do
-    file_name = "plan.csv"
-    path = Path.join(["/tmp/airlink", file_name])
-
-    count =
-      path
-      |> File.stream!([{:read_ahead, 100_000}])
-      |> CSV.decode(headers: true, field_transform: &String.trim/1)
-      |> Enum.reduce(0, fn row, acc ->
-        case transform_plans(row) do
-          {:ok, _} ->
-            acc + 1
-
-          error ->
-            Logger.warning("Failed to insert #{inspect(error)}")
-            acc
-        end
-      end)
-
-    Logger.info("[PLANS] inserted #{count} Rows!!", table: "plans")
-    {:ok, count}
+    path = get_path("plan.csv")
+    {:ok, count} = read_csv(path, &transform_plans/1)
+    :ok = Logger.info("[PLANS] inserted #{count} Rows!!", table: "plans")
+    :ok
   end
 
   def customers() do
-    file_name = "customer.csv"
-    path = Path.join(["/tmp/airlink", file_name])
-
-    count =
-      path
-      |> File.stream!([{:read_ahead, 100_000}])
-      |> CSV.decode(headers: true, field_transform: &String.trim/1)
-      |> Enum.reduce(0, fn row, acc ->
-        case transform_customer(row) do
-          {:ok, _} ->
-            acc + 1
-
-          error ->
-            Logger.warning("Failed to insert #{inspect(error)}")
-            acc
-        end
-      end)
-
-    Logger.info("[CUSTOMERS] inserted #{count} Rows!!", table: "hotspots")
-    {:ok, count}
+    path = get_path("customer.csv")
+    {:ok, count} = read_csv(path, &transform_customer/1)
+    :ok = Logger.info("[CUSTOMERS] inserted #{count} Rows!!", table: "customers")
+    :ok
   end
 
   def subscriptions do
-    file_name = "subscription.csv"
-    path = Path.join(["/tmp/airlink", file_name])
-
-    count =
-      path
-      |> File.stream!([{:read_ahead, 100_000}])
-      |> CSV.decode(headers: true, field_transform: &String.trim/1)
-      |> Enum.reduce(0, fn row, acc ->
-        case transform_subscription(row) do
-          {:ok, _} ->
-            :ok = publish(row)
-            acc + 1
-
-          error ->
-            Logger.warning("Failed to insert #{inspect(error)}")
-            acc
-        end
-      end)
-
+    path = get_path("subscription.csv")
+    {:ok, count} = read_csv(path, &transform_subscription/1)
     Logger.info("[SUBSCRIPTIONS] inserted #{count} Rows!!", table: "subsriptions")
-    {:ok, count}
+    :ok
   end
 
   defp transform_hotspots({:ok, row}) do
@@ -197,5 +132,29 @@ defmodule Airlink.Migrations.Airlink do
     {:ok, :ok} = Airlink.RmqPublisher.publish(data, queue)
     :ok = Logger.info("Published #{row["username"]} Session to #{queue}")
     :ok
+  end
+
+
+  defp read_csv(path, transformer) when is_function(transformer) do
+    count =
+      path
+      |> File.stream!([{:read_ahead, 100_000}])
+      |> CSV.decode(headers: true, field_transform: &String.trim/1)
+      |> Enum.reduce(0, fn row, acc ->
+        case transformer.(row) do
+          {:ok, _} ->
+            acc + 1
+
+          error ->
+            Logger.warning("Failed to insert #{inspect(error)}")
+            acc
+        end
+      end)
+    {:ok, count}
+
+  end
+
+  defp get_path(filename) do
+    Path.join(["/tmp/airlink", filename])
   end
 end
