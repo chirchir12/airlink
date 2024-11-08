@@ -123,13 +123,20 @@ defmodule Airlink.Payments do
     }
 
     case HttpClient.post(url, request, headers) do
-      {:ok, response} -> handle_response(response)
+      {:ok, response} -> handle_response(response, subscription)
       {:error, error} -> handle_error(error, subscription)
     end
   end
 
-  defp handle_response(%HTTPoison.Response{status_code: 202, body: body}) do
+  defp handle_response(%HTTPoison.Response{status_code: 202, body: body}, _sub) do
     {:ok, body}
+  end
+
+  defp handle_response(%HTTPoison.Response{} =  resp, subscription) do
+    params = %{status: "failed"}
+    {:ok, _sub} = Subscriptions.update_subscription(subscription, params)
+    :ok = Logger.error("Failed to create payment: #{inspect(resp)}")
+    {:error, :unknown_transaction_error}
   end
 
   defp handle_error(%HTTPoison.Error{id: nil, reason: reason}, subscription) do
