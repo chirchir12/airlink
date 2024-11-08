@@ -37,7 +37,7 @@ defmodule Airlink.Subscriptions.SubscriptionConsumer do
     Logger.info("Received message: #{inspect(message)}")
     payload = Jason.decode!(payload) |> atomize_map_keys()
 
-    with :ok <- process_message(payload, &Subscriptions.handle_subscription_changes/1) do
+    with :ok <- process_message(payload, &Subscriptions.handle_radius_response/1) do
       ack(message)
     end
   end
@@ -54,7 +54,7 @@ defmodule Airlink.Subscriptions.SubscriptionConsumer do
   @impl GenRMQ.Consumer
   def consumer_tag() do
     {:ok, hostname} = :inet.gethostname()
-    "#{hostname}-subscription-consumer"
+    "#{hostname}-airlink-subscription-consumer"
   end
 
   defp get_options() do

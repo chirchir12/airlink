@@ -152,8 +152,8 @@ defmodule Airlink.Subscriptions do
     Subscription.changeset(subscription, attrs)
   end
 
-  def handle_subscription_changes(params) do
-    handle_change(params)
+  def handle_radius_response(params) do
+    handle_message(params)
   end
 
   # private
@@ -166,21 +166,21 @@ defmodule Airlink.Subscriptions do
     true
   end
 
-  defp handle_change(params) when is_list(params) do
+  defp handle_message(params) when is_list(params) do
     params
-    |> Enum.each(&handle_change/1)
+    |> Enum.each(&handle_message/1)
 
     :ok
   end
 
-  defp handle_change(%{action: "hotspot_session_expired", customer_id: uuid}) do
+  defp handle_message(%{action: "hotspot_session_expired", customer_id: uuid}) do
     with {:ok, customer} <- Customers.get_customer_by_uuid(uuid) do
       data = %{status: "inactive"}
       Customers.update_customer(customer, data)
     end
   end
 
-  defp handle_change(%{action: "hotspot_session_activated"} = params) do
+  defp handle_message(%{action: "hotspot_session_activated"} = params) do
     with {:ok, %Plan{id: plan_id}} <- Plans.get_plan_uuid(params.plan_id),
          {:ok, %Customer{company_id: company_id, id: customer_id}} <-
            Customers.get_customer_by_uuid(params.customer_id),
@@ -191,11 +191,11 @@ defmodule Airlink.Subscriptions do
     end
   end
 
-  defp handle_change(%{sender: "airlink"}) do
+  defp handle_message(%{sender: "airlink"}) do
     :ok
   end
 
-  defp handle_change(params) do
+  defp handle_message(params) do
     Logger.warning("Message was not handled: #{inspect(params)}")
     :ok
   end
