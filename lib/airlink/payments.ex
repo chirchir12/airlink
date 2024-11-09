@@ -1,14 +1,11 @@
 defmodule Airlink.Payments do
   alias __MODULE__.Payment
   alias Airlink.Plans.Plan
-  alias Airlink.Plans
   alias Airlink.Subscriptions
   alias Airlink.Subscriptions.Subscription
   alias Airlink.HttpClient
   import Airlink.Helpers
   alias Airlink.Customers
-  alias Airlink.Customers.Customer
-  alias Airlink.RmqPublisher
   require Logger
 
   def create(%Plan{} = plan, params) do
@@ -35,31 +32,16 @@ defmodule Airlink.Payments do
 
   def update_payments(txn_params) do
     with {:ok, sub} <- update_subscription_status(txn_params),
-         {:ok, customer} <- update_customer_status(txn_params) do
-      maybe_publish_to_radius(sub, customer, txn_params)
+         {:ok, _customer} <- update_customer_status(txn_params) do
+      maybe_publish_to_radius(sub)
     end
   end
 
-  defp maybe_publish_to_radius(%Subscription{status: "completed"}, %Customer{} = cust, txn_params) do
-    with {:ok, plan} <- Plans.get_plan_uuid(txn_params.plan_id) do
-      data = %{
-        username: cust.username,
-        password: cust.password_hash,
-        customer: cust.uuid,
-        service: "hotspot",
-        duration_mins: Plans.calculate_duration_mins(plan),
-        plan: txn_params.plan_id,
-        action: "session_activate",
-        sender: :airlink
-      }
-
-      queue = System.get_env("RMQ_SUBSCRIPTION_ROUTING_KEY") || "hotspot_subscription_changes_rk"
-      {:ok, :ok} = RmqPublisher.publish(data, queue)
-      :ok
-    end
+  defp maybe_publish_to_radius(%Subscription{status: "completed"} = sub) do
+    Airlink.publish(sub)
   end
 
-  defp maybe_publish_to_radius(_sub, _cust, _txn) do
+  defp maybe_publish_to_radius(_sub) do
     :ok
   end
 
@@ -132,7 +114,7 @@ defmodule Airlink.Payments do
     {:ok, body}
   end
 
-  defp handle_response(%HTTPoison.Response{} =  resp, subscription) do
+  defp handle_response(%HTTPoison.Response{} = resp, subscription) do
     params = %{status: "failed"}
     {:ok, _sub} = Subscriptions.update_subscription(subscription, params)
     :ok = Logger.error("Failed to create payment: #{inspect(resp)}")
