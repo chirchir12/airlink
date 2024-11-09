@@ -28,6 +28,12 @@ defmodule Airlink.Subscriptions.Subscription do
     |> maybe_put_uuid(:uuid)
   end
 
+  def update_expiry_changeset(subscription, attrs) do
+    subscription
+    |> cast(attrs, [:expires_at])
+    |> validate_required([:expires_at])
+  end
+
   defp validate_status(%Ecto.Changeset{valid?: true, changes: %{status: status}} = changeset) do
     if status in @allowed_status do
       changeset

@@ -176,7 +176,17 @@ defmodule Airlink.Subscriptions do
   defp handle_message(%{action: "hotspot_session_expired", customer_id: uuid}) do
     with {:ok, customer} <- Customers.get_customer_by_uuid(uuid) do
       data = %{status: "inactive"}
-      Customers.update_customer(customer, data)
+      {:ok, _cus} = customer
+      |> Customer.update_status_changeset(data)
+      |> Repo.update()
+      :ok
+    else
+      {:error, :customer_not_found} ->
+        :ok = Logger.warning("Customer is deleted: reason: :customer_not_found")
+        :ok
+      error ->
+        Logger.error("Could not handle message: reason: #{inspect(error)}")
+        error
     end
   end
 
@@ -186,8 +196,26 @@ defmodule Airlink.Subscriptions do
            Customers.get_customer_by_uuid(params.customer_id),
          {:ok, subscription} <- get_subscription(company_id, customer_id, plan_id) do
       data = %{expires_at: params.expires_at}
-      update_subscription(subscription, data)
+
+      {:ok, _sub} = subscription
+      |> Subscription.update_expiry_changeset(data)
+      |> Repo.update()
+
       :ok
+
+    else
+      {:error, :customer_not_found} ->
+        :ok = Logger.warning("Customer is deleted: reason: :customer_not_found")
+        :ok
+      {:error, :plan_not_found} ->
+        :ok = Logger.warning("Plan is deleted: reason: :plan_not_found")
+        :ok
+      {:error, :subscription_not_found} ->
+        :ok = Logger.warning("Plan is deleted: reason: :plan_not_found")
+        :ok
+    error ->
+        Logger.error("Could not handle message: reason: #{inspect(error)}")
+        error
     end
   end
 

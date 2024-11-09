@@ -52,6 +52,12 @@ defmodule Airlink.Customers.Customer do
     |> unique_constraint(:id, name: "customers_pkey")
   end
 
+  def update_status_changeset(customer, attrs) do
+    customer
+    |> cast(attrs, [:status])
+    |> validate_required([:status])
+  end
+
   defp validate_status(%Ecto.Changeset{valid?: true, changes: %{status: status}} = changeset) do
     if status in @allowed_status do
       changeset
