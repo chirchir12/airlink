@@ -1,5 +1,6 @@
 defmodule AirlinkWeb.AuthJSON do
   alias Airlink.Customers.Customer
+  import Airlink.Helpers
 
   def show(%{data: {customer, captive_data}}) do
     %{
@@ -15,7 +16,7 @@ defmodule AirlinkWeb.AuthJSON do
       id: customer.id,
       customer_id: customer.uuid,
       company_id: customer.company_id,
-      username: customer.username,
+      username: customer.username |> normalize_mac(),
       phone: customer.phone_number,
       status: customer.status,
       email: customer.email,

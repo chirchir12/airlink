@@ -11,13 +11,14 @@ defmodule Airlink do
   alias Airlink.Customers
   alias Airlink.Subscriptions.Subscription
   alias Airlink.Plans.Plan
+  import Airlink.Helpers
 
   def publish(%Subscription{} = sub) do
     {:ok, plan} = Plans.get_plan_id(sub.plan_id)
     {:ok, cust} = Customers.get_customer_by_id(sub.customer_id)
 
     %{
-      username: cust.username,
+      username: cust.username |> normalize_mac(),
       password: cust.password_hash,
       customer: cust.uuid,
       service: "hotspot",
