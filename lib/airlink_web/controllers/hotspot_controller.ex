@@ -3,7 +3,7 @@ defmodule AirlinkWeb.HotspotController do
 
   alias Airlink.Hotspots
   alias Airlink.Hotspots.Hotspot
-  plug AirlinkWeb.CheckRolesPlug, ["tenant", "%", "admin", "tenant.individual"]
+  plug AirlinkWeb.CheckRolesPlug, ["%", "admin", "system"]
   action_fallback AirlinkWeb.FallbackController
 
   def index(conn, %{"company_id" => company_id}) do
