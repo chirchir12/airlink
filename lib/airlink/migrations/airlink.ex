@@ -132,7 +132,7 @@ defmodule Airlink.Migrations.Airlink do
     }
 
     queue = System.get_env("RMQ_SUBSCRIPTION_ROUTING_KEY") || "hotspot_subscription_changes_rk"
-    {:ok, :ok} = Airlink.RmqPublisher.publish(data, queue)
+    :ok = Airlink.publish(data, queue)
     :ok = Logger.info("Published #{row["username"]} Session to #{queue}")
     :ok
   end

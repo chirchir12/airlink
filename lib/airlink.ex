@@ -10,6 +10,7 @@ defmodule Airlink do
   alias Airlink.Plans
   alias Airlink.Customers
   alias Airlink.Subscriptions.Subscription
+  alias Airlink.Plans.Plan
 
   def publish(%Subscription{} = sub) do
     {:ok, plan} = Plans.get_plan_id(sub.plan_id)
@@ -25,12 +26,31 @@ defmodule Airlink do
       action: "session_activate",
       sender: :airlink
     }
-    |> publish(:subscription)
+    |> publish(subs_queue())
   end
 
-  def publish(data, :subscription) do
-    queue = System.get_env("RMQ_SUBSCRIPTION_ROUTING_KEY") || "hotspot_subscription_changes_rk"
+  def publish(%Plan{} = plan, action) do
+    %{
+      action: action,
+      plan: plan.uuid,
+      upload: plan.upload_speed,
+      download: plan.download_speed,
+      service: "hotspot",
+      duration: Plans.calculate_duration_mins(plan) * 60
+    }
+    |> publish(plans_queue())
+  end
+
+  def publish(data, queue) do
     {:ok, :ok} = RmqPublisher.publish(data, queue)
     :ok
+  end
+
+  defp subs_queue do
+    System.get_env("RMQ_SUBSCRIPTION_ROUTING_KEY") || "hotspot_subscription_changes_rk"
+  end
+
+  defp plans_queue do
+    System.get_env("RMQ_PLAN_ROUTING_KEY") || "rmq_plan_changes_rk"
   end
 end

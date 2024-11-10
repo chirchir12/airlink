@@ -7,7 +7,6 @@ defmodule Airlink.Plans do
   alias Airlink.Repo
 
   alias Airlink.Plans.Plan
-  alias Airlink.RmqPublisher
 
   @doc """
   Returns the list of plans.
@@ -144,27 +143,11 @@ defmodule Airlink.Plans do
   defp calculate_duration(duration, "month"), do: duration * 24 * 30 * 60
 
   defp handle_plan_response({:ok, plan}, action) do
-    :ok = maybe_publish_to_rmq(action, plan)
+    :ok = Airlink.publish(plan, action)
     {:ok, plan}
   end
 
   defp handle_plan_response({:error, error}, _action) do
     {:error, error}
-  end
-
-  defp maybe_publish_to_rmq(action, %Plan{} = plan) do
-    queue = System.get_env("RMQ_PLAN_ROUTING_KEY") || "rmq_plan_changes_rk"
-
-    data = %{
-      action: action,
-      plan: plan.uuid,
-      upload: plan.upload_speed,
-      download: plan.download_speed,
-      service: "hotspot",
-      duration: calculate_duration_mins(plan) * 60
-    }
-
-    {:ok, _} = RmqPublisher.publish(data, queue)
-    :ok
   end
 end
