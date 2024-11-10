@@ -5,7 +5,7 @@ defmodule AirlinkWeb.PlanController do
   alias Airlink.Plans.Plan
   alias Airlink.Hotspots
   alias Airlink.Hotspots.Hotspot
-  plug AirlinkWeb.CheckRolesPlug, ["captive_user", "tenant", "%", "admin", "tenant.individual"]
+  plug AirlinkWeb.CheckRolesPlug, ["captive_user", "%", "admin", "system"]
   action_fallback AirlinkWeb.FallbackController
 
   def index(%Plug.Conn{assigns: %{captive_data: captive_data}} = conn, %{
