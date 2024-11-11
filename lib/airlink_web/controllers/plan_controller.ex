@@ -65,8 +65,9 @@ defmodule AirlinkWeb.PlanController do
 
   def delete(conn, %{"id" => id}) do
     with {:ok, plan} <- Plans.get_plan_id(id),
-         {:ok, %Plan{}} <- Plans.delete_plan(plan) do
-      send_resp(conn, :no_content, "")
+         {:ok, %Plan{} = plan} <- Plans.delete_plan(plan) do
+      conn
+      |> render(:show, plan: plan)
     end
   end
 end
