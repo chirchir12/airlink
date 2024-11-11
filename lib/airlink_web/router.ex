@@ -53,7 +53,7 @@ defmodule AirlinkWeb.Router do
 
   # portal endpoints
   scope "/v1/api", AirlinkWeb do
-    pipe_through [:api, :ensure_authenticated]
+    pipe_through [:api, :is_system, :ensure_authenticated]
 
     post "/hotspots", HotspotController, :create
     get "/hotspots/list/:company_id", HotspotController, :index
