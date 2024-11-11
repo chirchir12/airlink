@@ -23,7 +23,7 @@ defmodule Airlink.Plans do
   end
 
   def list_plans(company_id) do
-    query = from p in Plan, where: p.company_id == ^company_id
+    query = from p in Plan, where: p.company_id == ^company_id, order_by: [desc: p.id]
     {:ok, Repo.all(query)}
   end
 
