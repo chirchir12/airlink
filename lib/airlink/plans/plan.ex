@@ -51,10 +51,10 @@ defmodule Airlink.Plans.Plan do
     field :speed_unit, :string, default: "MBps"
 
     field :bundle_size, :integer
-    field :bundle_unit, :string
+    field :bundle_unit, :string, default: "GB"
 
     field :price, :decimal
-    field :currency, :string
+    field :currency, :string, default: "KES"
     field :company_id, Ecto.UUID
     belongs_to :hotspot, Airlink.Hotspots.Hotspot
 
