@@ -40,8 +40,6 @@ defmodule AirlinkWeb.PlanController do
     end
   end
 
-
-
   def create(conn, %{"params" => plan_params}) do
     with {:ok, %Plan{} = plan} <- Plans.create_plan(plan_params) do
       conn

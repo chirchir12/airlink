@@ -1,5 +1,7 @@
 defmodule Airlink.Helpers do
   import Ecto.Changeset
+  import Ecto.Query, warn: false
+  alias Airlink.Repo
 
   # changeset functions
   def maybe_put_uuid(%Ecto.Changeset{valid?: true} = changeset, field) do
@@ -84,6 +86,25 @@ defmodule Airlink.Helpers do
 
   def process_message(params, func) when is_function(func, 1) do
     func.(params)
+  end
+
+  def paginate(query, page_number, page_size) do
+    results =
+      query
+      |> limit(^page_size)
+      |> offset(^((page_number - 1) * page_size))
+      |> Repo.all()
+
+    total_count = Repo.aggregate(query, :count, :id)
+
+    {:ok,
+     %{
+       data: results,
+       page_number: page_number,
+       page_size: page_size,
+       total_count: total_count,
+       total_pages: ceil(total_count / page_size)
+     }}
   end
 
   defp atomize_key(key) when is_binary(key), do: String.to_atom(key)

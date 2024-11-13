@@ -2,7 +2,16 @@ defmodule AirlinkWeb.CustomerController do
   use AirlinkWeb, :controller
 
   alias Airlink.Customers
-  plug AirlinkWeb.CheckRolesPlug, ["captive_user", "tenant", "%", "admin", "tenant.individual"]
+
+  plug AirlinkWeb.CheckRolesPlug, [
+    "captive_user",
+    "tenant",
+    "%",
+    "admin",
+    "tenant.individual",
+    "system"
+  ]
+
   action_fallback AirlinkWeb.FallbackController
 
   def index(conn, _params) do
@@ -37,8 +46,10 @@ defmodule AirlinkWeb.CustomerController do
 
   def delete(conn, %{"id" => id}) do
     with {:ok, customer} <- Customers.get_customer_by_id(id),
-         {:ok, _customer} <- Customers.delete_customer(customer) do
-      send_resp(conn, :no_content, "")
+         {:ok, customer} <- Customers.delete_customer(customer) do
+      conn
+      |> put_status(:ok)
+      |> render(:show, customer: customer)
     end
   end
 end
