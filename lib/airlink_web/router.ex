@@ -59,6 +59,7 @@ defmodule AirlinkWeb.Router do
     get "/hotspots/list/:company_id", HotspotController, :index
     get "/hotspots/:id", HotspotController, :show
     put "/hotspots/:id", HotspotController, :update
+    delete "/hotspots/:id", HotspotController, :delete
 
     # plans
     post "/plans", PlanController, :create
