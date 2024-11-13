@@ -26,12 +26,21 @@ defmodule AirlinkWeb.PlanController do
     end
   end
 
+  def index(conn, %{"company_id" => company_id, "hotspot_id" => hotspot_id}) do
+    with {:ok, plans} <- Plans.list_plans(company_id, hotspot_id) do
+      conn
+      |> render(:index, plans: plans)
+    end
+  end
+
   def index(conn, %{"company_id" => company_id}) do
     with {:ok, plans} <- Plans.list_plans(company_id) do
       conn
       |> render(:index, plans: plans)
     end
   end
+
+
 
   def create(conn, %{"params" => plan_params}) do
     with {:ok, %Plan{} = plan} <- Plans.create_plan(plan_params) do
