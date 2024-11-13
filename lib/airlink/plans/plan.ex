@@ -28,15 +28,12 @@ defmodule Airlink.Plans.Plan do
 
   @required_field [
     :name,
-    :description,
     :duration,
     :time_unit,
     :upload_speed,
     :download_speed,
     :bundle_size,
-    :bundle_unit,
     :price,
-    :currency,
     :company_id,
     :hotspot_id
   ]
