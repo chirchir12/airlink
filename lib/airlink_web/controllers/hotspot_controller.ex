@@ -39,7 +39,8 @@ defmodule AirlinkWeb.HotspotController do
   def delete(conn, %{"id" => id}) do
     with {:ok, hotspot} <- Hotspots.get_hotspot_by_id(id),
          {:ok, %Hotspot{}} <- Hotspots.delete_hotspot(hotspot) do
-      send_resp(conn, :no_content, "")
+      conn
+      |> render(:show, hotspot: hotspot)
     end
   end
 end

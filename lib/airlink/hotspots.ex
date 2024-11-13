@@ -18,7 +18,7 @@ defmodule Airlink.Hotspots do
 
   """
   def list_hotspots(company_id) do
-    query = from h in Hotspot, where: h.company_id == ^company_id
+    query = from h in Hotspot, where: h.company_id == ^company_id, order_by: [desc: h.id]
     {:ok, Repo.all(query)}
   end
 
