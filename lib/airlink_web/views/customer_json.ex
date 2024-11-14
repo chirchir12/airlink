@@ -27,6 +27,6 @@ defmodule AirlinkWeb.CustomerJSON do
   end
 
   def customer_fetch(%{result: result}) do
-    result
+    %{data: result}
   end
 end
