@@ -9,8 +9,9 @@ defmodule Airlink.Customers do
   alias Airlink.Customers.Customer
 
   def customer_report(company_id, params) do
-    page_number = Map.get(params, :page_number) || 1
-    page_size = Map.get(params, :page_size) || 10
+    page_number = (Map.get(params, :page_number) || "1") |> String.to_integer()
+    page_size = (Map.get(params, :page_size) || "10") |> String.to_integer()
+
     {:ok, company_id} = Ecto.UUID.dump(company_id)
 
     sql = """
