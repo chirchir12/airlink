@@ -2,6 +2,7 @@ defmodule AirlinkWeb.CustomerController do
   use AirlinkWeb, :controller
 
   alias Airlink.Customers
+  import Airlink.Helpers
 
   plug AirlinkWeb.CheckRolesPlug, [
     "captive_user",
@@ -50,6 +51,14 @@ defmodule AirlinkWeb.CustomerController do
       conn
       |> put_status(:ok)
       |> render(:show, customer: customer)
+    end
+  end
+
+  # reports
+  def customer_fetch(conn, %{"company_id" => company_id} = params) do
+    with {:ok, result} <- Customers.customer_report(company_id, params |> atomize_map_keys()) do
+      conn
+      |> render(:customer_fetch, result: result)
     end
   end
 end

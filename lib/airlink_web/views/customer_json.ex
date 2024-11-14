@@ -25,4 +25,8 @@ defmodule AirlinkWeb.CustomerJSON do
       hash: customer.password_hash
     }
   end
+
+  def customer_fetch(%{result: result}) do
+    result
+  end
 end
