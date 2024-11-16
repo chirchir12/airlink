@@ -62,7 +62,7 @@ defmodule Airlink.Customers do
     with {:ok, result} <- result do
       {:ok,
        %{
-         data: result,
+         customers: result,
          page_number: page_number,
          page_size: page_size,
          total_count: total_count,
