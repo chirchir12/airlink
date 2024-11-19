@@ -79,7 +79,7 @@ defmodule Airlink.Customers do
 
     current_active =
       Customer
-      |> where(company_id: ^company_id)
+      |> where(company_id: ^company_id, status: "active")
       |> Repo.aggregate(:count, :id)
 
     data = %{
