@@ -61,4 +61,11 @@ defmodule AirlinkWeb.CustomerController do
       |> render(:customer_fetch, result: result)
     end
   end
+
+  def count_customers(conn, %{"company_id" => company_id}) do
+    with {:ok, result} <- Customers.count_customers(company_id) do
+      conn
+      |> render(:customer_count, result: result)
+    end
+  end
 end

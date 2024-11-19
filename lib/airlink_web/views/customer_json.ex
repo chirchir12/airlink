@@ -29,4 +29,8 @@ defmodule AirlinkWeb.CustomerJSON do
   def customer_fetch(%{result: result}) do
     %{data: result}
   end
+
+  def customer_count(%{result: result}) do
+    %{data: result}
+  end
 end

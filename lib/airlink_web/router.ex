@@ -70,6 +70,7 @@ defmodule AirlinkWeb.Router do
 
     # reports
     get "/reports/customers/:company_id", CustomerController, :customer_fetch
+    get "/reports/customers/:company_id/count", CustomerController, :count_customers
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
