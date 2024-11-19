@@ -71,6 +71,25 @@ defmodule Airlink.Customers do
     end
   end
 
+  def count_customers(company_id) do
+    total_customers =
+      Customer
+      |> where(company_id: ^company_id)
+      |> Repo.aggregate(:count, :id)
+
+    current_active =
+      Customer
+      |> where(company_id: ^company_id)
+      |> Repo.aggregate(:count, :id)
+
+    data = %{
+      total_customers: total_customers,
+      current_active: current_active
+    }
+
+    {:ok, data}
+  end
+
   def list_customers do
     {:ok, Repo.all(Customer)}
   end
