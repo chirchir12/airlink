@@ -107,6 +107,12 @@ defmodule Airlink.Helpers do
      }}
   end
 
+  def to_gigabytes(octets, gigawords) do
+    total_bytes = octets + gigawords * :math.pow(2, 32)
+    total_gigabytes = total_bytes / :math.pow(2, 30)
+    total_gigabytes
+  end
+
   defp atomize_key(key) when is_binary(key), do: String.to_atom(key)
   defp atomize_key(key) when is_atom(key), do: key
 
