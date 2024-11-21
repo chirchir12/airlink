@@ -45,7 +45,6 @@ defmodule Airlink.AccountingHandler do
       end
     end
 
-    Logger.info("Processing message: #{inspect(params)}")
     :ok
   end
 end
