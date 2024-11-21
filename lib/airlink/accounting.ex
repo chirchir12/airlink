@@ -12,7 +12,7 @@ defmodule Airlink.Accounting do
   def update(accounting, attrs) do
     accounting
     |> Accounting.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.update()
   end
 
   def get_by_session_id(session_id) do
