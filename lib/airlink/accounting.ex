@@ -18,16 +18,12 @@ defmodule Airlink.Accounting do
   def get_by_session_id(session_id) do
     case Repo.get_by(Accounting, acct_unique_session_id: session_id) do
       nil ->
+        Logger.warning("Accounting session not found: #{session_id}")
         {:error, :session_not_found}
 
       accounting ->
         {:ok, accounting}
     end
-  end
-
-  def handle_accounting_data(%{subscription_id: sub_id} = params) when is_nil(sub_id) do
-    Logger.warning("Invalid accounting data: #{inspect(params)}")
-    {:error, :subscription_not_found}
   end
 
   def handle_accounting_data(%{acct_unique_session_id: session_id} = params) do
