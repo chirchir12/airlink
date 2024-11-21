@@ -267,3 +267,29 @@ users_secret = System.get_env("AIRLINK_AUTH_SECRET") || raise("AIRLINK_AUTH_SECR
 config :airlink, Airlink.Diralink.Auth,
   system_secret: Joken.Signer.create("HS512", system_secret),
   users_secret: Joken.Signer.create("HS512", users_secret)
+
+# broadway for handling accounting data
+config :airlink, Airlink.AccountingHandler,
+  producer: [
+    module:
+      {BroadwayRabbitMQ.Producer,
+       queue:
+         System.get_env("RMQ_AIRLINK_ACCOUNTING_CONSUMER") ||
+           raise("RMQ_AIRLINK_ACCOUNTING_CONSUMER is missing"),
+       bindings: [{diralink_exchange, []}],
+       connection: [
+         host: System.get_env("RMQ_HOST") || raise("RMQ_HOST is missing"),
+         username: System.get_env("RMQ_USERNAME") || raise("RMQ_USERNAME is missing"),
+         password: System.get_env("RMQ_PASSWORD") || raise("RMQ_PASSWORD is missing")
+       ],
+       on_failure: :reject_and_requeue,
+       qos: [
+         prefetch_count: 50
+       ]},
+    concurrency: 1
+  ],
+  processors: [
+    default: [
+      concurrency: 50
+    ]
+  ]

@@ -25,7 +25,8 @@ defmodule Airlink do
       duration_mins: Plans.calculate_duration_mins(plan),
       plan: plan.uuid,
       action: "session_activate",
-      sender: :airlink
+      sender: :airlink,
+      subscription: sub.uuid
     }
     |> publish(subs_queue())
   end

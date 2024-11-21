@@ -110,11 +110,11 @@ defmodule Airlink.Migrations.Airlink do
       }
       |> Airlink.Subscriptions.create_subscription()
 
-    :ok = publish(row)
+    :ok = publish(row, sub)
     {:ok, sub}
   end
 
-  defp publish(row) do
+  defp publish(row, sub) do
     data = %{
       username: row["username"] |> normalize_mac(),
       password: row["password"],
@@ -128,7 +128,8 @@ defmodule Airlink.Migrations.Airlink do
       plan: row["plan_uuid"],
       action: "session_activate",
       sender: :airlink,
-      expire_on: row["expires_at"]
+      expire_on: row["expires_at"],
+      subscription: sub.uuid
     }
 
     queue = System.get_env("RMQ_SUBSCRIPTION_ROUTING_KEY") || "hotspot_subscription_changes_rk"
