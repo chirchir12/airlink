@@ -39,6 +39,7 @@ defmodule Airlink.AccountingHandler do
           :ok
 
         {:error, reason} ->
+          Logger.debug("Encountered error processing accounting data: #{inspect(params)}")
           Logger.error("Error processing accounting data: #{inspect(reason)}")
           :ok
       end

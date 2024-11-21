@@ -30,7 +30,7 @@ defmodule Airlink.Repo.Migrations.CreateAccounting do
       timestamps(type: :utc_datetime)
     end
 
-    create index(:accounting, [:acct_unique_session_id])
+    create unique_index(:accounting, [:acct_unique_session_id])
     create index(:accounting, [:subscription_id])
     create index(:accounting, [:nas_identifier])
     create index(:accounting, [:company_id])
