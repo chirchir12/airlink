@@ -276,7 +276,7 @@ config :airlink, Airlink.AccountingHandler,
        queue:
          System.get_env("RMQ_AIRLINK_ACCOUNTING_CONSUMER") ||
            raise("RMQ_AIRLINK_ACCOUNTING_CONSUMER is missing"),
-       bindings: [{diralink_exchange, []}],
+       bindings: [{exchange_name, []}],
        connection: [
          host: System.get_env("RMQ_HOST") || raise("RMQ_HOST is missing"),
          username: System.get_env("RMQ_USERNAME") || raise("RMQ_USERNAME is missing"),
