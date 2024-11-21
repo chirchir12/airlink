@@ -31,6 +31,8 @@ defmodule Airlink.AccountingHandler do
     with {:ok, sub} <- Subscriptions.get_subscription_by_uuid(sub_id) do
       sub = Repo.preload(sub, :customer)
       params = Map.put(params, :user_name, sub.customer.username)
+      params = Map.put(params, :company_id, sub.customer.company_id)
+      params = Map.put(params, :updated_at, DateTime.utc_now())
 
       case Airlink.Accounting.handle_accounting_data(params) do
         {:ok, _} ->
