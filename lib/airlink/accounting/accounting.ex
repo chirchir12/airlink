@@ -60,6 +60,7 @@ defmodule Airlink.Accounting.Accounting do
     data
     |> cast(attrs, @permitted_fields)
     |> validate_required([:acct_unique_session_id])
-    |> unique_constraint([:acct_unique_session_id])
+    |> unique_constraint(:acct_unique_session_id, name: "accounting_acct_unique_session_id_key")
+    |> unique_constraint(:id, name: "accounting_pkey")
   end
 end
