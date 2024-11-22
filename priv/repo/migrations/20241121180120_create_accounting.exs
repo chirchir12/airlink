@@ -34,5 +34,8 @@ defmodule Airlink.Repo.Migrations.CreateAccounting do
     create index(:accounting, [:subscription_id])
     create index(:accounting, [:nas_identifier])
     create index(:accounting, [:company_id])
+    create index(:accounting, [:calling_station_id])
+    create index(:accounting, [:acct_session_id])
+    create index(:accounting, [:user_name])
   end
 end

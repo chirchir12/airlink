@@ -25,7 +25,9 @@ defmodule Airlink.Accounting.Accounting do
     :acct_session_time,
     :subscription_id,
     :acct_terminate_cause,
-    :company_id
+    :company_id,
+    :inserted_at,
+    :updated_at
   ]
 
   schema "accounting" do

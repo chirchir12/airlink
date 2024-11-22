@@ -68,6 +68,13 @@ defmodule AirlinkWeb.Router do
     put "/plans/:id", PlanController, :update
     delete "/plans/:id", PlanController, :delete
 
+    # access points
+    get "/access_points/list/:company_id", AccessPointController, :index
+    post "/access_points", AccessPointController, :create
+    get "/access_points/:id", AccessPointController, :show
+    put "/access_points/:id", AccessPointController, :update
+    delete "/access_points/:id", AccessPointController, :delete
+
     # reports
     get "/reports/customers/:company_id", CustomerController, :customer_fetch
     get "/reports/customers/:company_id/count", CustomerController, :count_customers
