@@ -25,7 +25,8 @@ defmodule Airlink.Customers do
         s.expires_at,
         p.name as plan_name,
         h.name as hotspot_name,
-        a.acct_session_time, as time_used
+        a.acct_session_time as time_used,
+        a.updated_at AS last_seen
       FROM customers c
       LEFT JOIN LATERAL(
         SELECT s.* FROM subscriptions s
