@@ -20,7 +20,6 @@ defmodule Airlink.AccessPoints.AccessPoint do
     :mac_address,
     :name,
     :type,
-    :description,
     :company_id,
     :offline_after
   ]
