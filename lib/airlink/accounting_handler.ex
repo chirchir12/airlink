@@ -5,6 +5,7 @@ defmodule Airlink.AccountingHandler do
   import Airlink.Helpers
   alias Airlink.Subscriptions
   alias Airlink.Repo
+  alias Airlink.AccessPoints
 
   def start_link(option) do
     Broadway.start_link(__MODULE__, [name: __MODULE__] ++ option)
@@ -36,6 +37,7 @@ defmodule Airlink.AccountingHandler do
 
       case Airlink.Accounting.handle_accounting_data(params) do
         {:ok, _} ->
+          :ok = update_acess_point(params)
           :ok
 
         {:error, reason} ->
@@ -46,5 +48,23 @@ defmodule Airlink.AccountingHandler do
     end
 
     :ok
+  end
+
+  defp update_acess_point(%{calling_station_id: client_id} = params) do
+    mac_address = client_id |> String.downcase()
+
+    case AccessPoints.get_by_mac_address(mac_address, params.company_id) do
+      {:error, :access_point_not_found} ->
+        :ok
+
+      {:ok, access_point} ->
+        data = %{
+          last_seen: params.updated_at,
+          status: "online"
+        }
+
+        {:ok, _access_point} = AccessPoints.update_access_point(access_point, data)
+        :ok
+    end
   end
 end

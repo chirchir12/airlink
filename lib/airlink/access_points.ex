@@ -34,6 +34,16 @@ defmodule Airlink.AccessPoints do
     end
   end
 
+  def get_by_mac_address(mac_add, company_id) do
+    query =
+      from ap in AccessPoint, where: ap.company_id == ^company_id and ap.mac_address == ^mac_add
+
+    case Repo.one(query) do
+      nil -> {:error, :access_point_not_found}
+      ap -> {:ok, ap}
+    end
+  end
+
   @doc """
   Creates a access_point.
   """

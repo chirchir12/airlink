@@ -47,5 +47,13 @@ defmodule Airlink.AccessPoints.AccessPoint do
     |> unique_constraint([:mac_address, :company_id])
     |> unique_constraint(:uuid)
     |> maybe_put_uuid(:uuid)
+    |> down_case()
+  end
+
+  defp down_case(changeset) do
+    case get_change(changeset, :mac_address) do
+      nil -> changeset
+      mac -> put_change(changeset, :mac_address, mac |> String.downcase())
+    end
   end
 end
