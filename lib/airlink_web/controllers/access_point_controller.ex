@@ -11,7 +11,7 @@ defmodule AirlinkWeb.AccessPointController do
     render(conn, :index, access_points: access_points)
   end
 
-  def create(conn, %{"access_point" => access_point_params}) do
+  def create(conn, %{"params" => access_point_params}) do
     with {:ok, %AccessPoint{} = access_point} <-
            AccessPoints.create_access_point(access_point_params) do
       conn
@@ -26,7 +26,7 @@ defmodule AirlinkWeb.AccessPointController do
     end
   end
 
-  def update(conn, %{"id" => id, "access_point" => access_point_params}) do
+  def update(conn, %{"id" => id, "params" => access_point_params}) do
     with {:ok, access_point} <- AccessPoints.get_access_point(id),
          {:ok, %AccessPoint{} = access_point} <-
            AccessPoints.update_access_point(access_point, access_point_params) do
