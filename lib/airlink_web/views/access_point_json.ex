@@ -38,7 +38,8 @@ defmodule AirlinkWeb.AccessPointJSON do
       description: access_point.description,
       company_id: access_point.company_id,
       status: status,
-      last_seen: access_point.last_seen
+      last_seen: access_point.last_seen,
+      offline_after: offline_after
     }
   end
 end
