@@ -7,8 +7,9 @@ defmodule AirlinkWeb.AccessPointController do
   action_fallback AirlinkWeb.FallbackController
 
   def index(conn, %{"company_id" => company_id}) do
-    access_points = AccessPoints.list_company_access_points(company_id)
-    render(conn, :index, access_points: access_points)
+    with {:ok, access_points} <- AccessPoints.list_company_access_points(company_id) do
+      render(conn, :index, access_points: access_points)
+    end
   end
 
   def create(conn, %{"params" => access_point_params}) do
