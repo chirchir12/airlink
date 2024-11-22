@@ -24,7 +24,8 @@ defmodule Airlink.Customers do
         c.inserted_at AS joined_on,
         s.expires_at,
         p.name as plan_name,
-        h.name as hotspot_name
+        h.name as hotspot_name,
+        a.acct_session_time, as time_used
       FROM customers c
       LEFT JOIN LATERAL(
         SELECT s.* FROM subscriptions s
@@ -32,6 +33,7 @@ defmodule Airlink.Customers do
         ORDER BY s.id DESC limit 1
       ) s ON true
       LEFT JOIN plans p on p.id = s.plan_id
+      LEFT JOIN accounting a on a.subscription_id = s.uuid
       LEFT JOIN hotspots h ON p.hotspot_id = h.id
        WHERE c.company_id = $1
       ORDER BY s.expires_at DESC NULLS LAST, c.id DESC
