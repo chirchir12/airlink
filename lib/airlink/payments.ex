@@ -46,8 +46,10 @@ defmodule Airlink.Payments do
   end
 
   defp update_customer_status(%{status: "completed"} = txn_params) do
-    with {:ok, customer} <- Customers.get_customer_by_uuid(txn_params.customer_id) do
-      params = %{status: "active"}
+    with {:ok, customer} <- Customers.get_customer_by_uuid(txn_params.customer_id),
+         {:ok, sub} = Subscriptions.get_subscription_by_uuid(txn_params.request_id) do
+      phone_number = Map.get(sub.meta, "phone_number")
+      params = %{status: "active", phone_number: phone_number}
       Customers.update_customer(customer, params)
     end
   end

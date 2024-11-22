@@ -201,6 +201,7 @@ defmodule Airlink.Subscriptions do
          {:ok, subscription} <- get_subscription(company_id, customer_id, plan_id) do
       data = %{expires_at: params.expires_at}
 
+      # update subscription
       {:ok, _sub} =
         subscription
         |> Subscription.update_expiry_changeset(data)
