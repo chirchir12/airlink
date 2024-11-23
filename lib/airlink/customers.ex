@@ -69,6 +69,14 @@ defmodule Airlink.Customers do
 
     query = from c in Customer, where: c.company_id == ^company_id
 
+    # filter by phone number if provided
+    query =
+      if phone_number do
+        from c in query, where: c.phone_number == ^phone_number
+      else
+        query
+      end
+
     total_count =
       query
       |> Repo.aggregate(:count, :id)
