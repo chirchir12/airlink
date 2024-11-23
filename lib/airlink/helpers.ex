@@ -116,6 +116,19 @@ defmodule Airlink.Helpers do
   def update_status(last_seen, offline_after \\ 5) do
     current_time = DateTime.utc_now()
 
+    last_seen =
+      case last_seen do
+        %NaiveDateTime{} ->
+          {:ok, datetime} = DateTime.from_naive(last_seen, "Etc/UTC")
+          datetime
+
+        %DateTime{} ->
+          last_seen
+
+        _ ->
+          nil
+      end
+
     cond do
       last_seen == nil ->
         "inactive"
