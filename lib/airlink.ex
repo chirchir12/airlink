@@ -26,7 +26,8 @@ defmodule Airlink do
       plan: plan.uuid,
       action: "session_activate",
       sender: :airlink,
-      subscription: sub.uuid
+      subscription: sub.uuid,
+      activated_at: sub.activated_at
     }
     |> publish(subs_queue())
   end

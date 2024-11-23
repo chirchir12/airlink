@@ -11,6 +11,7 @@ defmodule Airlink.Subscriptions.Subscription do
     field :company_id, Ecto.UUID
     field :uuid, Ecto.UUID
     field :meta, :map
+    field :activated_at, :utc_datetime
     belongs_to :customer, Airlink.Customers.Customer
     belongs_to :plan, Airlink.Plans.Plan
 
@@ -20,7 +21,15 @@ defmodule Airlink.Subscriptions.Subscription do
   @doc false
   def changeset(subscription, attrs) do
     subscription
-    |> cast(attrs, [:customer_id, :plan_id, :status, :expires_at, :company_id, :meta])
+    |> cast(attrs, [
+      :customer_id,
+      :plan_id,
+      :status,
+      :expires_at,
+      :company_id,
+      :meta,
+      :activated_at
+    ])
     |> validate_required([:customer_id, :plan_id, :status, :company_id])
     |> foreign_key_constraint(:customer_id)
     |> foreign_key_constraint(:plan_id)

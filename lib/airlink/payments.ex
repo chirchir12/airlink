@@ -66,7 +66,7 @@ defmodule Airlink.Payments do
 
   defp update_subscription_status(%{status: "completed"} = txn_params) do
     with {:ok, sub} <- Subscriptions.get_subscription_by_uuid(txn_params.request_id) do
-      params = %{status: "completed"}
+      params = %{status: "completed", activated_at: DateTime.utc_now()}
       Subscriptions.update_subscription(sub, params)
     end
   end
