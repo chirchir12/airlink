@@ -113,21 +113,11 @@ defmodule Airlink.Helpers do
     total_gigabytes
   end
 
-  def update_status(last_seen, offline_after \\ 5) do
+  def update_status(last_seen, type, offline_after \\ 5)
+
+  def update_status(last_seen, :customers, offline_after) do
     current_time = DateTime.utc_now()
-
-    last_seen =
-      case last_seen do
-        %NaiveDateTime{} ->
-          {:ok, datetime} = DateTime.from_naive(last_seen, "Etc/UTC")
-          datetime
-
-        %DateTime{} ->
-          last_seen
-
-        _ ->
-          nil
-      end
+    last_seen = get_last_seen(last_seen)
 
     cond do
       last_seen == nil ->
@@ -138,6 +128,36 @@ defmodule Airlink.Helpers do
 
       true ->
         "online"
+    end
+  end
+
+  def update_status(last_seen, :devices, offline_after) do
+    current_time = DateTime.utc_now()
+    last_seen = get_last_seen(last_seen)
+
+    cond do
+      last_seen == nil ->
+        "inactive"
+
+      DateTime.diff(current_time, last_seen) > offline_after * 60 ->
+        "inactive"
+
+      true ->
+        "active"
+    end
+  end
+
+  defp get_last_seen(last_seen) do
+    case last_seen do
+      %NaiveDateTime{} ->
+        {:ok, datetime} = DateTime.from_naive(last_seen, "Etc/UTC")
+        datetime
+
+      %DateTime{} ->
+        last_seen
+
+      _ ->
+        nil
     end
   end
 

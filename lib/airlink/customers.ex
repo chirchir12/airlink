@@ -58,7 +58,7 @@ defmodule Airlink.Customers do
               Enum.zip(columns, row) |> Map.new(fn {k, v} -> {String.to_atom(k), v} end)
             end)
             |> Enum.map(fn customer ->
-              %{customer | status: update_status(customer.last_seen)}
+              %{customer | status: update_status(customer.last_seen, :customers)}
             end)
 
           {:ok, results}

@@ -1,5 +1,6 @@
 defmodule AirlinkWeb.AccessPointJSON do
   alias Airlink.AccessPoints.AccessPoint
+  alias Airlink.Helpers, as: Helpers
 
   @doc """
   Renders a list of access_points.
@@ -15,18 +16,9 @@ defmodule AirlinkWeb.AccessPointJSON do
     %{data: data(access_point)}
   end
 
-  defp data(%AccessPoint{} = access_point) do
-    current_time = DateTime.utc_now()
-    offline_after = access_point.offline_after
-
+  defp data(%AccessPoint{offline_after: offline_after} = access_point) do
     # Calculate the offline status
-    status =
-      if access_point.last_seen == nil or
-           DateTime.diff(current_time, access_point.last_seen) > offline_after * 60 do
-        "offline"
-      else
-        "online"
-      end
+    status = Helpers.update_status(access_point.last_seen, :devices, offline_after)
 
     %{
       id: access_point.id,
