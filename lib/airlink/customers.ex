@@ -55,7 +55,6 @@ defmodule Airlink.Customers do
           SUM(acct_output_gigawords) AS acct_output_gigawords
         FROM accounting a
         WHERE a.subscription_id = s.uuid
-        ORDER BY a.id DESC limit 1
       ) a ON true
       LEFT JOIN plans p on p.id = s.plan_id
       LEFT JOIN hotspots h ON p.hotspot_id = h.id
