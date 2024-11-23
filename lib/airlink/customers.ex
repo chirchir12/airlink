@@ -12,6 +12,7 @@ defmodule Airlink.Customers do
   def customer_report(company_id, params) do
     page_number = (Map.get(params, :page_number) || "1") |> String.to_integer()
     page_size = (Map.get(params, :page_size) || "10") |> String.to_integer()
+    phone_number = Map.get(params, :phone_number) || nil
 
     {:ok, company_id} = Ecto.UUID.dump(company_id)
 
@@ -60,6 +61,7 @@ defmodule Airlink.Customers do
       LEFT JOIN plans p on p.id = s.plan_id
       LEFT JOIN hotspots h ON p.hotspot_id = h.id
        WHERE c.company_id = $1
+       #{if phone_number, do: "AND c.phone_number = $2", else: ""}
       ORDER BY s.expires_at DESC NULLS LAST, c.id DESC
       LIMIT #{page_size}
       OFFSET #{(page_number - 1) * page_size}
@@ -73,7 +75,7 @@ defmodule Airlink.Customers do
 
     # format into map
     result =
-      case Repo.query(sql, [company_id]) do
+      case Repo.query(sql, [company_id, phone_number]) do
         {:ok, %{rows: rows, columns: columns}} ->
           results =
             Enum.map(rows, fn row ->
