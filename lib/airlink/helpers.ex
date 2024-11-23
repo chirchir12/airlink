@@ -113,7 +113,7 @@ defmodule Airlink.Helpers do
     total_gigabytes
   end
 
-  def update_status(last_seen, type, offline_after \\ 5)
+  def update_status(last_seen, type, offline_after \\ 1)
 
   def update_status(last_seen, :customers, offline_after) do
     current_time = DateTime.utc_now()
