@@ -60,7 +60,7 @@ defmodule Airlink.Customers do
       LEFT JOIN plans p on p.id = s.plan_id
       LEFT JOIN hotspots h ON p.hotspot_id = h.id
        WHERE c.company_id = $1
-      ORDER BY sa.updated_at DESC NULLS LAST, c.id DESC
+      ORDER BY sa.updated_at DESC, s.expires_at DESC NULLS LAST, c.id DESC
       LIMIT #{page_size}
       OFFSET #{(page_number - 1) * page_size}
     """
