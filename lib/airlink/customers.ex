@@ -27,15 +27,37 @@ defmodule Airlink.Customers do
         p.name as plan_name,
         h.name as hotspot_name,
         a.acct_session_time as time_used,
-        a.updated_at AS last_seen
+        sa.updated_at AS last_seen,
+        COALESCE(a.acct_input_octets, 0) as input_octets,
+        COALESCE(a.acct_output_octets, 0) as output_octets,
+        COALESCE(a.acct_input_gigawords, 0) as input_gigawords,
+        COALESCE(a.acct_output_gigawords, 0) as output_gigawords,
+        0 AS uploaded_data,
+        0 AS downloaded_data
       FROM customers c
       LEFT JOIN LATERAL(
         SELECT s.* FROM subscriptions s
         WHERE s.customer_id = c.id
         ORDER BY s.id DESC limit 1
       ) s ON true
+      LEFT JOIN LATERAL(
+        SELECT updated_at FROM accounting a
+        WHERE a.subscription_id = s.uuid
+        ORDER BY a.id DESC limit 1
+      ) sa ON true
+
+      LEFT JOIN LATERAL(
+        SELECT
+          SUM(acct_session_time) AS acct_session_time,
+          SUM(acct_input_octets) AS acct_input_octets,
+          SUM(acct_output_octets) AS acct_output_octets,
+          SUM(acct_input_gigawords) AS acct_input_gigawords,
+          SUM(acct_output_gigawords) AS acct_output_gigawords
+        FROM accounting a
+        WHERE a.subscription_id = s.uuid
+        ORDER BY a.id DESC limit 1
+      ) a ON true
       LEFT JOIN plans p on p.id = s.plan_id
-      LEFT JOIN accounting a on a.subscription_id = s.uuid
       LEFT JOIN hotspots h ON p.hotspot_id = h.id
        WHERE c.company_id = $1
       ORDER BY s.expires_at DESC NULLS LAST, c.id DESC
@@ -61,7 +83,9 @@ defmodule Airlink.Customers do
               %{
                 customer
                 | status: update_status(customer.last_seen, :customers),
-                  time_used: format_used_time(customer.time_used)
+                  time_used: format_used_time(customer.time_used),
+                  uploaded_data: to_gigabytes(customer.input_octets, customer.input_gigawords),
+                  downloaded_data: to_gigabytes(customer.output_octets, customer.output_gigawords)
               }
             end)
 
