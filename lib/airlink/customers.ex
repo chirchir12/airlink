@@ -5,6 +5,7 @@ defmodule Airlink.Customers do
 
   import Ecto.Query, warn: false
   alias Airlink.Repo
+  import Airlink.Helpers
 
   alias Airlink.Customers.Customer
 
@@ -48,12 +49,16 @@ defmodule Airlink.Customers do
       query
       |> Repo.aggregate(:count, :id)
 
+    # format into map
     result =
       case Repo.query(sql, [company_id]) do
         {:ok, %{rows: rows, columns: columns}} ->
           results =
             Enum.map(rows, fn row ->
               Enum.zip(columns, row) |> Map.new(fn {k, v} -> {String.to_atom(k), v} end)
+            end)
+            |> Enum.map(fn customer ->
+              %{customer | status: update_status(customer.last_seen)}
             end)
 
           {:ok, results}

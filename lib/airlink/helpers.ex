@@ -113,6 +113,21 @@ defmodule Airlink.Helpers do
     total_gigabytes
   end
 
+  def update_status(last_seen, offline_after \\ 5) do
+    current_time = DateTime.utc_now()
+
+    cond do
+      last_seen == nil ->
+        "inactive"
+
+      DateTime.diff(current_time, last_seen) > offline_after * 60 ->
+        "offline"
+
+      true ->
+        "online"
+    end
+  end
+
   defp atomize_key(key) when is_binary(key), do: String.to_atom(key)
   defp atomize_key(key) when is_atom(key), do: key
 
