@@ -109,8 +109,14 @@ defmodule Airlink.Helpers do
 
   def to_gigabytes(octets, gigawords) do
     total_bytes = octets + gigawords * :math.pow(2, 32)
+    total_megabytes = total_bytes / :math.pow(2, 20)
     total_gigabytes = total_bytes / :math.pow(2, 30)
-    total_gigabytes
+
+    if total_gigabytes >= 1 do
+      {:gb, Float.round(total_gigabytes, 2)}
+    else
+      {:mb, Float.round(total_megabytes, 2)}
+    end
   end
 
   def update_status(last_seen, type, offline_after \\ 1)

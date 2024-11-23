@@ -33,7 +33,8 @@ defmodule Airlink.Customers do
         COALESCE(a.acct_input_gigawords, 0) as input_gigawords,
         COALESCE(a.acct_output_gigawords, 0) as output_gigawords,
         0 AS uploaded_data,
-        0 AS downloaded_data
+        0 AS downloaded_data,
+        0 as total_data
       FROM customers c
       LEFT JOIN LATERAL(
         SELECT s.* FROM subscriptions s
@@ -83,8 +84,9 @@ defmodule Airlink.Customers do
                 customer
                 | status: update_status(customer.last_seen, :customers),
                   time_used: format_used_time(customer.time_used),
-                  uploaded_data: to_gigabytes(customer.input_octets, customer.input_gigawords),
-                  downloaded_data: to_gigabytes(customer.output_octets, customer.output_gigawords)
+                  uploaded_data: convert_data(customer, :upload),
+                  downloaded_data: convert_data(customer, :download),
+                  total_data: total_data(customer)
               }
             end)
 
@@ -233,5 +235,29 @@ defmodule Airlink.Customers do
   """
   def change_customer(%Customer{} = customer, attrs \\ %{}) do
     Customer.changeset(customer, attrs)
+  end
+
+  defp convert_data(customer, :upload) do
+    case to_gigabytes(customer.input_octets, customer.input_gigawords) do
+      {:mb, value} -> "#{value} MB"
+      {:gb, value} -> "#{value} GB"
+    end
+  end
+
+  defp convert_data(customer, :download) do
+    case to_gigabytes(customer.output_octets, customer.output_gigawords) do
+      {:mb, value} -> "#{value} MB"
+      {:gb, value} -> "#{value} GB"
+    end
+  end
+
+  def total_data(customer) do
+    total_octets = customer.input_octets + customer.output_octets
+    total_gigawords = customer.input_gigawords + customer.output_gigawords
+
+    case to_gigabytes(total_octets, total_gigawords) do
+      {:mb, value} -> "#{value} MB"
+      {:gb, value} -> "#{value} GB"
+    end
   end
 end
