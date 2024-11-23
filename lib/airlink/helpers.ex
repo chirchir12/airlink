@@ -161,6 +161,27 @@ defmodule Airlink.Helpers do
     end
   end
 
+  def format_used_time(nil), do: 0
+
+  def format_used_time(time_used) when time_used < 60 do
+    "#{time_used} sec"
+  end
+
+  def format_used_time(time_used) when time_used < 3600 do
+    time_in_mins = time_used / 60
+    "#{Float.round(time_in_mins, 2)} mins"
+  end
+
+  def format_used_time(time_used) when time_used < 86400 do
+    time_in_hours = time_used / 3600
+    "#{Float.round(time_in_hours, 2)} hours"
+  end
+
+  def format_used_time(time_used) do
+    time_in_days = time_used / 86400
+    "#{Float.round(time_in_days, 2)} days"
+  end
+
   defp atomize_key(key) when is_binary(key), do: String.to_atom(key)
   defp atomize_key(key) when is_atom(key), do: key
 
