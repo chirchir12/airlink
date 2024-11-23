@@ -15,7 +15,8 @@ defmodule Airlink.Hotspots.Hotspot do
     :longitude,
     :router_id,
     :inserted_at,
-    :updated_at
+    :updated_at,
+    :status
   ]
 
   @required_fields [
@@ -37,6 +38,7 @@ defmodule Airlink.Hotspots.Hotspot do
     field :router_id, Ecto.UUID
     field :latitude, :float
     field :longitude, :float
+    field :status, :string, default: "inactive"
     timestamps(type: :utc_datetime)
 
     # relationship

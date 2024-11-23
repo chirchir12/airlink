@@ -1,5 +1,6 @@
 defmodule AirlinkWeb.HotspotJSON do
   alias Airlink.Hotspots.Hotspot
+  alias Airlink.Helpers
 
   @doc """
   Renders a list of hotspots.
@@ -26,7 +27,8 @@ defmodule AirlinkWeb.HotspotJSON do
       company_id: hotspot.company_id,
       landmark: hotspot.landmark,
       bridge_name: hotspot.bridge_name,
-      uuid: hotspot.uuid
+      uuid: hotspot.uuid,
+      status: Helpers.update_status(hotspot.updated_at, :devices)
     }
   end
 end

@@ -6,6 +6,7 @@ defmodule Airlink.AccountingHandler do
   alias Airlink.Subscriptions
   alias Airlink.Repo
   alias Airlink.AccessPoints
+  alias Airlink.Hotspots
 
   def start_link(option) do
     Broadway.start_link(__MODULE__, [name: __MODULE__] ++ option)
@@ -38,6 +39,7 @@ defmodule Airlink.AccountingHandler do
       case Airlink.Accounting.handle_accounting_data(params) do
         {:ok, _} ->
           :ok = update_acess_point(params)
+          :ok = update_hotspot(params)
           :ok
 
         {:error, reason} ->
@@ -64,6 +66,18 @@ defmodule Airlink.AccountingHandler do
         }
 
         {:ok, _access_point} = AccessPoints.update_access_point(access_point, data)
+        :ok
+    end
+  end
+
+  defp update_hotspot(%{called_station_id: hotspot_uuid} = params) do
+    case Hotspots.get_hotspot_by_uuid(hotspot_uuid) do
+      {:error, :hotspot_not_found} ->
+        :ok
+
+      {:ok, hotspot} ->
+        data = %{status: "active", updated_at: params.updated_at}
+        {:ok, _hotspot} = Hotspots.update_hotspot(hotspot, data)
         :ok
     end
   end
