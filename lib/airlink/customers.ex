@@ -13,6 +13,7 @@ defmodule Airlink.Customers do
     page_number = (Map.get(params, :page_number) || "1") |> String.to_integer()
     page_size = (Map.get(params, :page_size) || "10") |> String.to_integer()
     phone_number = Map.get(params, :phone_number) || nil
+    IO.inspect(params)
 
     {:ok, company_id} = Ecto.UUID.dump(company_id)
 
