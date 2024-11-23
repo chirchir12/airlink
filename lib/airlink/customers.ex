@@ -73,9 +73,10 @@ defmodule Airlink.Customers do
       query
       |> Repo.aggregate(:count, :id)
 
+    params = if phone_number, do: [company_id, phone_number], else: [company_id]
     # format into map
     result =
-      case Repo.query(sql, [company_id, phone_number]) do
+      case Repo.query(sql, params) do
         {:ok, %{rows: rows, columns: columns}} ->
           results =
             Enum.map(rows, fn row ->
