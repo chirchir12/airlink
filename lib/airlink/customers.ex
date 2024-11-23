@@ -61,7 +61,7 @@ defmodule Airlink.Customers do
       LEFT JOIN plans p on p.id = s.plan_id
       LEFT JOIN hotspots h ON p.hotspot_id = h.id
        WHERE c.company_id = $1
-       #{if phone_number, do: "AND c.phone_number = $2", else: ""}
+       #{if is_nil(phone_number), do: "", else: "AND c.phone_number = $2"}
       ORDER BY s.expires_at DESC NULLS LAST, c.id DESC
       LIMIT #{page_size}
       OFFSET #{(page_number - 1) * page_size}
@@ -71,17 +71,17 @@ defmodule Airlink.Customers do
 
     # filter by phone number if provided
     query =
-      if phone_number do
-        from c in query, where: c.phone_number == ^phone_number
-      else
+      if is_nil(phone_number) do
         query
+      else
+        from c in query, where: c.phone_number == ^phone_number
       end
 
     total_count =
       query
       |> Repo.aggregate(:count, :id)
 
-    params = if phone_number, do: [company_id, phone_number], else: [company_id]
+    params = if is_nil(phone_number), do: [company_id], else: [company_id, phone_number]
     # format into map
     result =
       case Repo.query(sql, params) do
