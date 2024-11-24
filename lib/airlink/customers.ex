@@ -96,7 +96,7 @@ defmodule Airlink.Customers do
               %{
                 customer
                 | status: update_status(customer.last_seen, :customers),
-                  time_used: format_used_time(customer.time_used),
+                  time_used: format_used_time(customer.time_used |> Decimal.to_integer()),
                   uploaded_data: convert_data(customer, :upload),
                   downloaded_data: convert_data(customer, :download),
                   total_data: total_data(customer)
