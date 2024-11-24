@@ -28,7 +28,7 @@ defmodule Airlink.Customers do
         s.expires_at,
         p.name as plan_name,
         h.name as hotspot_name,
-        a.acct_session_time as time_used,
+        COALESCE(a.acct_session_time, 0) as time_used,
         sa.updated_at AS last_seen,
         sa.framed_ip_address AS assigned_ip,
         COALESCE(a.acct_input_octets, 0) as input_octets,
