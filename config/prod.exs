@@ -11,6 +11,4 @@ config :logger, level: :info
 
 # Runtime production configuration, including reading
 # of environment variables, is done on config/runtime.exs.
-config :airlink, AirlinkWeb.Endpoint, check_origin: [
-  "https://airlink.diracloud.com"
-]
+config :airlink, AirlinkWeb.Endpoint, check_origin: false
