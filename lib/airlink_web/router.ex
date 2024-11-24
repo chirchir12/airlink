@@ -1,5 +1,7 @@
 defmodule AirlinkWeb.Router do
   use AirlinkWeb, :router
+  import Plug.BasicAuth
+  import Phoenix.LiveDashboard.Router
 
   pipeline :api do
     plug :accepts, ["json"]
@@ -15,6 +17,10 @@ defmodule AirlinkWeb.Router do
 
   pipeline :ensure_authenticated do
     plug AirlinkWeb.EnsureAuthenticatedPlug
+  end
+
+  pipeline :metrics_auth do
+    plug :basic_auth, username: "admin", password: "admin"
   end
 
   # captive endpoints
@@ -78,6 +84,12 @@ defmodule AirlinkWeb.Router do
     # reports
     get "/reports/customers/:company_id", CustomerController, :customer_fetch
     get "/reports/customers/:company_id/count", CustomerController, :count_customers
+  end
+
+  scope("/app/metrics") do
+    pipe_through :metrics_auth
+    live_dashboard "/dashboard", metrics: AirlinkWeb.Telemetry
+
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

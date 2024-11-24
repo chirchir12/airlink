@@ -51,7 +51,8 @@ defmodule Airlink.MixProject do
       {:cors_plug, "~> 3.0"},
       {:csv, "~> 3.2"},
       {:broadway, "~> 1.1"},
-      {:broadway_rabbitmq, "~> 0.8.1"}
+      {:broadway_rabbitmq, "~> 0.8.1"},
+      {:broadway_dashboard, "~> 0.4.1"}
     ]
   end
 
