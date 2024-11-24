@@ -1,6 +1,5 @@
 defmodule AirlinkWeb.Router do
   use AirlinkWeb, :router
-  import Plug.BasicAuth
 
   pipeline :api do
     plug :accepts, ["json"]
@@ -18,10 +17,6 @@ defmodule AirlinkWeb.Router do
     plug AirlinkWeb.EnsureAuthenticatedPlug
   end
 
-  pipeline :metrics_auth do
-    plug :basic_auth, username: System.get_env("AIRLINK_METRICS_AUTH_USERNAME") || "default_username",
-                      password: System.get_env("AIRLINK_METRICS_AUTH_PASSWORD") || "default_password"
-  end
   # captive endpoints
   # captive endpoints: No Auth
   scope "/v1/api/captive", AirlinkWeb do
@@ -101,9 +96,12 @@ defmodule AirlinkWeb.Router do
     import Phoenix.LiveDashboard.Router
 
     scope "/dev" do
-      pipe_through [:fetch_session, :protect_from_forgery, :metrics_auth]
+      pipe_through [:fetch_session, :protect_from_forgery]
+      plug :basic_auth, Application.compile_env(:airlink, :basic_auth)
 
-      live_dashboard "/dashboard", metrics: AirlinkWeb.Telemetry, additional_pages: [
+      live_dashboard "/dashboard",
+        metrics: AirlinkWeb.Telemetry,
+        additional_pages: [
           broadway: BroadwayDashboard
         ]
 
