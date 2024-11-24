@@ -30,6 +30,7 @@ defmodule Airlink.Customers do
         h.name as hotspot_name,
         a.acct_session_time as time_used,
         sa.updated_at AS last_seen,
+        sa.framed_ip_address AS assigned_ip,
         COALESCE(a.acct_input_octets, 0) as input_octets,
         COALESCE(a.acct_output_octets, 0) as output_octets,
         COALESCE(a.acct_input_gigawords, 0) as input_gigawords,
@@ -44,7 +45,7 @@ defmodule Airlink.Customers do
         ORDER BY s.id DESC limit 1
       ) s ON true
       LEFT JOIN LATERAL(
-        SELECT updated_at FROM accounting a
+        SELECT updated_at, framed_ip_address FROM accounting a
         WHERE a.subscription_id = s.uuid
         ORDER BY a.id DESC limit 1
       ) sa ON true
