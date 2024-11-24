@@ -1,7 +1,6 @@
 defmodule AirlinkWeb.Router do
   use AirlinkWeb, :router
   import Plug.BasicAuth
-  import Phoenix.LiveDashboard.Router
 
   pipeline :api do
     plug :accepts, ["json"]
@@ -102,7 +101,7 @@ defmodule AirlinkWeb.Router do
     import Phoenix.LiveDashboard.Router
 
     scope "/dev" do
-      pipe_through [:fetch_session, :protect_from_forgery]
+      pipe_through [:fetch_session, :protect_from_forgery, :metrics_auth]
 
       live_dashboard "/dashboard", metrics: AirlinkWeb.Telemetry, additional_pages: [
           broadway: BroadwayDashboard
