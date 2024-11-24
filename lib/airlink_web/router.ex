@@ -86,11 +86,11 @@ defmodule AirlinkWeb.Router do
     get "/reports/customers/:company_id/count", CustomerController, :count_customers
   end
 
-  scope("/app/metrics") do
-    pipe_through :metrics_auth
-    live_dashboard "/dashboard", metrics: AirlinkWeb.Telemetry
+  # scope("/app/metrics") do
+  #   pipe_through :metrics_auth
+  #   live_dashboard "/dashboard", metrics: AirlinkWeb.Telemetry
 
-  end
+  # end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:airlink, :dev_routes) do
