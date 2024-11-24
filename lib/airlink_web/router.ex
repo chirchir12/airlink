@@ -19,9 +19,9 @@ defmodule AirlinkWeb.Router do
   end
 
   pipeline :metrics_auth do
-    plug :basic_auth, username: "admin", password: "admin"
+    plug :basic_auth, username: System.get_env("AIRLINK_METRICS_AUTH_USERNAME") || "default_username",
+                      password: System.get_env("AIRLINK_METRICS_AUTH_PASSWORD") || "default_password"
   end
-
   # captive endpoints
   # captive endpoints: No Auth
   scope "/v1/api/captive", AirlinkWeb do
