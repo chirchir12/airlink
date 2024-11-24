@@ -108,6 +108,11 @@ defmodule Airlink.Helpers do
   end
 
   def to_gigabytes(octets, gigawords) do
+    octets = if is_struct(octets, Decimal), do: Decimal.to_integer(octets), else: octets
+
+    gigawords =
+      if is_struct(gigawords, Decimal), do: Decimal.to_integer(gigawords), else: gigawords
+
     total_bytes = octets + gigawords * :math.pow(2, 32)
     total_megabytes = total_bytes / :math.pow(2, 20)
     total_gigabytes = total_bytes / :math.pow(2, 30)

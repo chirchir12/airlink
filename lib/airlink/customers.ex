@@ -265,8 +265,13 @@ defmodule Airlink.Customers do
   end
 
   def total_data(customer) do
-    total_octets = customer.input_octets + customer.output_octets
-    total_gigawords = customer.input_gigawords + customer.output_gigawords
+    input_octets = customer.input_octets |> Decimal.to_integer()
+    output_octets = customer.output_octets |> Decimal.to_integer()
+    input_gigawords = customer.input_gigawords |> Decimal.to_integer()
+    output_gigawords = customer.output_gigawords |> Decimal.to_integer()
+
+    total_octets = input_octets + output_octets
+    total_gigawords = input_gigawords + output_gigawords
 
     case to_gigabytes(total_octets, total_gigawords) do
       {:mb, value} -> "#{value} MB"
