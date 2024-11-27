@@ -99,6 +99,12 @@ defmodule Airlink.Migrations.Airlink do
   end
 
   defp transform_subscription({:ok, row}) do
+    duration_mins =
+      Airlink.Plans.calculate_duration_mins(
+        row["duration"] |> String.to_integer(),
+        row["time_unit"]
+      )
+
     {:ok, sub} =
       %{
         customer_id: row["customer_id"],
@@ -106,6 +112,7 @@ defmodule Airlink.Migrations.Airlink do
         status: row["status"],
         expires_at: row["expires_at"],
         company_id: row["company_id"],
+        activated_at: calculate_activated_at(row["expires_at"], duration_mins),
         meta: nil
       }
       |> Airlink.Subscriptions.create_subscription()
@@ -159,5 +166,17 @@ defmodule Airlink.Migrations.Airlink do
 
   defp get_path(filename) do
     Path.join(["/tmp/airlink", filename])
+  end
+
+  def calculate_activated_at(expires_at, duration_mins) do
+    case DateTime.from_iso8601(expires_at) do
+      {:ok, datetime, _offset} ->
+        datetime
+        |> DateTime.add(-duration_mins * 60, :second)
+
+      {:error, reason} ->
+        Logger.error("Failed to parse datetime: #{reason}")
+        nil
+    end
   end
 end

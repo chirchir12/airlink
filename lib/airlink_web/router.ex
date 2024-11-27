@@ -17,7 +17,6 @@ defmodule AirlinkWeb.Router do
     plug AirlinkWeb.EnsureAuthenticatedPlug
   end
 
-
   # captive endpoints
   # captive endpoints: No Auth
   scope "/v1/api/captive", AirlinkWeb do
