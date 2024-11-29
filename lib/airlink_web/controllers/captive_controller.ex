@@ -13,6 +13,7 @@ defmodule AirlinkWeb.CaptiveController do
   action_fallback AirlinkWeb.FallbackController
 
   def create(conn, params) do
+    IO.inspect(params)
     with {:ok, {params, _company, _router, _hotspot}} <- validate(conn, params),
          {:ok, %Customer{company_id: company_id} = customer} <-
            Customers.get_or_create_customer(params.mac, params.company_id),
