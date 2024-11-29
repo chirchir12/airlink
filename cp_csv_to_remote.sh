@@ -15,7 +15,7 @@ SOURCE_DIR="$HOME/work/diralink_systems/migrations/airlink"
 REMOTE_DIR="/tmp/airlink"
 
 # SSH key path
-SSH_KEY="$HOME/.ssh/netcup"
+SSH_KEY="$HOME/.ssh/contabo_ekchirchir_rsa"
 
 # Check if SSH key exists
 if [ ! -f "$SSH_KEY" ]; then
