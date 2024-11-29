@@ -39,7 +39,7 @@ defmodule Airlink.AccountingHandler do
       case Airlink.Accounting.handle_accounting_data(params) do
         {:ok, _} ->
           :ok = update_acess_point(params)
-          :ok = update_hotspot(params)
+          # :ok = update_hotspot(params)
           :ok
 
         {:error, reason} ->
@@ -70,15 +70,15 @@ defmodule Airlink.AccountingHandler do
     end
   end
 
-  defp update_hotspot(%{called_station_id: hotspot_uuid} = params) do
-    case Hotspots.get_hotspot_by_uuid(hotspot_uuid) do
-      {:error, :hotspot_not_found} ->
-        :ok
+  # defp update_hotspot(%{called_station_id: hotspot_uuid} = params) do
+  #   case Hotspots.get_hotspot_by_uuid(hotspot_uuid) do
+  #     {:error, :hotspot_not_found} ->
+  #       :ok
 
-      {:ok, hotspot} ->
-        data = %{status: "active", updated_at: params.updated_at}
-        {:ok, _hotspot} = Hotspots.update_hotspot(hotspot, data)
-        :ok
-    end
-  end
+  #     {:ok, hotspot} ->
+  #       data = %{status: "active", updated_at: params.updated_at}
+  #       {:ok, _hotspot} = Hotspots.update_hotspot(hotspot, data)
+  #       :ok
+  #   end
+  # end
 end
