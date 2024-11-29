@@ -6,7 +6,8 @@ defmodule AirlinkWeb.CorsPlug do
   def call(conn, _opts) do
     allowed_origins = [
       "https://captive.diracloud.com",
-      "http://localhost:3000"
+      "http://localhost:3000",
+       "https://captive.diralink.com",
     ]
 
     origin = get_req_header(conn, "origin") |> List.first()
