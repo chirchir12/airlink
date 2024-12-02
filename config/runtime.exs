@@ -290,6 +290,6 @@ config :airlink, Airlink.AccountingHandler,
   ],
   processors: [
     default: [
-      concurrency: 50
+      concurrency: 10
     ]
   ]
