@@ -26,7 +26,7 @@ defmodule Airlink.Customers do
         c.status,
         c.inserted_at AS joined_on,
         s.expires_at,
-        s.uuid,
+        s.uuid::text as subscription_id,
         p.name as plan_name,
         h.name as hotspot_name,
         COALESCE(a.acct_session_time, 0) as used_time_in_sec,
