@@ -207,7 +207,7 @@ defmodule Airlink.Subscriptions do
 
   defp handle_message(%{action: "hotspot_session_activated"} = params) do
     with {:ok, %Plan{id: plan_id}} <- Plans.get_plan_uuid(params.plan_id),
-         {:ok, %Customer{company_id: company_id, id: customer_id}} = cust <-
+         {:ok, %Customer{company_id: company_id, id: customer_id} = cust} <-
            Customers.get_customer_by_uuid(params.customer_id),
          {:ok, subscription} <- get_subscription(company_id, customer_id, plan_id) do
       data = %{expires_at: params.expires_at}
