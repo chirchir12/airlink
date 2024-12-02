@@ -11,6 +11,7 @@ defmodule Airlink.Subscriptions do
   alias Airlink.Plans.Plan
   alias Airlink.Customers
   alias Airlink.Customers.Customer
+  alias Airlink.Subscriptions.Reactivate
 
   @doc """
   Returns the list of subscriptions.
@@ -84,6 +85,16 @@ defmodule Airlink.Subscriptions do
     case is_expired(expire_at) do
       false -> {:not_expired, sub}
       true -> {:expired, sub}
+    end
+  end
+
+  def validate_reactivation(params) do
+    reactivation = %Reactivate{}
+    changeset = Reactivate.changeset(reactivation, params)
+
+    case changeset.valid? do
+      false -> {:error, changeset}
+      true -> {:ok, changeset.changes}
     end
   end
 

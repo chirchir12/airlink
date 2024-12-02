@@ -32,6 +32,25 @@ defmodule Airlink do
     |> publish(subs_queue())
   end
 
+  def publish(%Subscription{} = sub, duration_in_mins) do
+    {:ok, plan} = Plans.get_plan_id(sub.plan_id)
+    {:ok, cust} = Customers.get_customer_by_id(sub.customer_id)
+
+    %{
+      username: cust.username |> normalize_mac(),
+      password: cust.password_hash,
+      customer: cust.uuid,
+      service: "hotspot",
+      duration_mins: duration_in_mins,
+      plan: plan.uuid,
+      action: "session_activate",
+      sender: :airlink,
+      subscription: sub.uuid,
+      activated_at: sub.activated_at
+    }
+    |> publish(subs_queue())
+  end
+
   def publish(%Plan{} = plan, action) do
     %{
       action: action,
