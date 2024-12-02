@@ -23,7 +23,7 @@ defmodule Airlink.Customers do
         c.uuid::text,
         c.username,
         c.phone_number,
-        "offline" as network_status,
+        'offline' as network_status,
         c.status,
         c.inserted_at AS joined_on,
         s.expires_at,
