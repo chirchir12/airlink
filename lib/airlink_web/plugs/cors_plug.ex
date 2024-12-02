@@ -8,6 +8,7 @@ defmodule AirlinkWeb.CorsPlug do
       "https://captive.diracloud.com",
       "http://localhost:3000",
        "https://captive.diralink.com",
+       "http://192.168.100.10:3000/"
     ]
 
     origin = get_req_header(conn, "origin") |> List.first()
