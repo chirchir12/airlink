@@ -132,7 +132,7 @@ defmodule Airlink.Helpers do
 
     cond do
       last_seen == nil ->
-        "inactive"
+        "offline"
 
       DateTime.diff(current_time, last_seen) > offline_after * 60 ->
         "offline"

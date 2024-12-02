@@ -23,6 +23,7 @@ defmodule Airlink.Customers do
         c.uuid::text,
         c.username,
         c.phone_number,
+        "offline" as network_status,
         c.status,
         c.inserted_at AS joined_on,
         s.expires_at,
@@ -97,7 +98,7 @@ defmodule Airlink.Customers do
             |> Enum.map(fn customer ->
               %{
                 customer
-                | status: update_status(customer.last_seen, :customers),
+                | network_status: update_status(customer.last_seen, :customers),
                   time_used: format_used_time(customer.time_used |> Decimal.to_integer()),
                   uploaded_data: convert_data(customer, :upload),
                   downloaded_data: convert_data(customer, :download),
