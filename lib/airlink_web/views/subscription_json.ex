@@ -1,7 +1,7 @@
 defmodule AirlinkWeb.SubscriptionJSON do
   alias Airlink.Subscriptions.Subscription
 
-  def show(%{"subscription" => subscription}) do
+  def show(%{subscription: subscription}) do
     %{data: data(subscription)}
   end
 
