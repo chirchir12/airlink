@@ -77,8 +77,7 @@ defmodule AirlinkWeb.SubscriptionController do
   end
 
   defp publish(sub, :remaining) do
-    IO.inspect(sub)
-    remaining_time = Map.get(sub.meta, "renewed_duration_mins")
+    remaining_time = Map.get(sub.meta, :renewed_duration_mins)
     Airlink.publish(sub, remaining_time)
   end
 end
