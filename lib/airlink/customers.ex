@@ -6,7 +6,7 @@ defmodule Airlink.Customers do
   import Ecto.Query, warn: false
   alias Airlink.Repo
   import Airlink.Helpers
-
+  alias Airlink.Plans
   alias Airlink.Customers.Customer
 
   def customer_report(company_id, params) do
@@ -29,6 +29,9 @@ defmodule Airlink.Customers do
         s.expires_at,
         s.activated_at,
         s.uuid::text as subscription_id,
+        p.duration as plan_duration,
+        p.time_unit as plan_time_unit,
+        0 as plan_duration_secs,
         p.name as plan_name,
         h.name as hotspot_name,
         COALESCE(a.acct_session_time, 0) as used_time_in_sec,
@@ -103,7 +106,8 @@ defmodule Airlink.Customers do
                   time_used: format_used_time(customer.time_used |> Decimal.to_integer()),
                   uploaded_data: convert_data(customer, :upload),
                   downloaded_data: convert_data(customer, :download),
-                  total_data: total_data(customer)
+                  total_data: total_data(customer),
+                  plan_duration_secs: Plans.calculate_duration_mins(customer.plan_duration, customer.plan_time_unit) * 60
               }
             end)
 
