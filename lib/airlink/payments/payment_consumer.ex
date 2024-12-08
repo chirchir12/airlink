@@ -35,7 +35,17 @@ defmodule Airlink.Payments.PaymentConsumer do
   @impl GenRMQ.Consumer
   def handle_message(%Message{payload: payload} = message) do
     Logger.info("Received message: #{inspect(message)}")
-    payload = Jason.decode!(payload) |> atomize_map_keys()
+    %{service: service} = payload = Jason.decode!(payload) |> atomize_map_keys()
+
+    case service do
+      "hotspot" ->
+        :ok = process_message(payload, &Payments.update_payments/1)
+        ack(message)
+
+      _ ->
+        ack(message)
+    end
+
     :ok = process_message(payload, &Payments.update_payments/1)
     ack(message)
   end
