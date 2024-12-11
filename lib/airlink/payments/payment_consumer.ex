@@ -35,6 +35,7 @@ defmodule Airlink.Payments.PaymentConsumer do
   @impl GenRMQ.Consumer
   def handle_message(%Message{payload: payload} = message) do
     Logger.info("Received message: #{inspect(message)}")
+    IO.inspect(payload)
     %{service: service} = payload = Jason.decode!(payload) |> atomize_map_keys()
 
     case service do
@@ -62,7 +63,7 @@ defmodule Airlink.Payments.PaymentConsumer do
   @impl GenRMQ.Consumer
   def consumer_tag() do
     {:ok, hostname} = :inet.gethostname()
-    "#{hostname}-payment-consumer"
+    "#{hostname}-airlink-payment-consumer"
   end
 
   defp get_options() do
