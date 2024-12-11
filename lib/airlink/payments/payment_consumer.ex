@@ -46,9 +46,6 @@ defmodule Airlink.Payments.PaymentConsumer do
       _ ->
         ack(message)
     end
-
-    :ok = process_message(payload, &Payments.update_payments/1)
-    ack(message)
   end
 
   @impl GenRMQ.Consumer
